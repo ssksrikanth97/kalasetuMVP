@@ -64,12 +64,12 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <header className={styles.hero} style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1544211326-0a25c8cc0868?q=80&w=2540&auto=format&fit=crop")' }}>
+      <header className={styles.hero} style={{ backgroundImage: 'url("/dance-img.png")' }}>
         <div className={styles.heroOverlay}></div>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroTitle}>
-            Discover the Soul of<br />
-            <span style={{ color: 'var(--color-gold)' }}>Indian Classical Arts</span>
+          <h1 className={styles.heroTitle} style={{ color: '#ffffff' }}>
+            Discover the Soul of
+            <span style={{ color: '#f1501c' }}> Indian Classical Arts</span>
           </h1>
           <p className={styles.heroSubtitle}>
             Connect with verified artists, explore prestigious institutions, and shop for authentic cultural artifacts.

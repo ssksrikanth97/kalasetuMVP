@@ -62,8 +62,8 @@
 
 .ctaPrimary {
   padding: 1rem 2.5rem;
-  background: var(--color-gold);
-  color: var(--color-maroon);
+  background: #f1501c;
+  color: white;
   font-weight: 700;
   border-radius: 50px;
   border: none;
