@@ -1,8 +1,34 @@
 'use client';
 import Navbar from '@/components/Navbar';
 import styles from '../explore.module.css';
+import { useCart } from '@/context/CartContext';
+import { useState } from 'react';
+
+const PRODUCTS = [
+    { id: 1, name: 'Veena (Premium)', type: 'Instrument', price: 25000, image: '🎸', description: 'Handcrafted from seasoned Jackwood. Beautiful tone.' },
+    { id: 2, name: 'Bharatanatyam Costume', type: 'Costume', price: 3500, image: '👗', description: 'Authentic silk costume with detailed embroidery.' },
+    { id: 3, name: 'Tabla Set', type: 'Instrument', price: 12000, image: '🥁', description: 'Professional quality copper bayan and dayan.' },
+    { id: 4, name: 'Temple Jewelry Set', type: 'Jewelry', price: 4500, image: '📿', description: 'Traditional Kemp stones gold-plated set.' },
+    { id: 5, name: 'Ghungroo (50 Bells)', type: 'Accessory', price: 1200, image: '🔔', description: 'Cotton cord ghungroos for Kathak and Bharatanatyam.' },
+    { id: 6, name: 'Sitar', type: 'Instrument', price: 30000, image: '🎻', description: 'Ravi Shankar style professionally tuned sitar.' },
+    { id: 7, name: 'Natyashastra Book', type: 'Book', price: 800, image: '📖', description: 'Comprehensive guide to Indian performing arts.' },
+    { id: 8, name: 'Flute (Bansuri)', type: 'Instrument', price: 1500, image: '🎶', description: 'Professional C-sharp medium bamboo flute.' },
+];
 
 export default function Shop() {
+    const { addToCart } = useCart();
+    const [filter, setFilter] = useState('All');
+
+    const filteredProducts = filter === 'All'
+        ? PRODUCTS
+        : PRODUCTS.filter(p => p.type === filter || (filter === 'Instruments' && p.type === 'Instrument') || (filter === 'Costumes' && p.type === 'Costume'));
+
+    const handleAddToCart = (product) => {
+        addToCart(product);
+        // Optional: Add toast notification here
+        alert(`Added ${product.name} to cart!`);
+    };
+
     return (
         <div className="page-wrapper">
             <Navbar />
@@ -19,15 +45,16 @@ export default function Shop() {
                     {/* Filter Categories */}
                     <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '1rem', marginBottom: '2rem' }}>
                         {['All', 'Instruments', 'Costumes', 'Jewelry', 'Books'].map(cat => (
-                            <button key={cat} style={{
+                            <button key={cat} onClick={() => setFilter(cat)} style={{
                                 padding: '0.5rem 1.25rem',
                                 borderRadius: '20px',
                                 border: '1px solid #e5e7eb',
-                                background: cat === 'All' ? 'var(--color-maroon)' : 'white',
-                                color: cat === 'All' ? 'white' : 'var(--color-text-secondary)',
+                                background: filter === cat ? 'var(--color-maroon)' : 'white',
+                                color: filter === cat ? 'white' : 'var(--color-text-secondary)',
                                 cursor: 'pointer',
                                 fontWeight: 500,
-                                whiteSpace: 'nowrap'
+                                whiteSpace: 'nowrap',
+                                transition: 'all 0.2s'
                             }}>
                                 {cat}
                             </button>
@@ -35,26 +62,31 @@ export default function Shop() {
                     </div>
 
                     <div className={styles.grid}>
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-                            <div key={item} className={styles.card}>
+                        {filteredProducts.map((product) => (
+                            <div key={product.id} className={styles.card}>
                                 <div className={styles.cardContent}>
-                                    <div className={styles.cardImage} style={{ marginBottom: '1rem', borderRadius: '8px' }}>
-                                        🛍️
+                                    <div className={styles.cardImage} style={{ marginBottom: '1rem', borderRadius: '8px', fontSize: '4rem' }}>
+                                        {product.image}
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                                         <div>
-                                            <h3 className={styles.cardTitle} style={{ fontSize: '1.1rem', margin: 0 }}>Veena (Premium)</h3>
-                                            <p className={styles.cardSubtitle} style={{ fontSize: '0.85rem' }}>Classical Instrument</p>
+                                            <h3 className={styles.cardTitle} style={{ fontSize: '1.1rem', margin: 0 }}>{product.name}</h3>
+                                            <p className={styles.cardSubtitle} style={{ fontSize: '0.85rem' }}>{product.type}</p>
                                         </div>
-                                        <div className={styles.cardPrice}>₹{(item * 1500) + 4999}</div>
+                                        <div className={styles.cardPrice}>₹{product.price.toLocaleString('en-IN')}</div>
                                     </div>
 
-                                    <p style={{ fontSize: '0.85rem', color: '#6b7280', margin: '0.5rem 0' }}>
-                                        Handcrafted from seasoned Jackwood. Beautiful tone and finish...
+                                    <p style={{ fontSize: '0.85rem', color: '#6b7280', margin: '0.5rem 0', flex: 1 }}>
+                                        {product.description}
                                     </p>
 
                                     <div className={styles.cardActions} style={{ marginTop: '1rem' }}>
-                                        <button className={styles.btnPrimary}>Add to Cart</button>
+                                        <button
+                                            className={styles.btnPrimary}
+                                            onClick={() => handleAddToCart(product)}
+                                        >
+                                            Add to Cart
+                                        </button>
                                     </div>
                                 </div>
                             </div>

@@ -1,10 +1,14 @@
 .hero {
   position: relative;
-  height: 80vh;
+  min-height: 85vh;
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, var(--color-maroon), #1a0505);
+  background-image: url("/classical-dancer.png");
+  /* Generated Classical Dancer Image */
+  background-size: cover;
+  background-position: center;
   color: white;
   text-align: center;
   overflow: hidden;
@@ -16,8 +20,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  /* Darken overlay */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
   z-index: 1;
 }
 
@@ -26,95 +29,231 @@
   z-index: 2;
   padding: 0 1.5rem;
   max-width: 900px;
+  animation: fadeIn 1s ease-out;
 }
 
 .heroTitle {
   font-family: var(--font-heading);
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
   color: var(--color-gold);
   line-height: 1.1;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
 }
 
 .heroSubtitle {
   font-family: var(--font-body);
   font-size: 1.25rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   color: #eeeeee;
   font-weight: 300;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .ctaGroup {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   justify-content: center;
   flex-wrap: wrap;
 }
 
-.sectionTitle {
-  text-align: center;
-  font-size: 2.5rem;
+.ctaPrimary {
+  padding: 1rem 2.5rem;
+  background: var(--color-gold);
   color: var(--color-maroon);
-  margin-bottom: 3rem;
+  font-weight: 700;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-size: 1.1rem;
 }
 
-.featureSection {
-  padding: 6rem 2rem;
-  max-width: 1200px;
+.ctaPrimary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.ctaSecondary {
+  padding: 1rem 2.5rem;
+  background: transparent;
+  color: white;
+  font-weight: 600;
+  border-radius: 50px;
+  border: 2px solid white;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 1.1rem;
+}
+
+.ctaSecondary:hover {
+  background: white;
+  color: var(--color-maroon);
+}
+
+/* Sections */
+.section {
+  padding: 6rem 1rem;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
-.featureGrid {
-  display: grid;
-  grid-template-columns: 1fr;
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+  padding: 0 1rem;
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  color: var(--color-maroon);
+  font-family: var(--font-heading);
+  margin-bottom: 0.5rem;
+}
+
+.sectionSubtitle {
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+}
+
+.viewAllLink {
+  color: var(--color-maroon);
+  font-weight: 600;
+  text-decoration: underline;
+  font-size: 1rem;
+}
+
+/* Horizontal Scroll Container */
+.scrollContainer {
+  display: flex;
   gap: 2rem;
+  overflow-x: auto;
+  padding: 1rem 1rem 2rem;
+  /* Bottom padding for shadow */
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
-@media (min-width: 768px) {
-  .heroTitle {
-    font-size: 5rem;
-  }
-
-  .heroSubtitle {
-    font-size: 1.5rem;
-  }
-
-  .featureGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.scrollContainer::-webkit-scrollbar {
+  display: none;
 }
 
-.featureCard {
-  background: var(--bg-primary);
-  padding: 2.5rem 1.5rem;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: var(--shadow-md);
+.card {
+  min-width: 300px;
+  max-width: 300px;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.featureCard:hover {
+.card:hover {
   transform: translateY(-8px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.cardImage {
+  height: 200px;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  position: relative;
+}
+
+.cardContent {
+  padding: 1.5rem;
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  color: var(--color-maroon);
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.cardLabel {
+  font-size: 0.85rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.cardPrice {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-top: 0.5rem;
+}
+
+/* Why Choose Us Section */
+.whySection {
+  background: #fdfbf7;
+  padding: 6rem 1rem;
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 3rem auto 0;
+  padding: 0 1rem;
 }
 
 .featureIcon {
   font-size: 3rem;
-  margin-bottom: 1rem;
-  display: block;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  padding: 1rem;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-.featureTitle {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--color-text-primary);
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .sectionTitle {
+    font-size: 2rem;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
 }
 
-.featureDesc {
-  color: var(--color-text-secondary);
-  font-size: 0.95rem;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

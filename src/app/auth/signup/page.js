@@ -1,14 +1,17 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { auth, db } from '@/lib/firebase/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import styles from '../auth.module.css';
 
-export default function SignupPage() {
+function SignupForm() {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [formData, setFormData] = useState({
@@ -18,7 +21,13 @@ export default function SignupPage() {
         password: '',
         role: 'customer', // Default
     });
-    const router = useRouter();
+
+    useEffect(() => {
+        const role = searchParams.get('role');
+        if (role) {
+            setFormData(prev => ({ ...prev, role }));
+        }
+    }, [searchParams]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -68,110 +77,118 @@ export default function SignupPage() {
     };
 
     return (
-        <div style={{ backgroundColor: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <Navbar />
-            <div className={styles.authContainer}>
-                {/* Left Side - Brand Story */}
-                <div className={styles.authLeft}>
-                    <div className={styles.authContent}>
-                        <h2 className={styles.authTitle}>Join the Community</h2>
-                        <p className={styles.authDescription}>
-                            Create an account to discover, book, and learn from the finest artists in Indian Classical Arts.<br /><br />
-                            "Culture is the widening of the mind and of the spirit."
-                        </p>
-                    </div>
-                </div>
-
-                {/* Right Side - Form */}
-                <div className={styles.authRight}>
-                    <div className={styles.formCard} style={{ maxWidth: '500px' }}>
-                        <div className={styles.formHeader}>
-                            <h3 className={styles.formTitle}>Create Account</h3>
-                            <p className={styles.formSubtitle}>Begin your cultural journey today.</p>
-                        </div>
-
-                        {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-center">{error}</div>}
-
-                        <form onSubmit={handleSignup}>
-                            <div className={styles.inputGroup}>
-                                <label className={styles.label}>Full Name / Institution Name</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    className={styles.input}
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="e.g. Aditi Sharma"
-                                />
-                            </div>
-
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                <div className={styles.inputGroup}>
-                                    <label className={styles.label}>Email</label>
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        className={styles.input}
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        required
-                                        placeholder="user@example.com"
-                                    />
-                                </div>
-                                <div className={styles.inputGroup}>
-                                    <label className={styles.label}>Phone</label>
-                                    <input
-                                        type="tel"
-                                        name="phone"
-                                        className={styles.input}
-                                        value={formData.phone}
-                                        onChange={handleChange}
-                                        required
-                                        placeholder="+91 XXXXX XXXXX"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className={styles.inputGroup}>
-                                <label className={styles.label}>I want to join as a</label>
-                                <select
-                                    name="role"
-                                    className={styles.input}
-                                    value={formData.role}
-                                    onChange={handleChange}
-                                    style={{ cursor: 'pointer' }}
-                                >
-                                    <option value="customer">Customer (Book & Shop)</option>
-                                    <option value="artist">Artist (Showcase Talent)</option>
-                                    <option value="institution">Institution (Promote Events)</option>
-                                </select>
-                            </div>
-
-                            <div className={styles.inputGroup}>
-                                <label className={styles.label}>Create Password</label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    className={styles.input}
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="Min. 6 characters"
-                                />
-                            </div>
-
-                            <button type="submit" className={styles.submitBtn} disabled={loading}>
-                                {loading ? 'Creating Account...' : 'Sign Up'}
-                            </button>
-                        </form>
-
-                        <p className={styles.footerText}>
-                            Already a member? <Link href="/auth/login" className={styles.link}>Log in</Link>
-                        </p>
-                    </div>
+        <div className={styles.authContainer}>
+            {/* Left Side - Brand Story */}
+            <div className={styles.authLeft}>
+                <div className={styles.authContent}>
+                    <h2 className={styles.authTitle}>Join the Community</h2>
+                    <p className={styles.authDescription}>
+                        Create an account to discover, book, and learn from the finest artists in Indian Classical Arts.<br /><br />
+                        "Culture is the widening of the mind and of the spirit."
+                    </p>
                 </div>
             </div>
+
+            {/* Right Side - Form */}
+            <div className={styles.authRight}>
+                <div className={styles.formCard} style={{ maxWidth: '500px' }}>
+                    <div className={styles.formHeader}>
+                        <h3 className={styles.formTitle}>Create Account</h3>
+                        <p className={styles.formSubtitle}>Begin your cultural journey today.</p>
+                    </div>
+
+                    {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-center">{error}</div>}
+
+                    <form onSubmit={handleSignup}>
+                        <div className={styles.inputGroup}>
+                            <label className={styles.label}>Full Name / Institution Name</label>
+                            <input
+                                type="text"
+                                name="name"
+                                className={styles.input}
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                                placeholder="e.g. Aditi Sharma"
+                            />
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <div className={styles.inputGroup}>
+                                <label className={styles.label}>Email</label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    className={styles.input}
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="user@example.com"
+                                />
+                            </div>
+                            <div className={styles.inputGroup}>
+                                <label className={styles.label}>Phone</label>
+                                <input
+                                    type="tel"
+                                    name="phone"
+                                    className={styles.input}
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="+91 XXXXX XXXXX"
+                                />
+                            </div>
+                        </div>
+
+                        <div className={styles.inputGroup}>
+                            <label className={styles.label}>I want to join as a</label>
+                            <select
+                                name="role"
+                                className={styles.input}
+                                value={formData.role}
+                                onChange={handleChange}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <option value="customer">Customer (Book & Shop)</option>
+                                <option value="artist">Artist (Showcase Talent)</option>
+                                <option value="institution">Institution (Promote Events)</option>
+                            </select>
+                        </div>
+
+                        <div className={styles.inputGroup}>
+                            <label className={styles.label}>Create Password</label>
+                            <input
+                                type="password"
+                                name="password"
+                                className={styles.input}
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                placeholder="Min. 6 characters"
+                            />
+                        </div>
+
+                        <button type="submit" className={styles.submitBtn} disabled={loading}>
+                            {loading ? 'Creating Account...' : 'Sign Up'}
+                        </button>
+                    </form>
+
+                    <p className={styles.footerText}>
+                        Already a member? <Link href="/auth/login" className={styles.link}>Log in</Link>
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default function SignupPage() {
+    return (
+        <div style={{ backgroundColor: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            <Navbar />
+            <Suspense fallback={<div>Loading...</div>}>
+                <SignupForm />
+            </Suspense>
         </div>
     );
 }

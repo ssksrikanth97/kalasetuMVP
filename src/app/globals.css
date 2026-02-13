@@ -3,43 +3,47 @@
   --color-maroon: #800000;
   --color-maroon-dark: #5a0000;
   --color-maroon-light: #a52a2a;
-  
+
   --color-gold: #FFD700;
   --color-gold-dark: #DAA520;
   --color-gold-light: #FFE55C;
-  
+
   --color-beige: #F5F5DC;
   --color-beige-dark: #E8E4C9;
-  
+
   --color-text-primary: #333333;
   --color-text-secondary: #666666;
   --color-text-light: #ffffff;
-  
+
   --bg-primary: #ffffff;
-  --bg-secondary: #f9f9f9; /* Light Beige background */
+  --bg-secondary: #f9f9f9;
+  /* Light Beige background */
   --bg-glass: rgba(255, 255, 255, 0.8);
-  
+
   /* Spacing */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 3rem;
-  
+
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  
+
   /* Typography */
-  --font-heading: 'Outfit', sans-serif; /* Example modern font */
+  --font-heading: 'Outfit', sans-serif;
+  /* Example modern font */
   --font-body: 'Inter', sans-serif;
 }
 
 [data-theme='dark'] {
-  --color-text-primary: #e0e0e0; /* Light gray text */
+  --color-text-primary: #e0e0e0;
+  /* Light gray text */
   --color-text-secondary: #a0a0a0;
-  --bg-primary: #121212; /* Dark background */
+  --bg-primary: #121212;
+  /* Dark background */
   --bg-secondary: #1e1e1e;
   --bg-glass: rgba(30, 30, 30, 0.8);
 }
@@ -57,14 +61,20 @@ body {
   line-height: 1.6;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   color: var(--color-maroon);
   margin-bottom: var(--spacing-md);
 }
 
 a {
-  color: inherit; /* Inherit color unless overridden */
+  color: inherit;
+  /* Inherit color unless overridden */
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -78,25 +88,81 @@ a:hover {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 var(--spacing-md);
+  width: 100%;
 }
 
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.justify-between { justify-content: space-between; }
-.justify-center { justify-content: center; }
-.items-center { align-items: center; }
-.gap-md { gap: var(--spacing-md); }
-.gap-lg { gap: var(--spacing-lg); }
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+}
 
-.grid { display: grid; }
-.grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
-.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
-.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.gap-md {
+  gap: var(--spacing-md);
+}
+
+.gap-lg {
+  gap: var(--spacing-lg);
+}
+
+.grid {
+  display: grid;
+}
+
+.grid-cols-1 {
+  grid-template-columns: repeat(1, 1fr);
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 768px) {
+
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4 {
+    grid-template-columns: 1fr;
+    /* Stack grids on mobile by default unless overridden */
+  }
+}
 
 @media (min-width: 768px) {
-  .md\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-  .md\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 /* Components */
@@ -174,8 +240,15 @@ a:hover {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in {
@@ -194,8 +267,9 @@ a:hover {
 
 /* Navbar */
 .navbar {
-  background-color: var(--bg-primary); /* Or glassmorphism */
-  border-bottom: 1px solid rgba(0,0,0,0.1);
+  background-color: var(--bg-primary);
+  /* Or glassmorphism */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   padding: var(--spacing-md) 0;
   position: sticky;
   top: 0;

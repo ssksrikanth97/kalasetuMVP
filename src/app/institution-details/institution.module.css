@@ -1,0 +1,85 @@
+/* Basic Styles for Institution Details */
+.header {
+    background: linear-gradient(135deg, var(--color-maroon), var(--color-maroon-dark));
+    color: white;
+    padding: 6rem 1rem 8rem;
+    position: relative;
+    text-align: center;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.location {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-top: 0.5rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    padding-bottom: 4rem;
+}
+
+.mainColumn {
+    min-width: 0;
+}
+
+.sidebarColumn {
+    min-width: 0;
+}
+
+.card {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    color: var(--color-maroon);
+    border-bottom: 2px solid #f3f4f6;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.description {
+    line-height: 1.6;
+    color: #4b5563;
+}
+
+.sidebarTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.contactItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    color: #4b5563;
+}
+
+.icon {
+    font-size: 1.25rem;
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}

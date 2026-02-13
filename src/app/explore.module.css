@@ -258,11 +258,40 @@
         font-size: 2rem;
     }
 
+    .heroSubtitle {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+
+    .searchBar {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+
+    .searchInput {
+        width: 100%;
+        text-align: center;
+    }
+
+    .filterBtn {
+        width: 100%;
+        justify-content: center;
+    }
+
     .grid {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        /* Keep minimum width reasonable */
+        gap: 1.5rem;
     }
 
     .mainContent {
         margin-top: -2rem;
+        padding: 0 1rem;
+    }
+
+    .heroSection {
+        padding-bottom: 4rem;
+        /* Reduce bottom padding */
     }
 }

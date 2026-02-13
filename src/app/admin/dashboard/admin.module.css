@@ -398,4 +398,8 @@
     .logoContainer {
         margin-bottom: 1rem;
     }
+
+    .mainContent {
+        padding: 1rem;
+    }
 }

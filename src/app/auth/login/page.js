@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import Image from 'next/image';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase/firebase';
@@ -58,7 +59,15 @@ export default function LoginPage() {
                 {/* Left Side - Brand Story */}
                 <div className={styles.authLeft}>
                     <div className={styles.authContent}>
-                        <h2 className={styles.authTitle}>KalaSetu</h2>
+                        <div style={{ position: 'relative', width: '250px', height: '80px', marginBottom: '1rem' }}>
+                            <Image
+                                src="/logo.png"
+                                alt="KalaSetu"
+                                fill
+                                style={{ objectFit: 'contain', objectPosition: 'left' }}
+                                priority
+                            />
+                        </div>
                         <p className={styles.authDescription}>
                             "The bridge between tradition and the world."<br /><br />
                             Sign in to access curated Indian classical arts, verified artists, and authentic products.

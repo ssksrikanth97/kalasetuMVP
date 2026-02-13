@@ -1,6 +1,7 @@
 'use client';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
@@ -68,8 +69,15 @@ export default function AdminDashboard() {
 
             {/* Sidebar Navigation */}
             <aside className={styles.sidebar}>
-                <div className={styles.logoContainer}>
-                    <span className={styles.logoText}>KalaSetu</span>
+                <div className={styles.logoContainer} style={{ padding: '0 1rem' }}>
+                    <div style={{ position: 'relative', width: '100%', height: '40px' }}>
+                        <Image
+                            src="/logo.png"
+                            alt="KalaSetu Admin"
+                            fill
+                            style={{ objectFit: 'contain', objectPosition: 'left' }}
+                        />
+                    </div>
                 </div>
 
                 <nav className={styles.navLinks}>
