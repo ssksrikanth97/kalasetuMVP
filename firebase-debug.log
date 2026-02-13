@@ -1,0 +1,16 @@
+[debug] [2026-02-13T10:21:53.437Z] ----------------------------------------------------------------------
+[debug] [2026-02-13T10:21:53.439Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --project kalasetu-220ce
+[debug] [2026-02-13T10:21:53.439Z] CLI Version:   15.6.0
+[debug] [2026-02-13T10:21:53.439Z] Platform:      darwin
+[debug] [2026-02-13T10:21:53.439Z] Node Version:  v24.13.0
+[debug] [2026-02-13T10:21:53.439Z] Time:          Fri Feb 13 2026 15:51:53 GMT+0530 (India Standard Time)
+[debug] [2026-02-13T10:21:53.439Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-02-13T10:21:54.278Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-13T10:21:54.278Z] > authorizing via signed-in user (ssk.srikanth@gmail.com)
+[debug] [2026-02-13T10:21:54.278Z] [iam] checking project kalasetu-220ce for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]
+[debug] [2026-02-13T10:21:54.279Z] Checked if tokens are valid: true, expires at: 1770979194982
+[debug] [2026-02-13T10:21:54.279Z] Checked if tokens are valid: true, expires at: 1770979194982
+[debug] [2026-02-13T10:21:54.279Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/kalasetu-220ce:testIamPermissions [none]
+[debug] [2026-02-13T10:21:54.279Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/kalasetu-220ce:testIamPermissions  x-goog-user-project=kalasetu-220ce
+[debug] [2026-02-13T10:21:54.279Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/kalasetu-220ce:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]}
