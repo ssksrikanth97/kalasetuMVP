@@ -6,9 +6,11 @@ import styles from '../dashboard/admin.module.css';
 import { useEffect, useState } from 'react';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '@/lib/firebase/firebase';
+import { useRouter } from 'next/navigation';
 
 export default function AdminInventory() {
     const { logout } = useAuth();
+    const router = useRouter();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -31,6 +33,10 @@ export default function AdminInventory() {
 
         fetchProducts();
     }, []);
+
+    const handleRowClick = (productId) => {
+        router.push(`/admin/inventory/edit/${productId}`);
+    };
 
     return (
         <div className={styles.dashboardContainer}>
@@ -94,29 +100,31 @@ export default function AdminInventory() {
                                     <th style={{ width: '60px' }}>Image</th>
                                     <th>Product Name</th>
                                     <th>Category</th>
+                                    <th>ID</th>
                                     <th>Price</th>
                                     <th>Stock</th>
                                     <th>Status</th>
-                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
                                     <tr>
-                                        <td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Loading products...</td>
+                                        <td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>Loading products...</td>
                                     </tr>
                                 ) : products.length > 0 ? (
                                     products.map(p => (
-                                        <tr key={p.id}>
+                                        <tr key={p.id} onClick={() => router.push(`/admin/inventory/edit/${p.id}`)}
+                                        className={styles.clickableRow}>
                                             <td>
                                                 {p.mainImage ? (
-                                                    <img src={p.mainImage} alt={p.productName} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
+                                                    <Image src={p.mainImage} alt={p.productName} width={40} height={40} style={{ objectFit: 'cover', borderRadius: '4px' }} />
                                                 ) : (
                                                     <div style={{ width: '40px', height: '40px', background: '#eee', borderRadius: '4px' }}></div>
                                                 )}
                                             </td>
                                             <td style={{ fontWeight: 500 }}>{p.productName}</td>
                                             <td>{p.categoryId?.replace('-', ' ')}</td>
+                                            <td>{p.id?.replace('-', ' ')}</td>
                                             <td>₹{p.price?.toLocaleString('en-IN')}</td>
                                             <td>
                                                 <span style={{ color: p.stockQuantity < 5 ? 'red' : 'inherit' }}>{p.stockQuantity}</span>
@@ -126,14 +134,12 @@ export default function AdminInventory() {
                                                     {p.stockQuantity > 0 ? 'In Stock' : 'Out of Stock'}
                                                 </span>
                                             </td>
-                                            <td>
-                                                <button className={styles.actionButton}>Edit</button>
-                                            </td>
+                                            
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="7" style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
+                                        <td colSpan="6" style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
                                             No products found.<br />
                                             <Link href="/admin/inventory/new" style={{ color: 'var(--color-maroon)', fontWeight: 600, marginTop: '1rem', display: 'inline-block' }}>Add your first product</Link>
                                         </td>
@@ -144,6 +150,11 @@ export default function AdminInventory() {
                     </div>
                 </div>
             </main>
+            <style jsx>{`
+                tbody tr:hover {
+                    background-color: #f9fafb;
+                }
+            `}</style>
         </div>
     );
 }

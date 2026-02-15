@@ -1,56 +1,47 @@
-"use client";
+'use client';
 
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { db } from '@/lib/firebase/firebase';
 import { useCart } from '@/context/CartContext';
 import Navbar from '@/components/Navbar';
-import styles from '../explore.module.css'; // ← keeping same style file as your original
+import styles from '../explore.module.css';
 
 export default function Shop() {
     const { addToCart } = useCart();
     const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [filter, setFilter] = useState("All");
     const [loading, setLoading] = useState(true);
 
-
     useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchProductsAndCategories = async () => {
             try {
-                // const q = query(
-                //     collection(db, "products"),
-                //     where("isAvailable", "==", true)
-                // );
-
-                const q = query(collection(db, "products"));
-
-                const querySnapshot = await getDocs(q);
+                const productsQuery = query(collection(db, "products"));
+                const querySnapshot = await getDocs(productsQuery);
                 const fetchedProducts = querySnapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 }));
-
                 setProducts(fetchedProducts);
+
+                const fetchedCategories = [...new Set(fetchedProducts.map(p => p.type))];
+                setCategories(['All', ...fetchedCategories]);
+
                 setLoading(false);
-                console.log("Image URL: ", fetchedProducts.imageUrl);
             } catch (error) {
-                console.error("Error fetching products:", error);
+                console.error("Error fetching data:", error);
                 setLoading(false);
             }
         };
 
-        fetchProducts();
+        fetchProductsAndCategories();
     }, []);
 
     const filteredProducts =
         filter === "All"
             ? products
-            : products.filter(
-                p =>
-                    p.type === filter ||
-                    (filter === "Instruments" && p.type === "Instrument") ||
-                    (filter === "Costumes" && p.type === "Costume")
-            );
+            : products.filter(p => p.type === filter);
 
     const handleAddToCart = (product) => {
         addToCart(product);
@@ -84,7 +75,7 @@ export default function Shop() {
                                     marginBottom: '2rem'
                                 }}
                             >
-                                {['All', 'Instruments', 'Costumes', 'Jewelry', 'Books'].map(cat => (
+                                {categories.map(cat => (
                                     <button
                                         key={cat}
                                         onClick={() => setFilter(cat)}
@@ -109,16 +100,19 @@ export default function Shop() {
                                 {filteredProducts.map((product) => (
                                     <div key={product.id} className={styles.card}>
                                         <div className={styles.cardContent}>
-                                            <div
+                                            <img
+                                                src={product.mainImage} 
+                                                alt={product.name}
                                                 className={styles.cardImage}
                                                 style={{
                                                     marginBottom: '1rem',
                                                     borderRadius: '8px',
-                                                    fontSize: '4rem'
+                                                    width: '100%',
+                                                    height: '200px',
+                                                    objectFit: 'cover'
                                                 }}
-                                            >
-                                                {product.image}
-                                            </div>
+                                            />
+                                            <p style={{ fontSize: '0.7rem', wordBreak: 'break-all' }}>{product.mainImage}</p>
 
                                             <div
                                                 style={{
