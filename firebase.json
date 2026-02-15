@@ -3,22 +3,6 @@
         "rules": "firestore.rules",
         "indexes": "firestore.indexes.json"
     },
-    "hosting": {
-        "public": "out",
-        "cleanUrls": true,
-        "trailingSlash": false,
-        "rewrites": [
-            {
-                "source": "**",
-                "destination": "/index.html"
-            }
-        ],
-        "ignore": [
-            "firebase.json",
-            "**/.*",
-            "**/node_modules/**"
-        ]
-    },
     "storage": {
         "rules": "storage.rules"
     }

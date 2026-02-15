@@ -1,7 +1,13 @@
 
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { 
+    getFirestore, 
+    initializeFirestore, 
+    enableIndexedDbPersistence,
+    persistentLocalCache,
+    persistentMultipleTabManager
+} from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
@@ -10,7 +16,7 @@ const firebaseConfig = {
   authDomain: "kalasetu-220ce.firebaseapp.com",
   databaseURL: "https://kalasetu-220ce-default-rtdb.firebaseio.com",
   projectId: "kalasetu-220ce",
-  storageBucket: "kalasetu-220ce.firebasestorage.app",
+  storageBucket: "kalasetu-220ce.appspot.com",
   messagingSenderId: "229598710851",
   appId: "1:229598710851:web:03fd5d896ec83c6d8118f6",
   measurementId: "G-MVVWDN1KN8"
@@ -19,7 +25,12 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
-const db = getFirestore(app);
+
+// Initialize Firestore with persistence
+const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+});
+
 const storage = getStorage(app);
 
 let analytics;

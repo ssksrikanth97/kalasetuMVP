@@ -1,0 +1,123 @@
+/* Shared styles from dashboard are used for the main layout */
+
+/* Card containing the form */
+.formCard {
+    padding: 2rem;
+}
+
+/* Grid layout for the form fields */
+.formGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 1.5rem; /* row-gap column-gap */
+    align-items: center;
+}
+
+.formGrid input,
+.formGrid textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 0; /* Use grid gap instead of margin */
+    background-color: #f9fafb; /* Light background for inputs */
+}
+
+/* Make textarea and specific divs span the full width */
+.formGrid textarea,
+.formGrid > .fileInputContainer[style*="grid-column"],
+.formGrid > .formActions {
+    grid-column: 1 / -1;
+}
+
+/* Container for file inputs */
+.fileInputContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.fileInputContainer label {
+    font-weight: 500;
+    color: #374151; /* Darker text for labels */
+}
+
+/* Container for form buttons */
+.formActions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-start;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Grid for displaying existing events */
+.eventGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Individual event card styling */
+.eventCard {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.eventCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.eventImage {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.eventInfo {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.eventInfo h3 {
+    margin-top: 0;
+    color: var(--color-text-primary);
+}
+
+.eventInfo p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.actionsContainer {
+    display: flex;
+    margin-top: auto; /* Pushes buttons to the bottom */
+    gap: 0.5rem;
+    padding-top: 1rem;
+}
+
+.btnEdit, .btnRemove {
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    font-weight: 500;
+}
+
+.btnEdit {
+    background-color: #3b82f6; /* Blue */
+}
+
+.btnRemove {
+    background-color: #ef4444; /* Red */
+}

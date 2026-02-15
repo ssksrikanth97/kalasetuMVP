@@ -7,7 +7,7 @@ import { db } from '@/lib/firebase/firebase';
 import { collection, query, where, limit, getDocs } from 'firebase/firestore';
 
 export default function Home() {
-  const [featuredArtists, setFeaturedArtists] = useState([]);
+  const [featuredEvents, setFeaturedEvents] = useState([]);
   const [featuredInstitutions, setFeaturedInstitutions] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,37 +17,23 @@ export default function Home() {
       try {
         setLoading(true);
 
-        // Fetch Artists
-        // Assuming artists are in 'users' collection with role 'artist'
-        // OR in 'artists' collection. Let's try 'artists' first as per signup flow.
-        const artistsQuery = query(collection(db, 'artists'), limit(4));
-        const artistsSnap = await getDocs(artistsQuery);
-        const artistsData = artistsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setFeaturedArtists(artistsData);
+        // Fetch Approved Events
+        const eventsQuery = query(collection(db, 'events'), where('status', '==', 'approved'), limit(4));
+        const eventsSnap = await getDocs(eventsQuery);
+        const eventsData = eventsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setFeaturedEvents(eventsData);
 
-        // Fetch Institutions
-        const instQuery = query(collection(db, 'institutions'), limit(4));
+        // Fetch Approved Institutions
+        const instQuery = query(collection(db, 'institutions'), where('status', '==', 'approved'), limit(4));
         const instSnap = await getDocs(instQuery);
         const instData = instSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setFeaturedInstitutions(instData);
 
-        // Fetch Products
-        // If products collection doesn't exist, this will return empty array, which is fine.
-        const productQuery = query(collection(db, 'products'), limit(4));
+        // Fetch Approved Products
+        const productQuery = query(collection(db, 'products'), where('status', '==', 'approved'), limit(4));
         const productSnap = await getDocs(productQuery);
         const productData = productSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-        // Fallback for products if DB is empty to show UI
-        if (productData.length === 0) {
-          setFeaturedProducts([
-            { id: 'p1', name: 'Veena (Premium)', type: 'Instrument', price: 25000, image: '🎸' },
-            { id: 'p2', name: 'Bharatnatyam Silk', type: 'Costume', price: 3500, image: '👗' },
-            { id: 'p3', name: 'Tabla Set', type: 'Instrument', price: 12000, image: '🥁' },
-            { id: 'p4', name: 'Temple Jewelry', type: 'Jewelry', price: 4500, image: '📿' },
-          ]);
-        } else {
-          setFeaturedProducts(productData);
-        }
+        setFeaturedProducts(productData);
 
       } catch (error) {
         console.error("Error fetching homepage data:", error);
@@ -86,14 +72,14 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Featured Artists Section */}
+      {/* Upcoming Events Section */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <div>
-            <h2 className={styles.sectionTitle}>Featured Artists</h2>
-            <p className={styles.sectionSubtitle}>Maestros and rising stars in Music, Dance, and Fine Arts.</p>
+            <h2 className={styles.sectionTitle}>Upcoming Events</h2>
+            <p className={styles.sectionSubtitle}>Don't miss these upcoming performances and workshops.</p>
           </div>
-          <Link href="/explore-artists" className={styles.viewAllLink}>View All Artists →</Link>
+          <Link href="/admin/events" className={styles.viewAllLink}>View All Events →</Link>
         </div>
 
         <div className={styles.scrollContainer}>
@@ -101,19 +87,26 @@ export default function Home() {
             [1, 2, 3, 4].map(n => (
               <div key={n} className={styles.card} style={{ height: '350px', background: '#f3f4f6' }}></div>
             ))
-          ) : featuredArtists.length > 0 ? (
-            featuredArtists.map(artist => (
-              <div key={artist.id} className={styles.card}>
-                <div className={styles.cardImage}>👤</div>
+          ) : featuredEvents.length > 0 ? (
+            featuredEvents.map(event => (
+              <div key={event.id} className={styles.card}>
+                <div className={styles.cardImage}>
+                  {event.imageUrl ? (
+                    <img src={event.imageUrl} alt={event.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <span style={{ fontSize: '4rem' }}>🗓️</span>
+                  )}
+                </div>
                 <div className={styles.cardContent}>
-                  <p className={styles.cardLabel}>{artist.personalDetails?.specialization || 'Artist'}</p>
-                  <h3 className={styles.cardTitle}>{artist.personalDetails?.name || 'Artist Name'}</h3>
-                  <p style={{ color: '#666', fontSize: '0.9rem' }}>📍 {artist.personalDetails?.location || 'India'}</p>
+                  <p className={styles.cardLabel}>{event.date ? new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Date'}</p>
+                  <h3 className={styles.cardTitle}>{event.name || 'Event Name'}</h3>
+                  {event.location && <p className={styles.cardLocation}>📍 {event.location}</p>}
+                  {event.artists && <p className={styles.cardArtists}>🎤 {event.artists.join(', ')}</p>}
                 </div>
               </div>
             ))
           ) : (
-            <div style={{ padding: '2rem', color: '#666' }}>No artists found. Be the first to join!</div>
+            <div style={{ padding: '2rem', color: '#666' }}>No upcoming events found.</div>
           )}
         </div>
       </section>
@@ -129,16 +122,30 @@ export default function Home() {
         </div>
 
         <div className={styles.scrollContainer}>
-          {featuredProducts.map(product => (
-            <div key={product.id} className={styles.card}>
-              <div className={styles.cardImage}>{product.image}</div>
-              <div className={styles.cardContent}>
-                <p className={styles.cardLabel}>{product.type}</p>
-                <h3 className={styles.cardTitle}>{product.name}</h3>
-                <p className={styles.cardPrice}>₹{product.price.toLocaleString('en-IN')}</p>
+          {loading ? (
+            [1, 2, 3, 4].map(n => (
+              <div key={n} className={styles.card} style={{ height: '350px', background: '#f3f4f6' }}></div>
+            ))
+          ) : featuredProducts.length > 0 ? (
+            featuredProducts.map(product => (
+              <div key={product.id} className={styles.card}>
+                <div className={styles.cardImage}>
+                  {product.mainImage ? (
+                    <img src={product.mainImage} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <span>{product.image || '🖼️'}</span>
+                  )}
+                </div>
+                <div className={styles.cardContent}>
+                  <p className={styles.cardLabel}>{product.type}</p>
+                  <h3 className={styles.cardTitle}>{product.name}</h3>
+                  <p className={styles.cardPrice}>₹{product.price.toLocaleString('en-IN')}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <div style={{ padding: '2rem', color: '#666' }}>No approved products found.</div>
+          )}
         </div>
       </section>
 
@@ -158,7 +165,13 @@ export default function Home() {
           ) : featuredInstitutions.length > 0 ? (
             featuredInstitutions.map(inst => (
               <div key={inst.id} className={styles.card}>
-                <div className={styles.cardImage}>🏛️</div>
+                <div className={styles.cardImage}>
+                  {inst.media?.logoUrl ? (
+                    <img src={inst.media.logoUrl} alt={`${inst.basicDetails?.instituteName} Logo`} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '1rem' }} />
+                  ) : (
+                    <span style={{ fontSize: '4rem' }}>🏛️</span>
+                  )}
+                </div>
                 <div className={styles.cardContent}>
                   <h3 className={styles.cardTitle}>{inst.basicDetails?.instituteName || 'Institution Name'}</h3>
                   <p style={{ color: '#666', fontSize: '0.9rem' }}>📍 {inst.basicDetails?.city || 'Location'}</p>
@@ -166,7 +179,7 @@ export default function Home() {
               </div>
             ))
           ) : (
-            <div style={{ padding: '2rem', color: '#666' }}>No institutions found.</div>
+            <div style={{ padding: '2rem', color: '#666' }}>No approved institutions found.</div>
           )}
         </div>
       </section>

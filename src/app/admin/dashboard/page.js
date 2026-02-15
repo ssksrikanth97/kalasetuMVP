@@ -96,6 +96,9 @@ export default function AdminDashboard() {
                     <Link href="/admin/bookings" className={styles.navItem}>
                         <span className={styles.navIcon}>📅</span> Bookings
                     </Link>
+                    <Link href="/admin/events" className={styles.navItem}>
+                        <span className={styles.navIcon}>🎉</span> Manage Events
+                    </Link>
                     <Link href="/" target="_blank" className={styles.navItem} style={{ marginTop: 'auto' }}>
                         <span className={styles.navIcon}>🌐</span> Live Site
                     </Link>

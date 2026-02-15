@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-            setLoading(true);
             if (currentUser) {
                 try {
                     const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
@@ -23,12 +22,12 @@ export const AuthProvider = ({ children }) => {
                         const userData = userDoc.data();
                         setUserRole(userData.role);
                     } else {
-                        // Handle case where auth exists but no user record (e.g. freshly created)
                         console.warn('User document not found for ID:', currentUser.uid);
                         setUserRole(null);
                     }
                 } catch (error) {
                     console.error('Error fetching user role:', error);
+                    setUserRole(null); // Ensure role is null on error
                 }
                 setUser(currentUser);
             } else {
@@ -42,12 +41,13 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const logout = async () => {
-        setLoading(true);
-        await firebaseSignOut(auth);
-        setUser(null);
-        setUserRole(null);
-        setLoading(false);
-        router.push('/auth/login');
+        try {
+            await firebaseSignOut(auth);
+            // The onAuthStateChanged listener will handle clearing user state.
+            router.push('/auth/login');
+        } catch (error) {
+            console.error("Error signing out: ", error);
+        }
     };
 
     return (

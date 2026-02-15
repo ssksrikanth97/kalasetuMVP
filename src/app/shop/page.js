@@ -112,8 +112,7 @@ export default function Shop() {
                                                     objectFit: 'cover'
                                                 }}
                                             />
-                                            <p style={{ fontSize: '0.7rem', wordBreak: 'break-all' }}>{product.mainImage}</p>
-
+                                            
                                             <div
                                                 style={{
                                                     display: 'flex',

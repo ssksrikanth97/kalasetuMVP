@@ -25,28 +25,44 @@ export default function LoginPage() {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // Fetch role for redirection
             const userDoc = await getDoc(doc(db, 'users', user.uid));
 
             if (userDoc.exists()) {
                 const role = userDoc.data().role;
-                // Redirect based on role
-                if (role === 'admin') {
-                    router.push('/admin/dashboard');
-                } else if (role === 'artist') {
-                    router.push('/artist/dashboard');
-                } else if (role === 'institution') {
-                    router.push('/institution/dashboard');
-                } else {
-                    router.push('/customer/dashboard');
+                switch (role) {
+                    case 'admin':
+                        router.push('/admin/dashboard');
+                        break;
+                    case 'artist':
+                        router.push('/artist/dashboard');
+                        break;
+                    case 'institution':
+                        router.push('/institution/dashboard');
+                        break;
+                    default:
+                        router.push('/customer/dashboard');
+                        break;
                 }
             } else {
-                // Fallback
+                // If no user document, redirect to a default page.
+                console.warn(`No user document found for UID: ${user.uid}`);
                 router.push('/');
             }
         } catch (err) {
-            console.error(err);
-            setError('Invalid email or password. Please try again.');
+            console.error("Login error:", err.code, err.message);
+            switch (err.code) {
+                case 'auth/user-not-found':
+                    setError('No account found with this email. Please sign up.');
+                    break;
+                case 'auth/wrong-password':
+                    setError('Incorrect password. Please try again.');
+                    break;
+                case 'auth/user-disabled':
+                    setError('This account has been disabled. Please contact support.');
+                    break;
+                default:
+                    setError('An unexpected error occurred. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
@@ -56,7 +72,6 @@ export default function LoginPage() {
         <div style={{ backgroundColor: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Navbar />
             <div className={styles.authContainer}>
-                {/* Left Side - Brand Story */}
                 <div className={styles.authLeft}>
                     <div className={styles.authContent}>
                         <div style={{ position: 'relative', width: '250px', height: '80px', marginBottom: '1rem' }}>
@@ -75,7 +90,6 @@ export default function LoginPage() {
                     </div>
                 </div>
 
-                {/* Right Side - Login Form */}
                 <div className={styles.authRight}>
                     <div className={styles.formCard}>
                         <div className={styles.formHeader}>

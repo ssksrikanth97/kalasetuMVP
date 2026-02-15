@@ -117,11 +117,9 @@ export default function EditProduct() {
             }
 
             const productRef = doc(db, 'products', productId);
-            
-            const { mainImage, ...restOfData } = formData;
 
             const updatedData = {
-                ...restOfData,
+                ...formData,
                 tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
                 price: parseFloat(formData.price) || 0,
                 stockQuantity: parseInt(formData.stockQuantity) || 0,

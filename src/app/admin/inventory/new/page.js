@@ -104,8 +104,6 @@ export default function AddProduct() {
                 isApproved: true,
             };
 
-            delete productData.mainImage; // Don't save File object
-
             await addDoc(collection(db, 'products'), productData);
 
             // Use window.confirm instead of alert for better UX flow, or just redirect
