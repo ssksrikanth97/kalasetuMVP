@@ -1,0 +1,89 @@
+/* [project]/src/app/institutions/[institutionId]/institution-profile.module.css [app-client] (css) */
+.institution-profile-module__TTyLza__pageWrapper {
+  background-color: #fff;
+}
+
+.institution-profile-module__TTyLza__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.institution-profile-module__TTyLza__header {
+  border-bottom: 1px solid #eee;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  display: flex;
+}
+
+.institution-profile-module__TTyLza__logo {
+  object-fit: cover;
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+}
+
+.institution-profile-module__TTyLza__headerContent h1 {
+  color: var(--color-text-primary);
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.institution-profile-module__TTyLza__location {
+  color: #666;
+  font-size: 1.2rem;
+}
+
+.institution-profile-module__TTyLza__aboutSection {
+  margin-bottom: 3rem;
+}
+
+.institution-profile-module__TTyLza__aboutSection h2, .institution-profile-module__TTyLza__eventsSection h2, .institution-profile-module__TTyLza__artistsSection h2 {
+  color: var(--color-maroon);
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.institution-profile-module__TTyLza__eventsGrid, .institution-profile-module__TTyLza__artistsGrid {
+  gap: 1.5rem;
+  display: grid;
+}
+
+.institution-profile-module__TTyLza__eventsGrid {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.institution-profile-module__TTyLza__artistsGrid {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.institution-profile-module__TTyLza__eventCard, .institution-profile-module__TTyLza__artistCard {
+  background: #f9f9f9;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.institution-profile-module__TTyLza__eventCard img, .institution-profile-module__TTyLza__artistCard img {
+  object-fit: cover;
+  width: 100%;
+}
+
+.institution-profile-module__TTyLza__eventCard img {
+  height: 200px;
+}
+
+.institution-profile-module__TTyLza__artistCard img {
+  height: 180px;
+}
+
+.institution-profile-module__TTyLza__eventInfo, .institution-profile-module__TTyLza__artistCard h3, .institution-profile-module__TTyLza__artistCard p {
+  padding: 1rem;
+}
+
+.institution-profile-module__TTyLza__artistCard {
+  text-align: center;
+}
+
+/*# sourceMappingURL=src_app_institutions_%5BinstitutionId%5D_institution-profile_module_08cceebb.css.map*/

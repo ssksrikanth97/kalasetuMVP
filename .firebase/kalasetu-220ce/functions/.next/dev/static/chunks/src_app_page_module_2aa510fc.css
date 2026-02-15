@@ -1,0 +1,186 @@
+/* [project]/src/app/page.module.css [app-client] (css) */
+.page-module___8aEwW__hero {
+  text-align: center;
+  background-position: center;
+  background-size: cover;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+  display: flex;
+  position: relative;
+}
+
+.page-module___8aEwW__heroOverlay {
+  background-color: #00000080;
+  position: absolute;
+  inset: 0;
+}
+
+.page-module___8aEwW__heroContent {
+  z-index: 1;
+  color: #fff;
+  max-width: 800px;
+  padding: 0 1rem;
+  position: relative;
+}
+
+.page-module___8aEwW__heroTitle {
+  font-family: var(--font-heading);
+  margin-bottom: 1rem;
+  font-size: 3.5rem;
+  line-height: 1.2;
+}
+
+.page-module___8aEwW__heroSubtitle {
+  opacity: .9;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  font-size: 1.1rem;
+}
+
+.page-module___8aEwW__ctaGroup {
+  justify-content: center;
+  gap: 1rem;
+  display: flex;
+}
+
+.page-module___8aEwW__ctaPrimary {
+  background-color: var(--color-maroon);
+  color: #fff;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: .8rem 1.8rem;
+  font-size: 1rem;
+}
+
+.page-module___8aEwW__ctaSecondary {
+  color: #fff;
+  cursor: pointer;
+  background-color: #0000;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  padding: .8rem 1.8rem;
+  font-size: 1rem;
+}
+
+.page-module___8aEwW__section {
+  padding: 4rem 1rem;
+}
+
+.page-module___8aEwW__sectionHeader {
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  display: flex;
+}
+
+.page-module___8aEwW__sectionTitle {
+  font-family: var(--font-heading);
+  color: var(--color-maroon);
+  margin-top: 0;
+  margin-bottom: .5rem;
+  font-size: 2.5rem;
+}
+
+.page-module___8aEwW__sectionSubtitle {
+  color: #555;
+  margin-top: 0;
+}
+
+.page-module___8aEwW__viewAllLink {
+  color: var(--color-maroon);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.page-module___8aEwW__scrollContainer {
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 0;
+  display: flex;
+  overflow-x: auto;
+}
+
+.page-module___8aEwW__card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  flex-direction: column;
+  flex-shrink: 0;
+  min-width: 280px;
+  display: flex;
+  overflow: hidden;
+}
+
+.page-module___8aEwW__cardImage {
+  background: #f9f9f9;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 3rem;
+  display: flex;
+}
+
+.page-module___8aEwW__cardImage img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.page-module___8aEwW__cardContent {
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 1rem;
+  display: flex;
+}
+
+.page-module___8aEwW__cardLabel {
+  color: var(--color-gold-dark);
+  text-transform: uppercase;
+  margin-bottom: .5rem;
+  font-size: .8rem;
+}
+
+.page-module___8aEwW__cardTitle {
+  font-family: var(--font-heading);
+  color: var(--color-text-primary);
+  margin-bottom: .5rem;
+  font-size: 1.4rem;
+}
+
+.page-module___8aEwW__cardLocation, .page-module___8aEwW__cardArtists {
+  color: #666;
+  margin-bottom: .5rem;
+  font-size: .9rem;
+}
+
+.page-module___8aEwW__cardPrice {
+  color: var(--color-maroon);
+  margin-top: auto;
+  font-weight: bold;
+}
+
+.page-module___8aEwW__whySection {
+  background: #fdfbf7;
+  padding: 5rem 1rem;
+}
+
+.page-module___8aEwW__grid {
+  text-align: center;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 3rem auto 0;
+  display: grid;
+}
+
+.page-module___8aEwW__featureIcon {
+  margin-bottom: 1rem;
+  font-size: 3rem;
+  display: block;
+}
+
+/*# sourceMappingURL=src_app_page_module_2aa510fc.css.map*/

@@ -1,0 +1,21 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/bookings/page": "app/admin/bookings/page.js",
+  "/admin/dashboard/page": "app/admin/dashboard/page.js",
+  "/admin/events/page": "app/admin/events/page.js",
+  "/admin/inventory/edit/[id]/page": "app/admin/inventory/edit/[id]/page.js",
+  "/admin/inventory/page": "app/admin/inventory/page.js",
+  "/admin/orders/page": "app/admin/orders/page.js",
+  "/admin/users/page": "app/admin/users/page.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/auth/signup/page": "app/auth/signup/page.js",
+  "/customer/dashboard/page": "app/customer/dashboard/page.js",
+  "/explore-institutions/page": "app/explore-institutions/page.js",
+  "/institution/dashboard/page": "app/institution/dashboard/page.js",
+  "/institution/manage-events/page": "app/institution/manage-events/page.js",
+  "/institution/manage-profile/page": "app/institution/manage-profile/page.js",
+  "/institution/onboarding/page": "app/institution/onboarding/page.js",
+  "/institutions/[institutionId]/page": "app/institutions/[institutionId]/page.js",
+  "/page": "app/page.js",
+  "/shop/page": "app/shop/page.js"
+}

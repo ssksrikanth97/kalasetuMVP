@@ -1,0 +1,114 @@
+/* [project]/src/app/admin/events/events.module.css [app-client] (css) */
+.events-module__t7I_bG__formCard {
+  padding: 2rem;
+}
+
+.events-module__t7I_bG__formGrid {
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  gap: 1rem 1.5rem;
+  display: grid;
+}
+
+.events-module__t7I_bG__formGrid input, .events-module__t7I_bG__formGrid textarea {
+  background-color: #f9fafb;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 100%;
+  margin-bottom: 0;
+  padding: .75rem;
+}
+
+.events-module__t7I_bG__formGrid textarea, .events-module__t7I_bG__formGrid > .events-module__t7I_bG__fileInputContainer[style*="grid-column"], .events-module__t7I_bG__formGrid > .events-module__t7I_bG__formActions {
+  grid-column: 1 / -1;
+}
+
+.events-module__t7I_bG__fileInputContainer {
+  flex-direction: column;
+  gap: .5rem;
+  display: flex;
+}
+
+.events-module__t7I_bG__fileInputContainer label {
+  color: #374151;
+  font-weight: 500;
+}
+
+.events-module__t7I_bG__formActions {
+  grid-column: 1 / -1;
+  justify-content: flex-start;
+  gap: 1rem;
+  margin-top: 1rem;
+  display: flex;
+}
+
+.events-module__t7I_bG__eventGrid {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  display: grid;
+}
+
+.events-module__t7I_bG__eventCard {
+  background: #fff;
+  border-radius: 12px;
+  flex-direction: column;
+  transition: transform .2s, box-shadow .2s;
+  display: flex;
+  overflow: hidden;
+  box-shadow: 0 4px 15px #0000000d;
+}
+
+.events-module__t7I_bG__eventCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px #00000014;
+}
+
+.events-module__t7I_bG__eventImage {
+  object-fit: cover;
+  width: 100%;
+  height: 200px;
+}
+
+.events-module__t7I_bG__eventInfo {
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 1.5rem;
+  display: flex;
+}
+
+.events-module__t7I_bG__eventInfo h3 {
+  color: var(--color-text-primary);
+  margin-top: 0;
+}
+
+.events-module__t7I_bG__eventInfo p {
+  color: #666;
+  margin-bottom: .5rem;
+  font-size: .9rem;
+}
+
+.events-module__t7I_bG__actionsContainer {
+  gap: .5rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  display: flex;
+}
+
+.events-module__t7I_bG__btnEdit, .events-module__t7I_bG__btnRemove {
+  cursor: pointer;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: .6rem 1.2rem;
+  font-weight: 500;
+}
+
+.events-module__t7I_bG__btnEdit {
+  background-color: #3b82f6;
+}
+
+.events-module__t7I_bG__btnRemove {
+  background-color: #ef4444;
+}
+
+/*# sourceMappingURL=src_app_admin_events_events_module_css_bad6b30c._.single.css.map*/

@@ -1,0 +1,813 @@
+[00:00:10.676] Server  LOG     ✓ Ready in 7.5s
+[00:00:21.733] Server  LOG     ○ Compiling / ...
+[00:00:41.790] Server  WARN    ⚠ Cross origin request detected from 9000-firebase-kalasetumvpgit-1771120901613.cluster-mwsteha33jfdowtvzffztbjcj6.cloudworkstations.dev to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+[00:02:13.766] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:02:14.155] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:13:41.547] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:13:41.547] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:15:29.282] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:15:29.282] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:15:33.160] Browser ERROR   Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
+
+Check the render method of `Shop`. 
+[00:17:28.969] Server  LOG     ✓ Compiled in 262ms
+[00:18:08.367] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:18:08.477] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:22:22.598] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:22:22.598] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:24:39.292] Server  LOG     ✓ Compiled in 219ms
+[00:24:49.834] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:24:49.834] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:25:05.784] Browser ERROR   Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
+
+Check the render method of `Shop`. 
+[00:26:21.006] Server  LOG     ✓ Compiled in 97ms
+[00:27:33.265] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:27:36.536] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:27:37.787] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:31:20.170] Server  LOG     ✓ Compiled in 282ms
+[00:31:57.501] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:32:01.076] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:32:04.096] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:35:52.462] Server  LOG     ✓ Compiled in 451ms
+[00:35:53.331] Server  LOG     ✓ Compiled in 0ms
+[00:36:36.110] Server  ERROR   ⨯ ./src/app/institution/onboarding/page.js:9:1
+Module not found: Can't resolve '../artist/onboarding/onboarding.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from '../artist/onboarding/onboarding.module.css'; // Reusing the same CSS
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | const Steps = { 1: 'Basic Information', 2: 'About & Contact', 3: 'Logo & Media' };
+  12 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/onboarding/page.js [Client Component Browser]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/onboarding/page.js [Client Component SSR]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:36:36.352] Browser ERROR   ./src/app/institution/onboarding/page.js:9:1
+Module not found: Can't resolve '../artist/onboarding/onboarding.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from '../artist/onboarding/onboarding.module.css'; // Reusing the same CSS
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | const Steps = { 1: 'Basic Information', 2: 'About & Contact', 3: 'Logo & Media' };
+  12 |
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/onboarding/page.js [Client Component Browser]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/onboarding/page.js [Client Component SSR]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:36:38.669] Browser ERROR   ./src/app/institution/onboarding/page.js:9:1
+Module not found: Can't resolve '../artist/onboarding/onboarding.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from '../artist/onboarding/onboarding.module.css'; // Reusing the same CSS
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | const Steps = { 1: 'Basic Information', 2: 'About & Contact', 3: 'Logo & Media' };
+  12 |
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/onboarding/page.js [Client Component Browser]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/onboarding/page.js [Client Component SSR]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:36:38.992] Browser ERROR   ./src/app/institution/onboarding/page.js:9:1
+Module not found: Can't resolve '../artist/onboarding/onboarding.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from '../artist/onboarding/onboarding.module.css'; // Reusing the same CSS
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | const Steps = { 1: 'Basic Information', 2: 'About & Contact', 3: 'Logo & Media' };
+  12 |
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/onboarding/page.js [Client Component Browser]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/onboarding/page.js [Client Component SSR]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:36:39.132] Server  LOG     ○ Compiling /_error ...
+[00:36:40.746] Browser ERROR   ./src/app/institution/onboarding/page.js:9:1
+Module not found: Can't resolve '../artist/onboarding/onboarding.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from '../artist/onboarding/onboarding.module.css'; // Reusing the same CSS
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | const Steps = { 1: 'Basic Information', 2: 'About & Contact', 3: 'Logo & Media' };
+  12 |
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/onboarding/page.js [Client Component Browser]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/onboarding/page.js [Client Component SSR]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:36:40.887] Server  ERROR   ⨯ ./src/app/institution/onboarding/page.js:9:1
+Module not found: Can't resolve '../artist/onboarding/onboarding.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from '../artist/onboarding/onboarding.module.css'; // Reusing the same CSS
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | const Steps = { 1: 'Basic Information', 2: 'About & Contact', 3: 'Logo & Media' };
+  12 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/onboarding/page.js [Client Component Browser]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/onboarding/page.js [Client Component SSR]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:36:42.409] Browser ERROR   uncaughtError: Error: ./src/app/institution/onboarding/page.js:9:1
+Module not found: Can't resolve '../artist/onboarding/onboarding.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from '../artist/onboarding/onboarding.module.css'; // Reusing the same CSS
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | const Steps = { 1: 'Basic Information', 2: 'About & Contact', 3: 'Logo & Media' };
+  12 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/onboarding/page.js [Client Component Browser]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/onboarding/page.js [Client Component SSR]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:36:42.616] Browser ERROR   ./src/app/institution/onboarding/page.js:9:1
+Module not found: Can't resolve '../artist/onboarding/onboarding.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from '../artist/onboarding/onboarding.module.css'; // Reusing the same CSS
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | const Steps = { 1: 'Basic Information', 2: 'About & Contact', 3: 'Logo & Media' };
+  12 |
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/onboarding/page.js [Client Component Browser]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/onboarding/page.js [Client Component SSR]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:36:42.616] Browser ERROR   ./src/app/institution/onboarding/page.js:9:1
+Module not found: Can't resolve '../artist/onboarding/onboarding.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from '../artist/onboarding/onboarding.module.css'; // Reusing the same CSS
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | const Steps = { 1: 'Basic Information', 2: 'About & Contact', 3: 'Logo & Media' };
+  12 |
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/onboarding/page.js [Client Component Browser]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/onboarding/page.js [Client Component SSR]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:36:42.724] Browser ERROR   ./src/app/institution/onboarding/page.js:9:1
+Module not found: Can't resolve '../artist/onboarding/onboarding.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from '../artist/onboarding/onboarding.module.css'; // Reusing the same CSS
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | const Steps = { 1: 'Basic Information', 2: 'About & Contact', 3: 'Logo & Media' };
+  12 |
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/onboarding/page.js [Client Component Browser]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/onboarding/page.js [Client Component SSR]
+    ./src/app/institution/onboarding/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:37:47.741] Server  LOG     ✓ Compiled in 212ms
+[00:37:53.569] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:37:54.669] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:41:31.719] Browser ERROR   Onboarding error: {"_baseMessage":"Firebase Storage: User does not have permission to access 'institutions/frDjE20XuAeuhCTjCq1JLC2dNlw2/logo_Screenshot 2026-02-15 at 11.51.05 AM.png'. (storage/unauthorized)","code":"storage/unauthorized","customData":{"serverResponse":""},"name":"FirebaseError","status_":403}
+[00:47:06.054] Server  LOG     ✓ Compiled in 227ms
+[00:47:48.246] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:47:51.605] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:47:53.732] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:53:17.291] Server  LOG     ✓ Compiled in 67ms
+[00:54:34.834] Server  LOG     ✓ Compiled in 601ms
+[00:56:38.604] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:56:42.023] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:56:58.064] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:57:00.364] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:57:03.497] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[00:58:11.549] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:58:45.199] Server  LOG     ✓ Compiled in 639ms
+[00:58:48.496] Server  LOG     ○ Compiling /institution/manage-profile ...
+[00:58:52.032] Server  ERROR   ⨯ ./src/app/institution/manage-profile/page.js:9:1
+Module not found: Can't resolve './manage-profile.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from './manage-profile.module.css';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | export default function ManageProfile() {
+  12 |     const { user } = useAuth();
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/manage-profile/page.js [Client Component Browser]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/manage-profile/page.js [Client Component SSR]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:58:52.896] Browser ERROR   ./src/app/institution/manage-profile/page.js:9:1
+Module not found: Can't resolve './manage-profile.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from './manage-profile.module.css';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | export default function ManageProfile() {
+  12 |     const { user } = useAuth();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/manage-profile/page.js [Client Component Browser]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/manage-profile/page.js [Client Component SSR]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:58:53.217] Browser ERROR   ./src/app/institution/manage-profile/page.js:9:1
+Module not found: Can't resolve './manage-profile.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from './manage-profile.module.css';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | export default function ManageProfile() {
+  12 |     const { user } = useAuth();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/manage-profile/page.js [Client Component Browser]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/manage-profile/page.js [Client Component SSR]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:58:53.256] Server  ERROR   ⨯ ./src/app/institution/manage-profile/page.js:9:1
+Module not found: Can't resolve './manage-profile.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from './manage-profile.module.css';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | export default function ManageProfile() {
+  12 |     const { user } = useAuth();
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/manage-profile/page.js [Client Component Browser]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/manage-profile/page.js [Client Component SSR]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:58:53.307] Server  ERROR   ⨯ ./src/app/institution/manage-profile/page.js:9:1
+Module not found: Can't resolve './manage-profile.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from './manage-profile.module.css';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | export default function ManageProfile() {
+  12 |     const { user } = useAuth();
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/manage-profile/page.js [Client Component Browser]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/manage-profile/page.js [Client Component SSR]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:58:53.653] Server  ERROR   ⨯ ./src/app/institution/manage-profile/page.js:9:1
+Module not found: Can't resolve './manage-profile.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from './manage-profile.module.css';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | export default function ManageProfile() {
+  12 |     const { user } = useAuth();
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/manage-profile/page.js [Client Component Browser]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/manage-profile/page.js [Client Component SSR]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:58:53.997] Server  ERROR   ⨯ ./src/app/institution/manage-profile/page.js:9:1
+Module not found: Can't resolve './manage-profile.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from './manage-profile.module.css';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | export default function ManageProfile() {
+  12 |     const { user } = useAuth();
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/manage-profile/page.js [Client Component Browser]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/manage-profile/page.js [Client Component SSR]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:58:56.822] Browser ERROR   uncaughtError: Error: ./src/app/institution/manage-profile/page.js:9:1
+Module not found: Can't resolve './manage-profile.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from './manage-profile.module.css';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | export default function ManageProfile() {
+  12 |     const { user } = useAuth();
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/manage-profile/page.js [Client Component Browser]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/manage-profile/page.js [Client Component SSR]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:58:56.847] Browser ERROR   ./src/app/institution/manage-profile/page.js:9:1
+Module not found: Can't resolve './manage-profile.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from './manage-profile.module.css';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | export default function ManageProfile() {
+  12 |     const { user } = useAuth();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/manage-profile/page.js [Client Component Browser]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/manage-profile/page.js [Client Component SSR]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:58:57.232] Browser ERROR   ./src/app/institution/manage-profile/page.js:9:1
+Module not found: Can't resolve './manage-profile.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from './manage-profile.module.css';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | export default function ManageProfile() {
+  12 |     const { user } = useAuth();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/manage-profile/page.js [Client Component Browser]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/manage-profile/page.js [Client Component SSR]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:58:57.232] Browser ERROR   ./src/app/institution/manage-profile/page.js:9:1
+Module not found: Can't resolve './manage-profile.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from './manage-profile.module.css';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | export default function ManageProfile() {
+  12 |     const { user } = useAuth();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/manage-profile/page.js [Client Component Browser]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/manage-profile/page.js [Client Component SSR]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:58:57.428] Browser ERROR   ./src/app/institution/manage-profile/page.js:9:1
+Module not found: Can't resolve './manage-profile.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from './manage-profile.module.css';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | export default function ManageProfile() {
+  12 |     const { user } = useAuth();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/manage-profile/page.js [Client Component Browser]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/manage-profile/page.js [Client Component SSR]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:58:58.182] Server  LOG     ✓ Compiled in 295ms
+[00:58:58.183] Browser ERROR   ./src/app/institution/manage-profile/page.js:9:1
+Module not found: Can't resolve './manage-profile.module.css'
+   7 | import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+   8 | import Navbar from '@/components/Navbar';
+>  9 | import styles from './manage-profile.module.css';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | export default function ManageProfile() {
+  12 |     const { user } = useAuth();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/institution/manage-profile/page.js [Client Component Browser]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+  Client Component SSR:
+    ./src/app/institution/manage-profile/page.js [Client Component SSR]
+    ./src/app/institution/manage-profile/page.js [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:59:04.139] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:59:04.992] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[01:00:16.361] Server  LOG     ✓ Compiled in 95ms
+[01:00:32.379] Server  LOG     ✓ Compiled in 19ms
+[01:02:08.356] Server  LOG     ✓ Compiled in 232ms
+[01:02:31.618] Server  LOG     ✓ Compiled in 12ms
+[01:07:43.714] Server  LOG     ✓ Compiled in 176ms
+[01:08:25.889] Server  LOG     ✓ Compiled in 44ms
+[01:11:02.884] Server  LOG     ✓ Compiled in 75ms
+[01:11:04.165] Browser ERROR   Error fetching homepage data: {"code":"permission-denied","name":"FirebaseError"}
+[01:11:19.634] Server  LOG     ✓ Compiled in 23ms
+[01:13:12.488] Server  LOG     ✓ Compiled in 70ms
+[01:13:46.589] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:13:46.898] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[01:13:47.938] Browser ERROR   Error fetching homepage data: {"code":"permission-denied","name":"FirebaseError"}
+[01:13:55.667] Browser ERROR   Error fetching homepage data: {"code":"permission-denied","name":"FirebaseError"}
+[01:13:55.667] Browser ERROR   Error fetching homepage data: {"code":"permission-denied","name":"FirebaseError"}
+[01:14:00.404] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:14:00.804] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[01:14:01.450] Browser ERROR   Error fetching homepage data: {"code":"permission-denied","name":"FirebaseError"}
+[01:17:24.803] Server  LOG     ✓ Compiled in 722ms
+[01:28:30.475] Server  LOG     ✓ Compiled in 129ms
+[01:28:47.836] Server  LOG     ✓ Compiled in 30ms
+[01:34:57.251] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:34:58.267] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:34:59.549] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[01:35:11.326] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:35:12.276] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[01:35:13.310] Browser ERROR   Error fetching homepage data: {"code":"permission-denied","name":"FirebaseError"}
+[01:35:26.799] Browser ERROR   Error fetching homepage data: {"code":"permission-denied","name":"FirebaseError"}
+[01:35:26.799] Browser ERROR   Error fetching homepage data: {"code":"permission-denied","name":"FirebaseError"}
+[01:35:35.495] Server  LOG     ✓ Compiled in 19ms
+[01:39:26.505] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:39:27.806] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:39:27.807] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[01:39:28.451] Browser ERROR   Error fetching homepage data: {"code":"permission-denied","name":"FirebaseError"}
+[01:40:18.377] Server  LOG     ✓ Compiled in 16ms
+[02:36:51.339] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:36:51.651] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[02:36:52.341] Browser ERROR   Error fetching homepage data: {"code":"permission-denied","name":"FirebaseError"}
+[02:37:12.303] Server  LOG     ✓ Compiled in 201ms
+[02:37:52.777] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:37:53.163] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[02:37:53.884] Browser ERROR   Error fetching homepage data: {"code":"permission-denied","name":"FirebaseError"}
+[02:52:33.070] Browser WARN    [2026-02-15T08:32:32.719Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:52:33.177] Browser WARN    [2026-02-15T08:32:32.828Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:52:34.306] Browser WARN    [2026-02-15T08:32:33.957Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:52:38.788] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:52:38.788] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[02:52:39.547] Browser WARN    [2026-02-15T08:32:39.201Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:52:40.159] Browser WARN    [2026-02-15T08:32:39.813Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:52:41.176] Browser WARN    [2026-02-15T08:32:40.829Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:52:43.394] Browser WARN    [2026-02-15T08:32:43.047Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:52:45.105] Browser WARN    [2026-02-15T08:32:44.760Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:52:46.837] Browser WARN    [2026-02-15T08:32:46.489Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:52:53.642] Browser WARN    [2026-02-15T08:32:52.861Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:53:04.637] Browser WARN    [2026-02-15T08:33:03.793Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:58:12.145] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:58:12.145] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[02:58:15.767] Browser WARN    [2026-02-15T08:38:15.420Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:58:16.385] Browser WARN    [2026-02-15T08:38:16.037Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:58:17.581] Browser WARN    [2026-02-15T08:38:17.235Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:58:19.180] Browser WARN    [2026-02-15T08:38:18.831Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:58:20.278] Browser WARN    [2026-02-15T08:38:19.931Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:58:24.948] Browser WARN    [2026-02-15T08:38:24.601Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:58:31.886] Browser WARN    [2026-02-15T08:38:31.537Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:58:39.518] Browser WARN    [2026-02-15T08:38:39.170Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[02:58:46.848] Browser WARN    [2026-02-15T08:38:46.499Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:00:13.019] Server  LOG     ✓ Compiled in 98ms
+[03:00:30.152] Browser WARN    [2026-02-15T08:40:29.800Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:00:30.862] Browser WARN    [2026-02-15T08:40:30.512Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:02:06.451] Server  LOG     ✓ Compiled in 698ms
+[03:02:07.797] Browser WARN    [2026-02-15T08:42:07.448Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:04:04.552] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:04:04.831] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:04:07.805] Browser WARN    [2026-02-15T08:44:07.452Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:04:08.482] Browser WARN    [2026-02-15T08:44:08.128Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:04:09.685] Browser WARN    [2026-02-15T08:44:09.329Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:04:11.620] Browser WARN    [2026-02-15T08:44:11.268Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:04:12.830] Browser WARN    [2026-02-15T08:44:12.474Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:04:16.402] Browser WARN    [2026-02-15T08:44:16.047Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:04:20.047] Browser WARN    [2026-02-15T08:44:19.691Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:04:28.853] Browser WARN    [2026-02-15T08:44:28.498Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:05:43.998] Server  LOG     ✓ Compiled in 28ms
+[03:07:56.773] Browser ERROR   Error saving event: {"_baseMessage":"Firebase Storage: User does not have permission to access 'events/1771145275645_classical-dress-set.jpg'. (storage/unauthorized)","code":"storage/unauthorized","customData":{"serverResponse":""},"name":"FirebaseError","status_":403}
+[03:10:08.454] Browser ERROR   Error saving event: {"_baseMessage":"Firebase Storage: User does not have permission to access 'events/1771145407409_classical-dress-set.jpg'. (storage/unauthorized)","code":"storage/unauthorized","customData":{"serverResponse":""},"name":"FirebaseError","status_":403}
+[03:10:13.783] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:10:13.930] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:10:14.714] Browser WARN    [2026-02-15T08:50:14.357Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:10:15.098] Browser WARN    [2026-02-15T08:50:14.742Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:10:16.495] Browser WARN    [2026-02-15T08:50:16.142Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:10:17.561] Browser WARN    [2026-02-15T08:50:17.208Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:10:19.128] Browser WARN    [2026-02-15T08:50:18.776Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:10:24.643] Browser WARN    [2026-02-15T08:50:23.791Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:10:30.645] Browser WARN    [2026-02-15T08:50:29.851Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:10:39.587] Browser WARN    [2026-02-15T08:50:39.233Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:10:46.888] Browser WARN    [2026-02-15T08:50:46.537Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:10:59.625] Browser ERROR   Error saving event: {"_baseMessage":"Firebase Storage: User does not have permission to access 'events/1771145458500_ce9a061d.jpg'. (storage/unauthorized)","code":"storage/unauthorized","customData":{"serverResponse":""},"name":"FirebaseError","status_":403}
+[03:12:10.725] Server  LOG     ✓ Compiled in 640ms
+[03:12:36.754] Server  LOG     ✓ Compiled in 59ms
+[03:13:20.026] Browser WARN    [2026-02-15T08:53:19.669Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:13:20.639] Browser WARN    [2026-02-15T08:53:20.281Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:13:22.092] Browser WARN    [2026-02-15T08:53:21.736Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:13:22.919] Browser WARN    [2026-02-15T08:53:22.563Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:13:24.319] Browser WARN    [2026-02-15T08:53:23.965Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:13:29.142] Browser WARN    [2026-02-15T08:53:28.788Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:13:33.576] Browser WARN    [2026-02-15T08:53:33.223Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:13:43.583] Browser ERROR   Error fetching user role: {"code":"unavailable","name":"FirebaseError"}
+[03:13:43.583] Browser ERROR   {"code":"unavailable","name":"FirebaseError"}
+[03:13:52.142] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:13:52.584] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:13:53.522] Browser WARN    [2026-02-15T08:53:53.170Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:13:54.153] Browser WARN    [2026-02-15T08:53:53.800Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:13:55.541] Browser WARN    [2026-02-15T08:53:55.188Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:13:56.267] Browser WARN    [2026-02-15T08:53:55.916Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:13:58.114] Browser WARN    [2026-02-15T08:53:57.762Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:00.507] Browser WARN    [2026-02-15T08:54:00.151Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:04.090] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:14:04.323] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:14:04.987] Browser WARN    [2026-02-15T08:54:04.621Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:05.572] Browser WARN    [2026-02-15T08:54:05.210Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:06.170] Browser WARN    [2026-02-15T08:54:05.808Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:07.001] Browser WARN    [2026-02-15T08:54:06.636Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:12.819] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:14:13.143] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:14:13.809] Browser WARN    [2026-02-15T08:54:13.448Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:14.424] Browser WARN    [2026-02-15T08:54:14.067Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:15.035] Browser WARN    [2026-02-15T08:54:14.678Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:16.658] Browser WARN    [2026-02-15T08:54:16.295Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:18.373] Browser WARN    [2026-02-15T08:54:18.013Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:21.379] Browser WARN    [2026-02-15T08:54:21.020Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:26.108] Browser WARN    [2026-02-15T08:54:25.746Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:31.100] Browser WARN    [2026-02-15T08:54:30.736Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:38.788] Browser WARN    [2026-02-15T08:54:38.373Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:47.891] Browser WARN    [2026-02-15T08:54:47.528Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:14:57.893] Browser ERROR   Error fetching user role: {"code":"unavailable","name":"FirebaseError"}
+[03:15:09.343] Browser WARN    [2026-02-15T08:55:08.984Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:15:54.438] Server  LOG     ✓ Compiled in 46ms
+[03:15:55.319] Browser WARN    [2026-02-15T08:55:54.961Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:16:17.807] Browser WARN    [2026-02-15T08:56:17.448Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:16:18.274] Browser WARN    [2026-02-15T08:56:17.913Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:16:19.514] Browser WARN    [2026-02-15T08:56:19.155Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:16:21.035] Browser WARN    [2026-02-15T08:56:20.677Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:16:24.143] Browser WARN    [2026-02-15T08:56:23.784Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:16:27.704] Browser WARN    [2026-02-15T08:56:27.345Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:16:32.250] Browser WARN    [2026-02-15T08:56:31.893Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:16:36.518] Browser WARN    [2026-02-15T08:56:36.158Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:16:46.523] Browser ERROR   Error fetching user role: {"code":"unavailable","name":"FirebaseError"}
+[03:16:46.523] Browser ERROR   {"code":"unavailable","name":"FirebaseError"}
+[03:19:55.853] Server  LOG     ✓ Compiled in 283ms
+[03:20:10.922] Browser WARN    [2026-02-15T09:00:10.561Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:20:11.346] Browser WARN    [2026-02-15T09:00:10.983Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:20:12.888] Browser WARN    [2026-02-15T09:00:12.526Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:20:14.752] Browser WARN    [2026-02-15T09:00:14.391Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:20:15.123] Browser WARN    [2026-02-15T09:00:14.763Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:20:16.804] Browser WARN    [2026-02-15T09:00:16.445Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:20:17.988] Browser WARN    [2026-02-15T09:00:17.625Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:20:19.203] Browser WARN    [2026-02-15T09:00:18.844Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:20:23.207] Browser WARN    [2026-02-15T09:00:22.848Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:20:30.112] Browser WARN    [2026-02-15T09:00:29.751Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:20:37.912] Browser WARN    [2026-02-15T09:00:37.553Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:20:47.920] Browser ERROR   Error fetching user role: {"code":"unavailable","name":"FirebaseError"}
+[03:20:47.920] Browser ERROR   Login error: unavailable Failed to get document because the client is offline.
+[03:23:21.026] Browser WARN    [2026-02-15T09:03:20.663Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:23:21.151] Browser WARN    [2026-02-15T09:03:20.791Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:23:22.962] Browser WARN    [2026-02-15T09:03:22.588Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:23:24.796] Browser WARN    [2026-02-15T09:03:24.435Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:23:27.474] Browser WARN    [2026-02-15T09:03:27.113Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:23:34.260] Browser WARN    [2026-02-15T09:03:32.454Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:23:37.356] Browser WARN    [2026-02-15T09:03:36.992Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:27:17.406] Browser ERROR   Login error: unavailable Failed to get document because the client is offline.
+[03:29:05.852] Browser WARN    [2026-02-15T09:09:05.492Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:29:06.432] Browser WARN    [2026-02-15T09:09:06.073Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:29:07.881] Browser WARN    [2026-02-15T09:09:07.522Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:29:08.954] Browser WARN    [2026-02-15T09:09:08.594Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:29:09.683] Browser WARN    [2026-02-15T09:09:09.325Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:29:10.241] Browser WARN    [2026-02-15T09:09:09.880Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:29:11.295] Browser WARN    [2026-02-15T09:09:10.937Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:29:12.508] Browser WARN    [2026-02-15T09:09:12.141Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:29:13.530] Browser WARN    [2026-02-15T09:09:13.171Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:29:15.157] Browser WARN    [2026-02-15T09:09:14.791Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:29:20.107] Browser WARN    [2026-02-15T09:09:19.748Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:29:29.051] Browser WARN    [2026-02-15T09:09:28.689Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:29:39.052] Browser ERROR   Login error: unavailable Failed to get document because the client is offline.
+[03:29:56.714] Server  LOG     ✓ Compiled in 1197ms
+[03:30:00.746] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:30:00.977] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:30:01.648] Browser WARN    [2026-02-15T09:10:01.293Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:30:02.333] Browser WARN    [2026-02-15T09:10:01.976Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:30:03.353] Browser WARN    [2026-02-15T09:10:02.986Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:30:04.460] Browser WARN    [2026-02-15T09:10:04.102Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:30:07.456] Browser WARN    [2026-02-15T09:10:07.095Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:30:09.327] Browser WARN    [2026-02-15T09:10:08.971Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:30:15.731] Browser WARN    [2026-02-15T09:10:15.376Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:30:21.543] Browser WARN    [2026-02-15T09:10:21.185Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:30:27.538] Browser WARN    [2026-02-15T09:10:27.179Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:30:38.169] Browser WARN    [2026-02-15T09:10:37.812Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:30:59.627] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:30:59.952] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:31:00.669] Browser WARN    [2026-02-15T09:11:00.313Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:31:01.473] Browser WARN    [2026-02-15T09:11:00.926Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:31:02.686] Browser WARN    [2026-02-15T09:11:02.325Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:31:05.108] Browser WARN    [2026-02-15T09:11:04.750Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:31:05.461] Browser WARN    [2026-02-15T09:11:05.103Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:31:06.685] Browser WARN    [2026-02-15T09:11:06.324Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:31:07.886] Browser WARN    [2026-02-15T09:11:07.526Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:31:10.250] Browser WARN    [2026-02-15T09:11:09.892Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:31:12.245] Browser WARN    [2026-02-15T09:11:11.885Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:31:16.732] Browser WARN    [2026-02-15T09:11:16.371Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:31:26.738] Browser ERROR   Error fetching user role: {"code":"unavailable","name":"FirebaseError"}
+[03:31:26.738] Browser ERROR   Login error: unavailable Failed to get document because the client is offline.
+[03:31:27.869] Browser WARN    [2026-02-15T09:11:27.511Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:35:10.803] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:35:11.122] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:35:12.950] Browser WARN    [2026-02-15T09:15:12.593Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:35:13.623] Browser WARN    [2026-02-15T09:15:13.262Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:35:13.937] Browser WARN    [2026-02-15T09:15:13.580Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:35:14.635] Browser WARN    [2026-02-15T09:15:14.275Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:35:15.523] Browser WARN    [2026-02-15T09:15:15.167Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:35:16.453] Browser WARN    [2026-02-15T09:15:16.093Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:35:17.779] Browser WARN    [2026-02-15T09:15:17.420Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:35:22.038] Browser WARN    [2026-02-15T09:15:21.675Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:35:27.040] Browser WARN    [2026-02-15T09:15:26.683Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:35:37.045] Browser ERROR   Error fetching user role: {"code":"unavailable","name":"FirebaseError"}
+[03:35:37.045] Browser ERROR   Login error: unavailable Failed to get document because the client is offline.
+[03:39:11.467] Server  LOG     ✓ Compiled in 0ms
+[03:39:12.850] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:39:13.260] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:39:14.313] Browser WARN    [2026-02-15T09:19:13.953Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:39:14.681] Browser WARN    [2026-02-15T09:19:14.321Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:39:15.701] Browser WARN    [2026-02-15T09:19:15.339Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:39:17.265] Browser WARN    [2026-02-15T09:19:16.901Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:39:20.388] Browser WARN    [2026-02-15T09:19:20.028Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:39:23.744] Browser WARN    [2026-02-15T09:19:23.383Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:39:26.928] Browser WARN    [2026-02-15T09:19:26.569Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:39:32.289] Browser WARN    [2026-02-15T09:19:31.929Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:39:42.299] Browser ERROR   Error fetching user role: {"code":"unavailable","name":"FirebaseError"}
+[03:50:42.139] Browser WARN    [2026-02-15T09:30:41.776Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:50:42.596] Browser WARN    [2026-02-15T09:30:42.235Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:50:43.765] Browser WARN    [2026-02-15T09:30:43.402Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:50:43.979] Browser WARN    [2026-02-15T09:30:43.615Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:50:45.536] Browser WARN    [2026-02-15T09:30:45.172Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:50:47.147] Browser WARN    [2026-02-15T09:30:46.786Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:50:47.737] Browser WARN    [2026-02-15T09:30:47.374Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:50:48.350] Browser WARN    [2026-02-15T09:30:47.986Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:50:49.825] Browser WARN    [2026-02-15T09:30:49.462Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:50:51.446] Browser WARN    [2026-02-15T09:30:51.083Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:50:53.468] Browser WARN    [2026-02-15T09:30:53.105Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:51:00.653] Browser WARN    [2026-02-15T09:31:00.292Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:51:04.380] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:51:04.658] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:51:05.195] Browser WARN    [2026-02-15T09:31:04.837Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:51:05.652] Browser WARN    [2026-02-15T09:31:05.296Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:51:06.238] Browser WARN    [2026-02-15T09:31:05.880Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:51:06.916] Browser WARN    [2026-02-15T09:31:06.554Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:51:09.859] Browser WARN    [2026-02-15T09:31:09.501Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:51:14.320] Browser WARN    [2026-02-15T09:31:13.909Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:51:16.259] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:51:16.259] Browser WARN    Image with src "/logo.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:51:16.967] Browser WARN    [2026-02-15T09:31:16.599Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:51:17.325] Browser WARN    [2026-02-15T09:31:16.957Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:51:18.787] Browser WARN    [2026-02-15T09:31:18.348Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.
+[03:51:20.368] Browser WARN    [2026-02-15T09:31:20.003Z]  @firebase/firestore: Firestore (12.9.0): Database '(default)' not found. Please check your project configuration.

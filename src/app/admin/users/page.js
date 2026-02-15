@@ -1,36 +1,55 @@
+
 'use client';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from '../dashboard/admin.module.css';
 import { useEffect, useState } from 'react';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
-import { db } from '@/lib/firebase/firebase';
 
 export default function AdminUsers() {
     const { logout } = useAuth();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
-                const querySnapshot = await getDocs(q);
-                const usersList = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                setUsers(usersList);
-            } catch (error) {
-                console.error("Error fetching users:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchUsers = async () => {
+        try {
+            const response = await fetch('/api/admin/users');
+            const data = await response.json();
+            setUsers(data.users);
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchUsers();
     }, []);
+
+    const deleteUser = async (uid) => {
+        if (window.confirm('Are you sure you want to delete this user?')) {
+            try {
+                const response = await fetch('/api/admin/users', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ uid }),
+                });
+
+                if (response.ok) {
+                    fetchUsers(); // Refresh the list after deletion
+                } else {
+                    const data = await response.json();
+                    alert(`Error deleting user: ${data.error}`);
+                }
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                alert('Failed to delete user. Please try again.');
+            }
+        }
+    };
 
     return (
         <div className={styles.dashboardContainer}>
@@ -50,10 +69,10 @@ export default function AdminUsers() {
                         <span className={styles.navIcon}>📊</span> Dashboard
                     </Link>
                     <Link href="/admin/users" className={`${styles.navItem} ${styles.navItemActive}`}>
-                        <span className={styles.navIcon}>👥</span> Users & Approvals
+                        <span className={styles.navIcon}>👥</span> Users
                     </Link>
-                    <Link href="/admin/inventory" className={styles.navItem}>
-                        <span className={styles.navIcon}>📦</span> Inventory
+                    <Link href="/admin/products" className={styles.navItem}>
+                        <span className={styles.navIcon}>📦</span> Products
                     </Link>
                     <Link href="/admin/orders" className={styles.navItem}>
                         <span className={styles.navIcon}>🛍️</span> Orders
@@ -74,23 +93,23 @@ export default function AdminUsers() {
                 <header className={styles.header}>
                     <div className={styles.titleGroup}>
                         <h1>User Management</h1>
-                        <p>Manage users, artists, and institution approvals.</p>
+                        <p>View and manage application users.</p>
                     </div>
                 </header>
 
                 <div className={styles.contentCard}>
                     <div className={styles.cardHeader}>
-                        <h2 className={styles.cardTitle}>All Users ({users.length})</h2>
+                        <h2 className={styles.cardTitle}>User List ({users.length})</h2>
                     </div>
                     <div className={styles.tableContainer}>
                         <table className={styles.table}>
                             <thead>
                                 <tr>
+                                    <th>User ID</th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Role</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -100,23 +119,26 @@ export default function AdminUsers() {
                                     </tr>
                                 ) : users.length > 0 ? (
                                     users.map(user => (
-                                        <tr key={user.id}>
-                                            <td style={{ fontWeight: '500' }}>{user.name || 'N/A'}</td>
+                                        <tr key={user.uid}>
+                                            <td>{user.uid}</td>
+                                            <td>{user.displayName}</td>
                                             <td>{user.email}</td>
-                                            <td style={{ textTransform: 'capitalize' }}>{user.role}</td>
+                                            <td>{user.customClaims && user.customClaims.role ? user.customClaims.role : 'user'}</td>
                                             <td>
-                                                <span className={`${styles.statusBadge} ${user.role === 'artist' ? styles.statusPending : styles.statusApproved}`}>
-                                                    {user.role === 'artist' ? 'Pending Verification' : 'Active'}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <button className={styles.actionButton}>View Details</button>
+                                                <Link href={`/admin/users/edit/${user.uid}`}>
+                                                    <button className="btn-secondary">Edit</button>
+                                                </Link>
+                                                <button onClick={() => deleteUser(user.uid)} className="btn-danger" style={{ marginLeft: '0.5rem' }}>
+                                                    Delete
+                                                </button>
                                             </td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>No users found.</td>
+                                        <td colSpan="5" style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
+                                            No users found.
+                                        </td>
                                     </tr>
                                 )}
                             </tbody>
