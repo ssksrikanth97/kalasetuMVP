@@ -31,6 +31,10 @@ export default function AdminDashboard() {
 
     const fetchDashboardData = async () => {
         try {
+            const usersSnap = await getDocs(collection(db, 'users'));
+            const bookingsSnap = await getDocs(collection(db, 'bookings'));
+            const activeArtistsSnap = await getDocs(query(collection(db, 'artists'), where('status', '==', 'approved')));
+
             const artistsQuery = query(collection(db, 'artists'), where('status', '==', 'pending'));
             const pendingArtistsSnap = await getDocs(artistsQuery);
 
@@ -42,10 +46,10 @@ export default function AdminDashboard() {
             const recentUsers = recentUsersSnap.docs.map(doc => doc.data());
 
             setMetrics({
-                totalUsers: 124,
-                activeArtists: 45,
+                totalUsers: usersSnap.size,
+                activeArtists: activeArtistsSnap.size,
                 pendingApprovals: pendingArtistsSnap.size + pendingInstSnap.size,
-                totalBookings: 12,
+                totalBookings: bookingsSnap.size,
                 recentUsers: recentUsers
             });
         } catch (error) {
