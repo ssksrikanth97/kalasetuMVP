@@ -1,0 +1,187 @@
+.hero {
+    position: relative;
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-size: cover;
+    background-position: center;
+}
+
+.heroOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.heroContent {
+    position: relative;
+    z-index: 1;
+    color: white;
+    max-width: 800px;
+    padding: 0 1rem;
+}
+
+.heroTitle {
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.heroSubtitle {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+    opacity: 0.9;
+}
+
+.ctaGroup {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.ctaPrimary {
+    background-color: var(--color-maroon);
+    color: white;
+    padding: 0.8rem 1.8rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.ctaSecondary {
+    background-color: transparent;
+    color: white;
+    padding: 0.8rem 1.8rem;
+    border-radius: 8px;
+    border: 1px solid white;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.section {
+    padding: 4rem 1rem;
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto 2rem auto;
+}
+
+.sectionTitle {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: var(--color-maroon);
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+}
+
+.sectionSubtitle {
+    color: #555;
+    margin-top: 0;
+}
+
+.viewAllLink {
+    color: var(--color-maroon);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.scrollContainer {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding: 1rem 0;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    overflow: hidden;
+    min-width: 280px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.cardImage {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    background: #f9f9f9;
+}
+
+.cardImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cardContent {
+    padding: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.cardLabel {
+    font-size: 0.8rem;
+    color: var(--color-gold-dark);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.cardTitle {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-primary);
+}
+
+.cardLocation,
+.cardArtists {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.cardPrice {
+    font-weight: bold;
+    color: var(--color-maroon);
+    margin-top: auto;
+}
+
+.whySection {
+    padding: 5rem 1rem;
+    background: #fdfbf7;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 3rem auto 0 auto;
+    text-align: center;
+}
+
+.featureIcon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+}

@@ -1,0 +1,88 @@
+.pageWrapper {
+    background-color: #f9fafb;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.headerLeft {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.backLink {
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+    text-decoration: none;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.saveButton {
+    background-color: var(--color-maroon);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.form {
+    background: #fff;
+}
+
+.section {
+    padding: 2rem;
+    border-bottom: 1px solid #eee;
+}
+
+.section h2 {
+    font-size: 1.2rem;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--color-maroon);
+}
+
+.fieldGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form input, .form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.preview {
+    max-width: 120px;
+    margin-top: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}

@@ -1,0 +1,112 @@
+.pageWrapper {
+    background-color: #f9fafb;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.backLink {
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+    text-decoration: none;
+}
+
+.container h1 {
+    color: var(--color-maroon);
+    margin-bottom: 0;
+}
+
+.btnAdd {
+    background-color: var(--color-maroon);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+.form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.form h2 {
+    margin-top: 0;
+}
+
+.form input, .form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.form button {
+    background-color: var(--color-maroon);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.preview {
+    max-width: 100px;
+    margin-top: 1rem;
+    border-radius: 8px;
+}
+
+.artistGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.artistCard {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.artistCard img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.artistCard h3 {
+    margin: 1rem 0 0.25rem 0;
+}
+
+.artistCard p {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.btnRemove {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+}

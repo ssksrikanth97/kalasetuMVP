@@ -1,0 +1,69 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuth() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuth() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuth() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // 1. Users Collection
+    match /users/{userId} {
+      allow read: if isAuth(); 
+      allow create: if isAuth(); 
+      allow update: if isOwner(userId) || isAdmin(); 
+      allow delete: if isAdmin();
+    }
+
+    // 2. Artists Collection
+    match /artists/{artistId} {
+      allow get, list: if true; 
+      allow create: if isOwner(artistId); 
+      allow update: if isOwner(artistId) || isAdmin(); 
+    }
+
+    // 3. Institutions Collection
+    match /institutions/{instId} {
+      allow get, list: if true;
+      allow create: if isOwner(instId);
+      allow update: if isOwner(instId) || isAdmin();
+    }
+
+    // 4. Products Collection
+    match /products/{productId} {
+      allow get, list: if true;
+      allow create: if isAuth();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // 5. Events Collection
+    match /events/{eventId} {
+      allow get, list: if true;
+      allow create: if isAuth();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // 6. Orders Collection
+    match /orders/{orderId} {
+      allow create: if isAuth(); 
+      allow read: if isAuth() && (resource.data.customerId == request.auth.uid || isAdmin()); 
+      allow update: if isAdmin(); 
+    }
+
+    // 7. Bookings Collection
+    match /bookings/{bookingId} {
+      allow create: if isAuth();
+      allow read: if isAuth() && (resource.data.customerId == request.auth.uid || resource.data.artistId == request.auth.uid || resource.data.institutionId == request.auth.uid || isAdmin());
+      allow update: if isOwner(resource.data.artistId) || isOwner(resource.data.institutionId) || isAdmin();
+    }
+  }
+}
