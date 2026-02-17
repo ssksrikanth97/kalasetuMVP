@@ -43,7 +43,7 @@ export default function ManageInstitutionsPage() {
         try {
             setLoading(true);
             await deleteDoc(doc(db, 'institutions', institutionId));
-            await deleteDoc(doc(db, 'users', institutionId)); 
+            await deleteDoc(doc(db, 'users', institutionId));
             fetchInstitutions();
         } catch (err) {
             console.error("Error deleting institution:", err);
@@ -68,7 +68,7 @@ export default function ManageInstitutionsPage() {
                 <div className={dashboardStyles.cardHeader}>
                     <h2 className={dashboardStyles.cardTitle}>All Institutions</h2>
                 </div>
-                
+
                 {loading && <p>Loading...</p>}
                 {error && <p className="error-message">{error}</p>}
 
@@ -99,7 +99,7 @@ export default function ManageInstitutionsPage() {
                                             </span>
                                         </td>
                                         <td className={styles.actionButtons}>
-                                            <Link href={`/admin/institutions/edit/${inst.id}`} className="btn-secondary btn-sm">Edit</Link>
+                                            <Link href={`/admin/institutions/edit?id=${inst.id}`} className="btn-secondary btn-sm">Edit</Link>
                                             <button onClick={() => handleDelete(inst.id)} className="btn-danger btn-sm" disabled={loading}>Delete</button>
                                         </td>
                                     </tr>

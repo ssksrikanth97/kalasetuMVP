@@ -53,9 +53,10 @@ service cloud.firestore {
     }
 
     // 6. Orders Collection
+    // 6. Orders Collection
     match /orders/{orderId} {
       allow create: if isAuth(); 
-      allow read: if isAuth() && (resource.data.customerId == request.auth.uid || isAdmin()); 
+      allow read: if isAuth() && (resource.data.customerId == request.auth.uid || request.auth.uid in resource.data.artistIds || isAdmin()); 
       allow update: if isAdmin(); 
     }
 

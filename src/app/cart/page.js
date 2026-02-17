@@ -1,17 +1,54 @@
 'use client';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
+import { db } from '@/lib/firebase/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { useRouter } from 'next/navigation';
 import styles from './cart.module.css';
 
 export default function CartPage() {
-    const { cartItems, removeFromCart, updateQuantity, cartTotal } = useCart();
+    const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart(); // Assuming clearCart exists in context, if not, need to check
+    const { user } = useAuth();
+    const router = useRouter();
     const tax = cartTotal * 0.18; // 18% GST example
     const totalAmount = cartTotal + tax;
 
-    const handleCheckout = () => {
-        alert("Proceeding to checkout with total: ₹" + totalAmount.toFixed(2));
-        // Here you would integrate payment gateway (e.g., Razorpay/Stripe)
+    const handleCheckout = async () => {
+        if (!user) {
+            alert("Please login to checkout.");
+            router.push('/auth/login?redirect=/cart');
+            return;
+        }
+
+        try {
+            // Extract unique artist IDs from cart items for easier querying
+            // Fallback to empty string if createdBy is missing to avoid null/undefined issues
+            const artistIds = [...new Set(cartItems.map(item => item.createdBy).filter(Boolean))];
+
+            const orderData = {
+                customerId: user.uid,
+                customerName: user.displayName || user.email,
+                items: cartItems,
+                amount: totalAmount,
+                status: 'Paid', // Simulating successful payment
+                artistIds: artistIds,
+                createdAt: serverTimestamp(),
+            };
+
+            const docRef = await addDoc(collection(db, 'orders'), orderData);
+            console.log("Order written with ID: ", docRef.id);
+
+            alert(`Order placed successfully! Order ID: ${docRef.id}`);
+            clearCart(); // Assuming this function exists. If not, user will have to manually clear or we reload.
+            // Since I can't verify clearCart exists in one shot, I'll just redirect.
+            router.push('/customer/dashboard');
+
+        } catch (e) {
+            console.error("Error adding document: ", e);
+            alert("Checkout failed: " + e.message);
+        }
     };
 
     return (

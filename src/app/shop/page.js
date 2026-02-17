@@ -6,6 +6,7 @@ import { db } from '@/lib/firebase/firebase';
 import { useCart } from '@/context/CartContext';
 import Navbar from '@/components/Navbar';
 import styles from '../explore.module.css';
+import Toast from '@/components/Toast';
 
 export default function Shop() {
     const { addToCart } = useCart();
@@ -13,6 +14,9 @@ export default function Shop() {
     const [categories, setCategories] = useState([]);
     const [filter, setFilter] = useState("All");
     const [loading, setLoading] = useState(true);
+    const [toastMessage, setToastMessage] = useState('');
+
+    const defaultImage = "https://images.unsplash.com/photo-1524230659092-07f99a75c013?q=80&w=500&auto=format&fit=crop";
 
     useEffect(() => {
         const fetchProductsAndCategories = async () => {
@@ -45,12 +49,14 @@ export default function Shop() {
 
     const handleAddToCart = (product) => {
         addToCart(product);
-        alert(`Added ${product.productName} to cart!`);
+        setToastMessage(`Added ${product.productName || 'Item'} to cart!`);
+        setTimeout(() => setToastMessage(''), 3000);
     };
 
     return (
         <div className="page-wrapper">
             <Navbar />
+            <Toast message={toastMessage} onClose={() => setToastMessage('')} />
             <main className={styles.pageContainer}>
                 <section className={styles.heroSection}>
                     <h1 className={styles.heroTitle}>KalaSetu Bazaar</h1>
@@ -101,7 +107,7 @@ export default function Shop() {
                                     <div key={product.id} className={styles.card}>
                                         <div className={styles.cardContent}>
                                             <img
-                                                src={product.mainImage} 
+                                                src={product.mainImage || defaultImage}
                                                 alt={product.productName}
                                                 className={styles.cardImage}
                                                 style={{
@@ -111,8 +117,9 @@ export default function Shop() {
                                                     height: '200px',
                                                     objectFit: 'cover'
                                                 }}
+                                                onError={(e) => e.target.src = defaultImage}
                                             />
-                                            
+
                                             <div
                                                 style={{
                                                     display: 'flex',

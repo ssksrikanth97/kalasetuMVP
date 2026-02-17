@@ -1,9 +1,10 @@
-
 'use client';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import styles from '../dashboard/admin.module.css';
 import { useEffect, useState } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase/firebase';
 
 export default function AdminUsers() {
     const [users, setUsers] = useState([]);
@@ -11,9 +12,13 @@ export default function AdminUsers() {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch('/api/admin/users');
-            const data = await response.json();
-            setUsers(data.users);
+            // Fetch directly from Firestore instead of API
+            const querySnapshot = await getDocs(collection(db, 'users'));
+            const userList = querySnapshot.docs.map(doc => ({
+                uid: doc.id,
+                ...doc.data()
+            }));
+            setUsers(userList);
         } catch (error) {
             console.error("Error fetching users:", error);
         } finally {
@@ -25,28 +30,15 @@ export default function AdminUsers() {
         fetchUsers();
     }, []);
 
+    // Delete functionality would require API or Cloud Function for Auth deletion. 
+    // Here we can only delete from Firestore strictly speaking, but let's disable strictly.
     const deleteUser = async (uid) => {
+        alert("Deleting users is disabled in this static version. Please use the Firebase Console.");
+        /* 
         if (window.confirm('Are you sure you want to delete this user?')) {
-            try {
-                const response = await fetch('/api/admin/users', {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ uid }),
-                });
-
-                if (response.ok) {
-                    fetchUsers(); // Refresh the list after deletion
-                } else {
-                    const data = await response.json();
-                    alert(`Error deleting user: ${data.error}`);
-                }
-            } catch (error) {
-                console.error('Error deleting user:', error);
-                alert('Failed to delete user. Please try again.');
-            }
-        }
+             // ... 
+        } 
+        */
     };
 
     return (
@@ -70,26 +62,39 @@ export default function AdminUsers() {
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Role</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>Loading users...</td>
+                                    <td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>Loading users...</td>
                                 </tr>
                             ) : users.length > 0 ? (
                                 users.map(user => (
                                     <tr key={user.uid}>
                                         <td>{user.uid}</td>
-                                        <td>{user.displayName}</td>
+                                        <td>{user.name || user.displayName}</td>
                                         <td>{user.email}</td>
-                                        <td>{user.customClaims && user.customClaims.role ? user.customClaims.role : 'user'}</td>
+                                        <td>{user.role || 'user'}</td>
                                         <td>
-                                            <Link href={`/admin/users/edit/${user.uid}`}>
-                                                <button className="btn-secondary">Edit</button>
+                                            <span style={{
+                                                padding: '0.25rem 0.5rem',
+                                                borderRadius: '9999px',
+                                                fontSize: '0.75rem',
+                                                fontWeight: '500',
+                                                backgroundColor: user.status === 'Verified' ? '#dcfce7' : '#fee2e2',
+                                                color: user.status === 'Verified' ? '#166534' : '#b91c1c'
+                                            }}>
+                                                {user.status || 'Pending'}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <Link href={`/admin/users/view?id=${user.uid}`}>
+                                                <button className="btn-secondary">View Details</button>
                                             </Link>
-                                            <button onClick={() => deleteUser(user.uid)} className="btn-danger" style={{ marginLeft: '0.5rem' }}>
+                                            <button onClick={() => deleteUser(user.uid)} className="btn-danger" style={{ marginLeft: '0.5rem', opacity: 0.5, cursor: 'not-allowed' }}>
                                                 Delete
                                             </button>
                                         </td>
@@ -97,7 +102,7 @@ export default function AdminUsers() {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="5" style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
+                                    <td colSpan="6" style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
                                         No users found.
                                     </td>
                                 </tr>

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from '../dashboard/admin.module.css';
 import { useEffect, useState } from 'react';
-import { collection, getDocs, query, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, doc, getDoc, orderBy } from 'firebase/firestore';
 import { db } from '@/lib/firebase/firebase';
 
 export default function AdminOrders() {
@@ -14,23 +14,34 @@ export default function AdminOrders() {
 
     const fetchOrders = async () => {
         try {
-            const q = query(collection(db, 'orders'));
+            const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
             const querySnapshot = await getDocs(q);
             const ordersList = await Promise.all(querySnapshot.docs.map(async (orderDoc) => {
                 const orderData = orderDoc.data();
-                let userName = 'Guest';
-                if (orderData.userId) {
-                    const userRef = doc(db, 'users', orderData.userId);
+                let userName = orderData.customerName || 'Guest';
+
+                // Fallback: If no customerName but has customerId, fetch from users
+                if (!orderData.customerName && orderData.customerId) {
+                    const userRef = doc(db, 'users', orderData.customerId);
                     const userSnap = await getDoc(userRef);
                     if (userSnap.exists()) {
                         userName = userSnap.data().name;
                     }
                 }
+
+                let createdAtDate = new Date();
+                if (orderData.createdAt?.toDate) {
+                    createdAtDate = orderData.createdAt.toDate();
+                } else if (orderData.createdAt) {
+                    createdAtDate = new Date(orderData.createdAt);
+                }
+
                 return {
                     id: orderDoc.id,
                     ...orderData,
                     userName,
-                    createdAt: orderData.createdAt.toDate(), // Convert Firestore Timestamp to JS Date
+                    createdAt: createdAtDate,
+                    amount: orderData.amount || 0 // Ensure amount exists
                 };
             }));
             setOrders(ordersList);
@@ -81,14 +92,14 @@ export default function AdminOrders() {
                                         <td>{order.id}</td>
                                         <td>{order.userName}</td>
                                         <td>{new Intl.DateTimeFormat('en-US').format(order.createdAt)}</td>
-                                        <td>₹{order.totalAmount.toFixed(2)}</td>
+                                        <td>₹{order.amount?.toFixed(2)}</td>
                                         <td>
                                             <span className={styles.statusBadge} data-status={order.status.toLowerCase()}>
                                                 {order.status}
                                             </span>
                                         </td>
                                         <td>
-                                            <Link href={`/admin/orders/${order.id}`}>
+                                            <Link href={`/admin/orders/view?id=${order.id}`}>
                                                 <button className="btn-secondary">View Details</button>
                                             </Link>
                                         </td>

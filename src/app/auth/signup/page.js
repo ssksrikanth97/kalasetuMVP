@@ -57,13 +57,18 @@ function SignupForm() {
                     status: 'pending',
                     createdAt: serverTimestamp(),
                 });
+                router.push('/artist/onboarding'); // Redirect to onboarding
+            } else {
+                router.push(`/${formData.role}/dashboard`);
             }
-
-            router.push(`/${formData.role}/dashboard`);
 
         } catch (err) {
             console.error(err);
-            setError(err.message || 'Failed to create account');
+            if (err.code === 'auth/email-already-in-use') {
+                setError('Your email ID is already registered with us. Please log in to access the system.');
+            } else {
+                setError(err.message || 'Failed to create account');
+            }
         } finally {
             setLoading(false);
         }
@@ -94,7 +99,7 @@ function SignupForm() {
 
                     <form onSubmit={handleSignup}>
                         <div className={styles.inputGroup}>
-                            <label className={styles.label}>Full Name / Institution Name</label>
+                            <label className={styles.label}>Full Name</label>
                             <input
                                 type="text"
                                 name="name"

@@ -113,7 +113,7 @@ export default function AdminBookings() {
                                             </span>
                                         </td>
                                         <td>
-                                            <Link href={`/admin/bookings/${booking.id}`}>
+                                            <Link href={`/admin/bookings/view?id=${booking.id}`}>
                                                 <button className="btn-secondary">View Details</button>
                                             </Link>
                                             <button onClick={() => deleteBooking(booking.id)} className="btn-danger" style={{ marginLeft: '0.5rem' }}>

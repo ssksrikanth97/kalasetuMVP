@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import TopInstitutions from '@/components/TopInstitutions/TopInstitutions';
 import styles from './page.module.css';
 import { db } from '@/lib/firebase/firebase';
-import { collection, query, where, limit, getDocs } from 'firebase/firestore';
+import { collection, query, where, limit, getDocs, orderBy } from 'firebase/firestore';
 
 export default function Home() {
   const [featuredEvents, setFeaturedEvents] = useState([]);
@@ -17,18 +17,17 @@ export default function Home() {
       try {
         setLoading(true);
 
-        // Fetch Approved Events
-        const eventsQuery = query(collection(db, 'events'), where('status', '==', 'approved'), limit(4));
+        // Fetch Approved Events (Showing all for now to ensure visibility)
+        const eventsQuery = query(collection(db, 'events'), limit(4));
         const eventsSnap = await getDocs(eventsQuery);
         const eventsData = eventsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setFeaturedEvents(eventsData);
 
-        // Fetch Approved Products
-        const productQuery = query(collection(db, 'products'), where('isApproved', '==', true), limit(4));
+        // Fetch Approved Products (Showing all for now to ensure visibility)
+        const productQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(4));
         const productSnap = await getDocs(productQuery);
         const productData = productSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setFeaturedProducts(productData);
-
       } catch (error) {
         console.error("Error fetching homepage data:", error);
       } finally {
@@ -38,6 +37,8 @@ export default function Home() {
 
     fetchData();
   }, []);
+
+  const defaultImage = "https://images.unsplash.com/photo-1524230659092-07f99a75c013?q=80&w=500&auto=format&fit=crop";
 
   return (
     <div style={{ backgroundColor: '#fff', minHeight: '100vh', paddingBottom: '2rem' }}>
@@ -85,11 +86,12 @@ export default function Home() {
             featuredEvents.map(event => (
               <div key={event.id} className={styles.card}>
                 <div className={styles.cardImage}>
-                  {event.imageUrl ? (
-                    <img src={event.imageUrl} alt={event.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  ) : (
-                    <span style={{ fontSize: '4rem' }}>🗓️</span>
-                  )}
+                  <img
+                    src={event.imageUrl || defaultImage}
+                    alt={event.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    onError={(e) => e.target.src = defaultImage}
+                  />
                 </div>
                 <div className={styles.cardContent}>
                   <p className={styles.cardLabel}>{event.date ? new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Date'}</p>
@@ -124,11 +126,12 @@ export default function Home() {
             featuredProducts.map(product => (
               <div key={product.id} className={styles.card}>
                 <div className={styles.cardImage}>
-                  {product.mainImage ? (
-                    <img src={product.mainImage} alt={product.productName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  ) : (
-                    <span>{product.image || '🖼️'}</span>
-                  )}
+                  <img
+                    src={product.mainImage || defaultImage}
+                    alt={product.productName}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    onError={(e) => e.target.src = defaultImage}
+                  />
                 </div>
                 <div className={styles.cardContent}>
                   <p className={styles.cardLabel}>{product.categoryId}</p>
@@ -138,7 +141,7 @@ export default function Home() {
               </div>
             ))
           ) : (
-            <div style={{ padding: '2rem', color: '#666' }}>No approved products found.</div>
+            <div style={{ padding: '2rem', color: '#666' }}>No products found in the marketplace.</div>
           )}
         </div>
       </section>

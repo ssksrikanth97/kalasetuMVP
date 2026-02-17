@@ -62,7 +62,7 @@ export default function AdminLayout({ children }) {
                     <Link href="/admin/events" className={getLinkClass('/admin/events')}>
                         <span className={styles.navIcon}>🎉</span> Manage Events
                     </Link>
-                     <Link href="/admin/institutions" className={getLinkClass('/admin/institutions')}>
+                    <Link href="/admin/institutions" className={getLinkClass('/admin/institutions')}>
                         <span className={styles.navIcon}>🏢</span> Manage Institutions
                     </Link>
                     <Link href="/" target="_blank" className={styles.navItem} style={{ marginTop: 'auto' }}>

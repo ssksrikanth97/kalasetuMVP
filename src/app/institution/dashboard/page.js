@@ -71,10 +71,10 @@ export default function InstitutionDashboard() {
             <div style={{ backgroundColor: 'var(--bg-secondary)', minHeight: '100vh' }}>
                 <Navbar />
                 <main className="container" style={{ padding: '2rem 1rem' }}>
-                     <div className="card glass-panel" style={{ maxWidth: '700px', margin: '2rem auto' }}>
+                    <div className="card glass-panel" style={{ maxWidth: '700px', margin: '2rem auto' }}>
                         <h2 className="text-2xl font-bold mb-2">Complete Your Institution Profile</h2>
                         <p className="text-gray-600 mb-6">Finish these steps to make your institution visible to students and artists.</p>
-                        
+
                         <div style={{ marginBottom: '1.5rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                                 <span>Profile Completion</span>
@@ -97,7 +97,7 @@ export default function InstitutionDashboard() {
                             </ul>
                         </div>
 
-                        <Link href="/institution/onboarding" className="btn-primary" style={{ display: 'block', textAlign: 'center', padding: '1rem'}}>
+                        <Link href="/institution/onboarding" className="btn-primary" style={{ display: 'block', textAlign: 'center', padding: '1rem' }}>
                             Continue to Profile Setup
                         </Link>
                     </div>
@@ -114,14 +114,14 @@ export default function InstitutionDashboard() {
                 {institutionData && (
                     <header className={styles.header}>
                         <div className={styles.headerInfo}>
-                            <img 
-                                src={institutionData.media?.logoUrl || 'https://via.placeholder.com/80'} 
+                            <img
+                                src={institutionData.media?.logoUrl || 'https://via.placeholder.com/80'}
                                 alt={`${institutionData.basicDetails?.instituteName} Logo`}
                                 className={styles.logo}
                             />
                             <div>
                                 <h1>{institutionData.basicDetails?.instituteName}</h1>
-                                <Link href={`/institutions/${user.uid}`}>View Public Profile</Link>
+                                <Link href={`/institution-details?id=${user.uid}`}>View Public Profile</Link>
                             </div>
                         </div>
                     </header>
@@ -142,7 +142,7 @@ export default function InstitutionDashboard() {
                     </div>
                 </div>
 
-                 <div className={styles.actionsGrid}>
+                <div className={styles.actionsGrid}>
                     <div className={styles.actionCard}>
                         <h3>Edit Profile</h3>
                         <p>Update your institution's core details, description, and contact information.</p>

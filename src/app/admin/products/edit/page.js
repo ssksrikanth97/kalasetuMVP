@@ -1,29 +1,22 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import styles from '../../../dashboard/admin.module.css';
-import { useEffect, useState } from 'react';
-import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore';
+import styles from '../../dashboard/admin.module.css';
+import { useEffect, useState, Suspense } from 'react';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase/firebase';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-// Safely formats a Firestore Timestamp or other date format into 'YYYY-MM-DD'
-const formatDateForInput = (timestamp) => {
-    if (!timestamp) return '';
-    const date = timestamp instanceof Timestamp ? timestamp.toDate() : new Date(timestamp);
-    return date.toISOString().split('T')[0];
-};
-
-export default function EditEvent() {
+function EditProductContent() {
     const router = useRouter();
-    const params = useParams();
-    const { id } = params;
+    const searchParams = useSearchParams();
+    const id = searchParams.get('id');
 
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [date, setDate] = useState('');
-    const [location, setLocation] = useState('');
+    const [price, setPrice] = useState('');
+    const [stock, setStock] = useState('');
     const [image, setImage] = useState(null);
     const [imageUrl, setImageUrl] = useState('');
     const [uploading, setUploading] = useState(false);
@@ -31,30 +24,31 @@ export default function EditEvent() {
 
     useEffect(() => {
         if (id) {
-            const fetchEvent = async () => {
-                setLoading(true);
+            const fetchProduct = async () => {
                 try {
-                    const docRef = doc(db, 'events', id);
+                    const docRef = doc(db, 'products', id);
                     const docSnap = await getDoc(docRef);
                     if (docSnap.exists()) {
-                        const event = docSnap.data();
-                        setName(event.name || '');
-                        setDescription(event.description || '');
-                        setDate(formatDateForInput(event.date));
-                        setLocation(event.location || '');
-                        setImageUrl(event.imageUrl || '');
+                        const product = docSnap.data();
+                        setName(product.name);
+                        setDescription(product.description);
+                        setPrice(product.price);
+                        setStock(product.stock);
+                        setImageUrl(product.imageUrl);
                     } else {
-                        alert('Event not found.');
-                        router.push('/admin/events');
+                        alert('Product not found.');
+                        router.push('/admin/products');
                     }
                 } catch (error) {
-                    console.error('Error fetching event:', error);
-                    alert('Failed to fetch event data.');
+                    console.error('Error fetching product:', error);
+                    alert('Failed to fetch product data.');
                 } finally {
                     setLoading(false);
                 }
             };
-            fetchEvent();
+            fetchProduct();
+        } else {
+            console.log("No ID provided");
         }
     }, [id, router]);
 
@@ -64,57 +58,57 @@ export default function EditEvent() {
         }
     };
 
-    const updateEvent = async (e) => {
+    const updateProduct = async (e) => {
         e.preventDefault();
         setUploading(true);
 
         try {
             let newImageUrl = imageUrl;
             if (image) {
-                const imageRef = ref(storage, `events/${Date.now()}_${image.name}`);
+                const imageRef = ref(storage, `products/${Date.now()}_${image.name}`);
                 await uploadBytes(imageRef, image);
                 newImageUrl = await getDownloadURL(imageRef);
             }
 
-            const eventRef = doc(db, 'events', id);
-            await updateDoc(eventRef, {
+            const productRef = doc(db, 'products', id);
+            await updateDoc(productRef, {
                 name,
                 description,
-                date: new Date(date),
-                location,
+                price: parseFloat(price),
+                stock: parseInt(stock, 10),
                 imageUrl: newImageUrl,
             });
 
-            alert('Event updated successfully!');
-            router.push('/admin/events');
+            alert('Product updated successfully!');
+            router.push('/admin/products');
         } catch (error) {
-            console.error('Error updating event:', error);
-            alert(`Failed to update event: ${error.message}`);
+            console.error('Error updating product:', error);
+            alert(`Failed to update product: ${error.message}`);
         } finally {
             setUploading(false);
         }
     };
 
     if (loading) {
-        return <main className={styles.mainContent}><p>Loading...</p></main>;
+        return <p>Loading...</p>;
     }
 
     return (
         <main className={styles.mainContent}>
             <header className={styles.header}>
                 <div className={styles.titleGroup}>
-                    <h1>Edit Event</h1>
-                    <p>Update the details for this event.</p>
+                    <h1>Edit Product</h1>
+                    <p>Update the details for this product.</p>
                 </div>
-                <Link href="/admin/events" className="btn-secondary">
-                    Back to Events
+                <Link href="/admin/products">
+                    <button className="btn-secondary">Back to Products</button>
                 </Link>
             </header>
 
             <div className={styles.contentCard}>
-                <form onSubmit={updateEvent} className={styles.formLayout}>
+                <form onSubmit={updateProduct} className={styles.formLayout}>
                     <div className={styles.formGroup}>
-                        <label htmlFor="name">Event Name</label>
+                        <label htmlFor="name">Product Name</label>
                         <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} className={styles.inputField} required />
                     </div>
                     <div className={styles.formGroup}>
@@ -123,23 +117,17 @@ export default function EditEvent() {
                     </div>
                     <div className={styles.formGrid}>
                         <div className={styles.formGroup}>
-                            <label htmlFor="date">Date</label>
-                            <input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className={styles.inputField} required />
+                            <label htmlFor="price">Price (₹)</label>
+                            <input id="price" type="number" value={price} onChange={(e) => setPrice(e.target.value)} className={styles.inputField} required />
                         </div>
                         <div className={styles.formGroup}>
-                            <label htmlFor="location">Location</label>
-                            <input id="location" type="text" value={location} onChange={(e) => setLocation(e.target.value)} className={styles.inputField} required />
+                            <label htmlFor="stock">Stock</label>
+                            <input id="stock" type="number" value={stock} onChange={(e) => setStock(e.target.value)} className={styles.inputField} required />
                         </div>
                     </div>
                     <div className={styles.formGroup}>
                         <label>Current Image</label>
-                        <div className={styles.imagePreview}>
-                            {imageUrl ? (
-                                <Image src={imageUrl} alt={name || 'Event image'} width={100} height={100} style={{ objectFit: 'cover', borderRadius: '8px' }} />
-                            ) : (
-                                <p>No image available.</p>
-                            )}
-                        </div>
+                        {imageUrl && <Image src={imageUrl} alt={name} width={100} height={100} style={{ objectFit: 'cover', borderRadius: '8px' }} />}
                     </div>
                     <div className={styles.formGroup}>
                         <label htmlFor="image">Upload New Image</label>
@@ -149,11 +137,19 @@ export default function EditEvent() {
 
                     <div className={styles.formActions}>
                         <button type="submit" className="btn-primary" disabled={uploading}>
-                            {uploading ? 'Updating Event...' : 'Update Event'}
+                            {uploading ? 'Updating Product...' : 'Update Product'}
                         </button>
                     </div>
                 </form>
             </div>
         </main>
+    );
+}
+
+export default function EditProduct() {
+    return (
+        <Suspense fallback={<div>Loading form...</div>}>
+            <EditProductContent />
+        </Suspense>
     );
 }

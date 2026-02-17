@@ -93,7 +93,7 @@ export default function AdminInventory() {
                                             </span>
                                         </td>
                                         <td>
-                                            <Link href={`/admin/inventory/edit/${p.id}`}>
+                                            <Link href={`/admin/inventory/edit?id=${p.id}`}>
                                                 <button className={styles.actionButton}>Edit</button>
                                             </Link>
                                         </td>

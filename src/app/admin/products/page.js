@@ -85,7 +85,7 @@ export default function AdminProducts() {
                                         <td>₹{product.price}</td>
                                         <td>{product.stock}</td>
                                         <td>
-                                            <Link href={`/admin/products/edit/${product.id}`}>
+                                            <Link href={`/admin/products/edit?id=${product.id}`}>
                                                 <button className="btn-secondary">Edit</button>
                                             </Link>
                                             <button onClick={() => deleteProduct(product.id)} className="btn-danger" style={{ marginLeft: '0.5rem' }}>Delete</button>

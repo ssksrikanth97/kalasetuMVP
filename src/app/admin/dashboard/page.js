@@ -46,7 +46,7 @@ export default function AdminDashboard() {
 
             const usersQuery = query(collection(db, 'users'), orderBy('createdAt', 'desc'), limit(5));
             const recentUsersSnap = await getDocs(usersQuery);
-            const recentUsers = recentUsersSnap.docs.map(doc => doc.data());
+            const recentUsers = recentUsersSnap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
 
             // Calculate total revenue
             let totalRevenue = 0;
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
                         <span className={styles.trendUp}>↑ 24</span> new signups
                     </div>
                 </div>
-                 <div className={styles.statCard} style={{ '--color-gold': '#f39c12' }}>
+                <div className={styles.statCard} style={{ '--color-gold': '#f39c12' }}>
                     <div className={styles.statHeader}>
                         <span className={styles.statTitle}>Total Products</span>
                         <span className={styles.statIcon}>📦</span>
@@ -170,7 +170,9 @@ export default function AdminDashboard() {
                                                 </span>
                                             </td>
                                             <td>
-                                                <button className={styles.actionButton}>View</button>
+                                                <Link href={`/admin/users/view?id=${u.uid}`}>
+                                                    <button className={styles.actionButton}>View</button>
+                                                </Link>
                                             </td>
                                         </tr>
                                     ))

@@ -57,7 +57,7 @@ export default function ManageEventsPage() {
                 <div className={dashboardStyles.cardHeader}>
                     <h2 className={dashboardStyles.cardTitle}>Current Events</h2>
                 </div>
-                
+
                 {loading && <p>Loading events...</p>}
                 {error && <p className="error-message">{error}</p>}
 
@@ -85,7 +85,7 @@ export default function ManageEventsPage() {
                                             </span>
                                         </td>
                                         <td className={styles.actionButtons}>
-                                            <Link href={`/admin/events/edit/${event.id}`} className="btn-secondary btn-sm">Edit</Link>
+                                            <Link href={`/admin/events/edit?id=${event.id}`} className="btn-secondary btn-sm">Edit</Link>
                                             <button onClick={() => handleDelete(event.id)} className="btn-danger btn-sm">Delete</button>
                                         </td>
                                     </tr>
