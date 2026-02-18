@@ -61,5 +61,4 @@ dist/
 .firebase
 
 serviceAccountKey.json
-*.json
 .env
