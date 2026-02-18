@@ -61,7 +61,7 @@ export default function LoginPage() {
                     setError('This account has been disabled. Please contact support.');
                     break;
                 default:
-                    setError('An unexpected error occurred. Please try again.');
+                    setError(`Error: ${err.code} - ${err.message}`);
             }
         } finally {
             setLoading(false);
