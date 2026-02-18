@@ -1,25 +1,25 @@
 
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { 
-    getFirestore, 
-    initializeFirestore, 
-    enableIndexedDbPersistence,
-    persistentLocalCache,
-    persistentMultipleTabManager
+import {
+  getFirestore,
+  initializeFirestore,
+  enableIndexedDbPersistence,
+  persistentLocalCache,
+  persistentMultipleTabManager
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD0lZoJbW3DGw03Sk-x0PnSMQoCSVfp1lo",
-  authDomain: "kalasetu-220ce.firebaseapp.com",
-  databaseURL: "https://kalasetu-220ce-default-rtdb.firebaseio.com",
-  projectId: "kalasetu-220ce",
-  storageBucket: "kalasetu-220ce.firebasestorage.app",
-  messagingSenderId: "229598710851",
-  appId: "1:229598710851:web:03fd5d896ec83c6d8118f6",
-  measurementId: "G-MVVWDN1KN8"
+  apiKey: "AIzaSyDg-5-Fj-GzBM1p4AImS_sFOPYOhQu1GrU",
+  authDomain: "kalasetu-23a34.firebaseapp.com",
+  databaseURL: "https://kalasetu-23a34-default-rtdb.firebaseio.com",
+  projectId: "kalasetu-23a34",
+  storageBucket: "kalasetu-23a34.firebasestorage.app",
+  messagingSenderId: "901204924996",
+  appId: "1:901204924996:web:baa485bf4fc8167cf1ba11",
+  measurementId: "G-YYER50JG0X"
 };
 
 // Initialize Firebase
@@ -28,7 +28,7 @@ const auth = getAuth(app);
 
 // Initialize Firestore with persistence
 const db = initializeFirestore(app, {
-    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
 });
 
 const storage = getStorage(app);
