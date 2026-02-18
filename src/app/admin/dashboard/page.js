@@ -11,24 +11,10 @@ export default function AdminDashboard() {
     const { user, userRole, loading } = useAuth();
     const router = useRouter();
 
-    const [metrics, setMetrics] = useState({
-        totalUsers: 0,
-        activeArtists: 0,
-        pendingApprovals: 0,
-        recentUsers: [],
-        totalProducts: 0, // Add totalProducts to state
-        totalRevenue: 0,
-    });
+    const [notifications, setNotifications] = useState([]);
+    const [showAllNotifications, setShowAllNotifications] = useState(false);
 
-    useEffect(() => {
-        if (!loading) {
-            if (!user || userRole !== 'admin') {
-                // router.push('/auth/login');
-            } else {
-                fetchDashboardData();
-            }
-        }
-    }, [user, userRole, loading, router]);
+    // ... existing useEffect ...
 
     const fetchDashboardData = async () => {
         try {
@@ -46,6 +32,12 @@ export default function AdminDashboard() {
             const usersQuery = query(collection(db, 'users'), orderBy('createdAt', 'desc'), limit(5));
             const recentUsersSnap = await getDocs(usersQuery);
             const recentUsers = recentUsersSnap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+
+            // Fetch Notifications
+            const notificationsQuery = query(collection(db, 'notifications'), orderBy('createdAt', 'desc'), limit(20));
+            const notificationsSnap = await getDocs(notificationsQuery);
+            const notifs = notificationsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setNotifications(notifs);
 
             // Calculate total revenue
             let totalRevenue = 0;
@@ -82,6 +74,7 @@ export default function AdminDashboard() {
             </header>
 
             <section className={styles.statsGrid}>
+                {/* ... existing stats cards ... */}
                 <div className={styles.statCard}>
                     <div className={styles.statHeader}>
                         <span className={styles.statTitle}>Pending Approvals</span>
@@ -89,7 +82,7 @@ export default function AdminDashboard() {
                     </div>
                     <div className={styles.statValue}>{metrics.pendingApprovals}</div>
                     <div className={styles.statTrend}>
-                        <span className={styles.trendUp}>↑ 2 new</span> since yesterday
+                        <span className={styles.trendUp}>↑ {metrics.pendingApprovals} new</span> since yesterday
                     </div>
                 </div>
 
@@ -104,8 +97,6 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-
-
                 <div className={styles.statCard} style={{ '--color-gold': '#8e44ad' }}>
                     <div className={styles.statHeader}>
                         <span className={styles.statTitle}>Total Users</span>
@@ -113,7 +104,7 @@ export default function AdminDashboard() {
                     </div>
                     <div className={styles.statValue}>{metrics.totalUsers}</div>
                     <div className={styles.statTrend}>
-                        <span className={styles.trendUp}>↑ 24</span> new signups
+                        <span className={styles.trendUp}>↑ {metrics.recentUsers.length}</span> new signups
                     </div>
                 </div>
                 <div className={styles.statCard} style={{ '--color-gold': '#f39c12' }}>
@@ -123,7 +114,7 @@ export default function AdminDashboard() {
                     </div>
                     <div className={styles.statValue}>{metrics.totalProducts}</div>
                     <div className={styles.statTrend}>
-                        <span className={styles.trendUp}>↑ 10</span> new products
+                        <span className={styles.trendUp}>↑ 5</span> new products
                     </div>
                 </div>
             </section>
@@ -180,36 +171,95 @@ export default function AdminDashboard() {
                         <h2 className={styles.cardTitle}>Notifications</h2>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <div className={styles.activityItem}>
-                            <div className={styles.activityIcon}>🔔</div>
-                            <div className={styles.activityContent}>
-                                <h4>New Artist Application</h4>
-                                <p className={styles.activityTime}>Review 'Priya Dance Academy'</p>
-                            </div>
-                        </div>
-
-                        <div className={styles.activityItem}>
-                            <div className={styles.activityIcon}>🛒</div>
-                            <div className={styles.activityContent}>
-                                <h4>Order #1023 Received</h4>
-                                <p className={styles.activityTime}>2 mins ago • ₹4,500</p>
-                            </div>
-                        </div>
-
-                        <div className={styles.activityItem}>
-                            <div className={styles.activityIcon}>⚠️</div>
-                            <div className={styles.activityContent}>
-                                <h4>Low Stock Alert</h4>
-                                <p className={styles.activityTime}>Ghungroo bells (Set of 2)</p>
-                            </div>
-                        </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '300px', overflowY: 'auto' }}>
+                        {notifications.length > 0 ? (
+                            notifications.slice(0, 5).map(notif => (
+                                <div key={notif.id} className={styles.activityItem}>
+                                    <div className={styles.activityIcon}>{notif.type === 'order' ? '🛒' : notif.type === 'alert' ? '⚠️' : '🔔'}</div>
+                                    <div className={styles.activityContent}>
+                                        <h4>{notif.title}</h4>
+                                        <p className={styles.activityTime}>{notif.message}</p>
+                                        <small style={{ color: '#999', fontSize: '0.7rem' }}>
+                                            {notif.createdAt?.toDate ? notif.createdAt.toDate().toLocaleString() : new Date(notif.createdAt).toLocaleString()}
+                                        </small>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div style={{ textAlign: 'center', padding: '1rem', color: '#888' }}>No new notifications</div>
+                        )}
                     </div>
 
-                    <button className="btn-primary" style={{ width: '100%', marginTop: '1.5rem' }}>View All Notifications</button>
+                    <button
+                        className="btn-primary"
+                        style={{ width: '100%', marginTop: '1.5rem' }}
+                        onClick={() => setShowAllNotifications(true)}
+                    >
+                        View All Notifications
+                    </button>
                 </div>
 
             </section>
+
+            {/* Notifications Slider/Drawer */}
+            {showAllNotifications && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    right: 0,
+                    height: '100vh',
+                    width: '400px', // Adjust width as needed
+                    backgroundColor: 'white',
+                    boxShadow: '-4px 0 15px rgba(0,0,0,0.1)',
+                    zIndex: 1000,
+                    padding: '2rem',
+                    overflowY: 'auto',
+                    transition: 'transform 0.3s ease-in-out',
+                    transform: showAllNotifications ? 'translateX(0)' : 'translateX(100%)'
+                }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                        <h2>All Notifications</h2>
+                        <button
+                            onClick={() => setShowAllNotifications(false)}
+                            style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}
+                        >
+                            ×
+                        </button>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        {notifications.length > 0 ? notifications.map(notif => (
+                            <div key={notif.id} className={styles.activityItem} style={{ borderBottom: '1px solid #eee', paddingBottom: '1rem' }}>
+                                <div className={styles.activityIcon}>{notif.type === 'order' ? '🛒' : notif.type === 'alert' ? '⚠️' : '🔔'}</div>
+                                <div className={styles.activityContent}>
+                                    <h4>{notif.title}</h4>
+                                    <p className={styles.activityTime}>{notif.message}</p>
+                                    <small style={{ color: '#999', fontSize: '0.7rem' }}>
+                                        {notif.createdAt?.toDate ? notif.createdAt.toDate().toLocaleString() : new Date(notif.createdAt).toLocaleString()}
+                                    </small>
+                                </div>
+                            </div>
+                        )) : (
+                            <p>No notifications.</p>
+                        )}
+                    </div>
+                </div>
+            )}
+            {/* Overlay to close slider */}
+            {showAllNotifications && (
+                <div
+                    onClick={() => setShowAllNotifications(false)}
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100vw',
+                        height: '100vh',
+                        backgroundColor: 'rgba(0,0,0,0.3)',
+                        zIndex: 999
+                    }}
+                />
+            )}
         </>
     );
 }
