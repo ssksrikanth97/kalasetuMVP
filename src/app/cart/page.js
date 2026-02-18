@@ -70,11 +70,15 @@ export default function CartPage() {
                             {cartItems.map((item) => (
                                 <div key={item.id} className={styles.itemCard}>
                                     <div className={styles.itemImage}>
-                                        {item.image}
+                                        <img
+                                            src={item.mainImage || "https://placehold.co/100"}
+                                            alt={item.productName}
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+                                        />
                                     </div>
                                     <div className={styles.itemDetails}>
-                                        <h3 className={styles.itemName}>{item.name}</h3>
-                                        <p className={styles.itemType}>{item.type}</p>
+                                        <h3 className={styles.itemName}>{item.productName}</h3>
+                                        <p className={styles.itemType}>{item.categoryId}</p>
                                         <p className={styles.itemPrice}>₹{item.price.toLocaleString('en-IN')}</p>
                                         <button
                                             className={styles.removeBtn}
