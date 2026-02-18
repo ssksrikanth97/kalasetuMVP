@@ -1,8 +1,8 @@
 'use client';
 import { useState } from 'react';
 import Image from 'next/image';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase/firebase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -63,6 +63,54 @@ export default function LoginPage() {
                 default:
                     setError(`Error: ${err.code} - ${err.message}`);
             }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleGoogleLogin = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const provider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+
+            // Check if user exists in Firestore
+            const userDocRef = doc(db, 'users', user.uid);
+            const userDoc = await getDoc(userDocRef);
+
+            if (userDoc.exists()) {
+                const role = userDoc.data().role;
+                switch (role) {
+                    case 'admin':
+                        router.push('/admin/dashboard');
+                        break;
+                    case 'artist':
+                        router.push('/artist/dashboard');
+                        break;
+                    case 'institution':
+                        router.push('/institution/dashboard');
+                        break;
+                    default:
+                        router.push('/customer/dashboard');
+                        break;
+                }
+            } else {
+                // New user - create customer profile by default
+                await setDoc(userDocRef, {
+                    name: user.displayName || 'User',
+                    email: user.email,
+                    role: 'customer',
+                    createdAt: serverTimestamp(),
+                    photoURL: user.photoURL,
+                    phone: user.phoneNumber || ''
+                });
+                router.push('/customer/dashboard');
+            }
+        } catch (err) {
+            console.error("Google Login Error:", err);
+            setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -131,6 +179,25 @@ export default function LoginPage() {
                                 {loading ? 'Signing In...' : 'Sign In'}
                             </button>
                         </form>
+
+                        <div className={styles.divider}>
+                            <span>Or continue with</span>
+                        </div>
+
+                        <button
+                            type="button"
+                            className={styles.googleBtn}
+                            onClick={handleGoogleLogin}
+                            disabled={loading}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M23.52 12.29C23.52 11.43 23.47 10.73 23.32 10.03H12V14.51H18.52C18.23 16.03 17.34 17.38 16.14 18.24V21.2H19.92C22.18 19.12 23.52 16.04 23.52 12.29Z" fill="#4285F4" />
+                                <path d="M12 24C15.24 24 17.96 22.92 19.92 21.2L16.14 18.24C15.08 18.96 13.68 19.39 12 19.39C8.84 19.39 6.16 17.26 5.2 14.39H1.32V17.39C3.34 21.39 7.42 24 12 24Z" fill="#34A853" />
+                                <path d="M5.2 14.39C4.94 13.56 4.8 12.69 4.8 11.8C4.8 10.91 4.94 10.04 5.2 9.21V6.21H1.32C0.45 7.95 0 9.83 0 11.8C0 13.77 0.45 15.65 1.32 17.39L5.2 14.39Z" fill="#FBBC05" />
+                                <path d="M12 4.21C13.82 4.21 15.42 4.84 16.7 6.06L20.03 2.73C17.96 0.79 15.24 0 12 0C7.42 0 3.34 2.61 1.32 6.21L5.2 9.21C6.16 6.34 8.84 4.21 12 4.21Z" fill="#EA4335" />
+                            </svg>
+                            Sign in with Google
+                        </button>
 
                         <p className={styles.footerText}>
                             Don't have an account? <Link href="/auth/signup" className={styles.link}>Join for free</Link>

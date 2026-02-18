@@ -132,6 +132,58 @@
     cursor: not-allowed;
 }
 
+.googleBtn {
+    width: 100%;
+    padding: 0.875rem;
+    background-color: white;
+    color: #333;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    position: relative;
+}
+
+.googleBtn:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.googleBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.divider::before {
+    margin-right: 0.5rem;
+}
+
+.divider::after {
+    margin-left: 0.5rem;
+}
+
 .footerText {
     text-align: center;
     margin-top: 1.5rem;
