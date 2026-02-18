@@ -51,7 +51,17 @@ export default function CustomerDashboard() {
                         </Link>
                     </div>
                 </div>
+                {/* Artist Conversion Section */}
+                <div className="card" style={{ background: 'linear-gradient(135deg, #fff, #ffe4e1)' }}>
+                    <h3 style={{ color: 'var(--color-maroon)' }}>🎨 Are you an Artist?</h3>
+                    <p>Showcase your talent and reach a global audience.</p>
+                    <Link href="/artist/onboarding?mode=convert" className="btn-primary" style={{ display: 'inline-block', marginTop: '1rem', backgroundColor: 'var(--color-maroon)' }}>
+                        Join as Artist
+                    </Link>
+                </div>
             </div>
+
+
         </div>
     );
 }

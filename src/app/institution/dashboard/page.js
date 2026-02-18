@@ -155,7 +155,7 @@ export default function InstitutionDashboard() {
                     </div>
                     <div className={styles.actionCard}>
                         <h3>Manage Events</h3>
-                        <p>Create and showcase your institution's events, performances, and workshops.</p>
+                        <p>Create and showcase your institution's events and performances.</p>
                         <Link href="/institution/manage-events">Manage Events →</Link>
                     </div>
                     <div className={styles.actionCard}>

@@ -15,7 +15,6 @@ export default function AdminDashboard() {
         totalUsers: 0,
         activeArtists: 0,
         pendingApprovals: 0,
-        totalBookings: 0,
         recentUsers: [],
         totalProducts: 0, // Add totalProducts to state
         totalRevenue: 0,
@@ -58,7 +57,6 @@ export default function AdminDashboard() {
                 totalUsers: usersSnap.size,
                 activeArtists: activeArtistsSnap.size,
                 pendingApprovals: pendingArtistsSnap.size + pendingInstSnap.size,
-                totalBookings: bookingsSnap.size,
                 recentUsers: recentUsers,
                 totalProducts: productsSnap.size, // Set totalProducts
                 totalRevenue: totalRevenue,
@@ -106,16 +104,7 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                <div className={styles.statCard} style={{ '--color-gold': '#2980b9' }}>
-                    <div className={styles.statHeader}>
-                        <span className={styles.statTitle}>Active Bookings</span>
-                        <span className={styles.statIcon}>🎫</span>
-                    </div>
-                    <div className={styles.statValue}>{metrics.totalBookings}</div>
-                    <div className={styles.statTrend}>
-                        <span className={styles.trendDown}>↓ 3%</span> this week
-                    </div>
-                </div>
+
 
                 <div className={styles.statCard} style={{ '--color-gold': '#8e44ad' }}>
                     <div className={styles.statHeader}>

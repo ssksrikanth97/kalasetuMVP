@@ -119,15 +119,23 @@ export default function ArtistOnboarding() {
             }
 
             // Upload new gallery images
-            const newGalleryUrls = await Promise.all(media.gallery.map(async (file) => {
-                const fileRef = ref(storage, `artists/${user.uid}/gallery_${Date.now()}_${file.name}`);
-                await uploadBytes(fileRef, file);
-                return getDownloadURL(fileRef);
-            }));
+            let newGalleryUrls = [];
+            if (media.gallery && media.gallery.length > 0) {
+                const uploadPromises = media.gallery.map(async (file) => {
+                    if (file instanceof File) {
+                        const fileRef = ref(storage, `artists/${user.uid}/gallery_${Date.now()}_${file.name}`);
+                        await uploadBytes(fileRef, file);
+                        return getDownloadURL(fileRef);
+                    }
+                    return null;
+                });
+                const results = await Promise.all(uploadPromises);
+                newGalleryUrls = results.filter(url => url !== null);
+            }
 
             // Combine existing gallery URLs (from previews) with new ones
             // Filter out blob URLs (local previews) from galleryPreviews to get only remote URLs
-            const existingGalleryUrls = galleryPreviews.filter(url => url.startsWith('http'));
+            const existingGalleryUrls = galleryPreviews.filter(url => url.startsWith('http') && !url.startsWith('blob:'));
             const finalGalleryUrls = [...existingGalleryUrls, ...newGalleryUrls];
 
             const artistData = {
@@ -137,12 +145,19 @@ export default function ArtistOnboarding() {
                     profilePicture: profilePictureUrl,
                     gallery: finalGalleryUrls
                 },
-                userId: user.uid,
+                // userId: user.uid, // Redundant if doc ID is uid
                 isProfileComplete: true,
                 updatedAt: new Date(),
             };
 
+            // Ensure document exists for the user before setting artist data if needed, 
+            // but for artist collection we usually use setDoc(..., {merge: true}) which is fine.
+            // However, we must ensure we are writing to the correct path that rules allow: artists/{userId}
+
             await setDoc(doc(db, 'artists', user.uid), artistData, { merge: true });
+
+            // Also update the main user document role if not already artist
+            await setDoc(doc(db, 'users', user.uid), { role: 'artist' }, { merge: true });
 
             router.push('/artist/dashboard');
         } catch (error) {

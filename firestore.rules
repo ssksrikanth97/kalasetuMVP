@@ -17,8 +17,11 @@ service cloud.firestore {
     // 1. Users Collection
     match /users/{userId} {
       allow read: if isAuth(); 
-      allow create: if isAuth(); 
-      allow update: if isOwner(userId) || isAdmin(); 
+      // Allow create if user is authenticated and creating their own document
+      // OR if the requester is an admin
+      allow create: if isAuth() && (request.auth.uid == userId || isAdmin());
+      // Allow update if owner OR admin
+      allow update: if isAuth() && (request.auth.uid == userId || isAdmin());
       allow delete: if isAdmin();
     }
 
@@ -32,8 +35,10 @@ service cloud.firestore {
     // 3. Institutions Collection
     match /institutions/{instId} {
       allow get, list: if true;
-      allow create: if isOwner(instId);
-      allow update: if isOwner(instId) || isAdmin();
+      // Allow create if user is authenticated and ID matches their own
+      allow create: if isAuth() && (request.auth.uid == instId || isAdmin());
+      allow update: if isAuth() && (request.auth.uid == instId || isAdmin());
+      allow delete: if isAdmin();
     }
 
     // 4. Products Collection

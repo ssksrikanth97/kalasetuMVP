@@ -56,9 +56,6 @@ export default function AdminLayout({ children }) {
                     <Link href="/admin/orders" className={getLinkClass('/admin/orders')}>
                         <span className={styles.navIcon}>🛍️</span> Orders
                     </Link>
-                    <Link href="/admin/bookings" className={getLinkClass('/admin/bookings')}>
-                        <span className={styles.navIcon}>📅</span> Bookings
-                    </Link>
                     <Link href="/admin/events" className={getLinkClass('/admin/events')}>
                         <span className={styles.navIcon}>🎉</span> Manage Events
                     </Link>

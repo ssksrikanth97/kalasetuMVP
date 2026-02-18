@@ -3,7 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import styles from '../dashboard/admin.module.css';
 import { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/firebase';
 
 export default function AdminUsers() {
@@ -33,12 +33,21 @@ export default function AdminUsers() {
     // Delete functionality would require API or Cloud Function for Auth deletion. 
     // Here we can only delete from Firestore strictly speaking, but let's disable strictly.
     const deleteUser = async (uid) => {
-        alert("Deleting users is disabled in this static version. Please use the Firebase Console.");
-        /* 
-        if (window.confirm('Are you sure you want to delete this user?')) {
-             // ... 
-        } 
-        */
+        if (!window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
+
+        try {
+            await deleteDoc(doc(db, 'users', uid));
+            // Also try to delete from artists or institutions collections if they exist
+            // We do this blindly effectively or we could check role
+            await deleteDoc(doc(db, 'artists', uid));
+            await deleteDoc(doc(db, 'institutions', uid));
+
+            setUsers(prev => prev.filter(user => user.uid !== uid));
+            alert('User profile deleted from database. Note: Auth, account deletion requires Admin SDK or manual removal in Firebase Console.');
+        } catch (error) {
+            console.error("Error deleting user:", error);
+            alert("Failed to delete user: " + error.message);
+        }
     };
 
     return (
@@ -94,9 +103,15 @@ export default function AdminUsers() {
                                             <Link href={`/admin/users/view?id=${user.uid}`}>
                                                 <button className="btn-secondary">View Details</button>
                                             </Link>
-                                            <button onClick={() => deleteUser(user.uid)} className="btn-danger" style={{ marginLeft: '0.5rem', opacity: 0.5, cursor: 'not-allowed' }}>
-                                                Delete
-                                            </button>
+                                            {user.role !== 'admin' && (
+                                                <button
+                                                    onClick={() => deleteUser(user.uid)}
+                                                    className="btn-danger"
+                                                    style={{ marginLeft: '0.5rem' }}
+                                                >
+                                                    Delete
+                                                </button>
+                                            )}
                                         </td>
                                     </tr>
                                 ))
