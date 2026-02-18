@@ -6,11 +6,14 @@ import TopInstitutions from '@/components/TopInstitutions/TopInstitutions';
 import styles from './page.module.css';
 import { db } from '@/lib/firebase/firebase';
 import { collection, query, where, limit, getDocs, orderBy } from 'firebase/firestore';
+import { useCart } from '@/context/CartContext';
 
 export default function Home() {
   const [featuredEvents, setFeaturedEvents] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,22 +87,24 @@ export default function Home() {
             ))
           ) : featuredEvents.length > 0 ? (
             featuredEvents.map(event => (
-              <div key={event.id} className={styles.card}>
-                <div className={styles.cardImage}>
-                  <img
-                    src={event.imageUrl || defaultImage}
-                    alt={event.name}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    onError={(e) => e.target.src = defaultImage}
-                  />
+              <Link href={`/events/${event.id}`} key={event.id} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className={styles.card}>
+                  <div className={styles.cardImage}>
+                    <img
+                      src={event.imageUrl || defaultImage}
+                      alt={event.name}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={(e) => e.target.src = defaultImage}
+                    />
+                  </div>
+                  <div className={styles.cardContent}>
+                    <p className={styles.cardLabel}>{event.date ? new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Date'}</p>
+                    <h3 className={styles.cardTitle}>{event.name || 'Event Name'}</h3>
+                    {event.location && <p className={styles.cardLocation}>📍 {event.location}</p>}
+                    {event.artists && <p className={styles.cardArtists}>🎤 {event.artists.join(', ')}</p>}
+                  </div>
                 </div>
-                <div className={styles.cardContent}>
-                  <p className={styles.cardLabel}>{event.date ? new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Date'}</p>
-                  <h3 className={styles.cardTitle}>{event.name || 'Event Name'}</h3>
-                  {event.location && <p className={styles.cardLocation}>📍 {event.location}</p>}
-                  {event.artists && <p className={styles.cardArtists}>🎤 {event.artists.join(', ')}</p>}
-                </div>
-              </div>
+              </Link>
             ))
           ) : (
             <div style={{ padding: '2rem', color: '#666' }}>No upcoming events found.</div>
@@ -124,7 +129,12 @@ export default function Home() {
             ))
           ) : featuredProducts.length > 0 ? (
             featuredProducts.map(product => (
-              <div key={product.id} className={styles.card}>
+              <div
+                key={product.id}
+                className={styles.card}
+                onClick={() => setSelectedProduct(product)}
+                style={{ cursor: 'pointer', transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.02)' } }}
+              >
                 <div className={styles.cardImage}>
                   <img
                     src={product.mainImage || defaultImage}
@@ -136,7 +146,20 @@ export default function Home() {
                 <div className={styles.cardContent}>
                   <p className={styles.cardLabel}>{product.categoryId}</p>
                   <h3 className={styles.cardTitle}>{product.productName}</h3>
-                  <p className={styles.cardPrice}>₹{product.price.toLocaleString('en-IN')}</p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                    <p className={styles.cardPrice}>₹{product.price.toLocaleString('en-IN')}</p>
+                    <button
+                      className="btn-primary"
+                      style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(product);
+                        alert("Added to cart!");
+                      }}
+                    >
+                      Add +
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
@@ -145,6 +168,108 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {/* Product Details Modal */}
+      {selectedProduct && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0,0,0,0.6)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000,
+          backdropFilter: 'blur(5px)'
+        }} onClick={() => setSelectedProduct(null)}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '2rem',
+            borderRadius: '16px',
+            maxWidth: '800px',
+            width: '90%',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            position: 'relative',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '2rem',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+          }} onClick={e => e.stopPropagation()}>
+
+            <button
+              onClick={() => setSelectedProduct(null)}
+              style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'none',
+                border: 'none',
+                fontSize: '1.5rem',
+                cursor: 'pointer',
+                color: '#666'
+              }}
+            >
+              ✕
+            </button>
+
+            {/* Left: Image */}
+            <div style={{ height: '400px', borderRadius: '8px', overflow: 'hidden' }}>
+              <img
+                src={selectedProduct.mainImage || defaultImage}
+                alt={selectedProduct.productName}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                onError={(e) => e.target.src = defaultImage}
+              />
+            </div>
+
+            {/* Right: Details */}
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <span style={{
+                color: 'var(--color-maroon)',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                marginBottom: '0.5rem'
+              }}>
+                {selectedProduct.categoryId}
+              </span>
+
+              <h2 style={{ fontSize: '2rem', marginBottom: '1rem', lineHeight: 1.2 }}>{selectedProduct.productName}</h2>
+
+              <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-primary)', marginBottom: '1.5rem' }}>
+                ₹{selectedProduct.price.toLocaleString('en-IN')}
+              </p>
+
+              <p style={{ lineHeight: '1.6', color: '#555', marginBottom: '2rem' }}>
+                {selectedProduct.description || "No description available for this product."}
+              </p>
+
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <button
+                  className="btn-primary"
+                  style={{ flex: 1, padding: '1rem', fontSize: '1rem' }}
+                  onClick={() => {
+                    addToCart(selectedProduct);
+                    setSelectedProduct(null); // Close modal on add? Or keep open? Let's close for now or show toast.
+                    alert("Product added to cart!");
+                  }}
+                >
+                  Add to Cart 🛒
+                </button>
+              </div>
+
+              <div style={{ marginTop: '2rem', paddingTop: '1rem', borderTop: '1px solid #eee', fontSize: '0.9rem', color: '#888' }}>
+                <p>✓ Authentic Quality Guaranteed</p>
+                <p>✓ Secure Shipping Worldwide</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Top Institutions Section */}
       <TopInstitutions />

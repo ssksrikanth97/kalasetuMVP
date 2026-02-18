@@ -40,7 +40,10 @@ export default function AdminInventory() {
                     <h1>Inventory Management</h1>
                     <p>Track products, prices, and stock levels.</p>
                 </div>
-                <div>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <Link href="/admin/inventory/categories">
+                        <button className="btn-secondary" style={{ padding: '0.75rem 1.25rem', fontSize: '0.9rem' }}>Manage Categories</button>
+                    </Link>
                     <Link href="/admin/inventory/new">
                         <button className="btn-primary" style={{ padding: '0.75rem 1.25rem', fontSize: '0.9rem' }}>+ Add Product</button>
                     </Link>

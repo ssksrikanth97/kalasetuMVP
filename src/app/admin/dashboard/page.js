@@ -14,6 +14,15 @@ export default function AdminDashboard() {
     const [notifications, setNotifications] = useState([]);
     const [showAllNotifications, setShowAllNotifications] = useState(false);
 
+    const [metrics, setMetrics] = useState({
+        totalUsers: 0,
+        activeArtists: 0,
+        pendingApprovals: 0,
+        recentUsers: [],
+        totalProducts: 0,
+        totalRevenue: 0,
+    });
+
     // ... existing useEffect ...
 
     const fetchDashboardData = async () => {
