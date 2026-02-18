@@ -2,7 +2,8 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '@/lib/firebase/firebase';
 import dashboardStyles from '../../dashboard/admin.module.css';
 import styles from '../institutions.module.css';
 
@@ -16,48 +17,46 @@ function InstitutionFormContent() {
         email: '',
         phone: '',
         city: '',
-        yearEstablished: '',
         description: '',
         website: '',
         isExclusive: false,
+        gallery: []
     });
     const [loading, setLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(null);
 
     useEffect(() => {
-        if (id) {
-            const fetchInstitution = async () => {
-                setLoading(true);
-                try {
-                    const docRef = doc(db, 'institutions', id);
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        setFormData({
-                            instituteName: data.basicDetails?.instituteName || '',
-                            email: data.basicDetails?.email || '',
-                            phone: data.basicDetails?.mobile || '',
-                            city: data.basicDetails?.city || '',
-                            yearEstablished: data.basicDetails?.yearEstablished || '',
-                            description: data.about?.description || '',
-                            website: data.contact?.website || '',
-                            isExclusive: data.isExclusive || false,
-                        });
-                    } else {
-                        setError('No such institution found!');
-                    }
-                } catch (err) {
-                    setError('Failed to fetch institution data.');
-                    console.error(err);
-                } finally {
-                    setLoading(false);
+        if (!id) return;
+
+        const fetchInstitution = async () => {
+            setLoading(true);
+            try {
+                const docRef = doc(db, 'institutions', id);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    setFormData({
+                        instituteName: data.basicDetails?.instituteName || '',
+                        email: data.basicDetails?.email || '',
+                        phone: data.basicDetails?.mobile || '',
+                        city: data.basicDetails?.city || '',
+                        description: data.description || '',
+                        website: data.basicDetails?.website || '',
+                        isExclusive: data.isExclusive || false,
+                        gallery: data.gallery || [] // Load existing gallery
+                    });
                 }
-            };
-            fetchInstitution();
-        } else {
-            console.log('No ID provided');
-        }
+            } catch (err) {
+                console.error("Error fetching institution:", err);
+                setError("Failed to load institution details.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchInstitution();
     }, [id]);
 
     const handleChange = (e) => {
@@ -68,94 +67,173 @@ function InstitutionFormContent() {
         }));
     };
 
+    const handleImageUpload = async (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        setUploading(true);
+        const newImageUrls = [];
+
+        try {
+            for (const file of files) {
+                const storageRef = ref(storage, `institutions/${id}/gallery/${Date.now()}_${file.name}`);
+                await uploadBytes(storageRef, file);
+                const url = await getDownloadURL(storageRef);
+                newImageUrls.push(url);
+            }
+
+            setFormData(prev => ({
+                ...prev,
+                gallery: [...prev.gallery, ...newImageUrls]
+            }));
+        } catch (error) {
+            console.error("Error uploading images:", error);
+            setError("Failed to upload updated images.");
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const removeImage = (indexToRemove) => {
+        setFormData(prev => ({
+            ...prev,
+            gallery: prev.gallery.filter((_, index) => index !== indexToRemove)
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
-        setSuccess(null);
 
         try {
-            const instRef = doc(db, 'institutions', id);
-            await setDoc(instRef, {
-                isExclusive: formData.isExclusive,
+            const docRef = doc(db, 'institutions', id);
+            await setDoc(docRef, {
                 basicDetails: {
                     instituteName: formData.instituteName,
                     email: formData.email,
                     mobile: formData.phone,
                     city: formData.city,
-                    yearEstablished: formData.yearEstablished,
+                    website: formData.website,
                 },
-                about: { description: formData.description },
-                contact: { primaryEmail: formData.email, website: formData.website },
-                updatedAt: serverTimestamp(),
+                description: formData.description,
+                isExclusive: formData.isExclusive,
+                gallery: formData.gallery, // Save gallery array
+                updatedAt: serverTimestamp()
             }, { merge: true });
 
-            setSuccess('Institution updated successfully! Redirecting...');
-            setTimeout(() => {
-                router.push('/admin/institutions');
-            }, 2000);
-
+            alert("Institution updated successfully!");
+            router.push('/admin/institutions');
         } catch (error) {
-            setError(error.message);
-            console.error("Error saving institution:", error);
+            console.error("Error updating institution:", error);
+            setError("Failed to update institution.");
+        } finally {
             setLoading(false);
         }
     };
+
+    if (loading && !formData.instituteName) return <div>Loading...</div>;
 
     return (
         <main className={dashboardStyles.mainContent}>
             <header className={dashboardStyles.header}>
                 <div className={dashboardStyles.titleGroup}>
                     <h1>Edit Institution</h1>
-                    <p>Update the details below.</p>
+                    <Link href="/admin/institutions" className={styles.backLink}>← Back to List</Link>
                 </div>
             </header>
 
-            <section className={dashboardStyles.contentCard} style={{ padding: '2rem' }}>
+            <section className={dashboardStyles.contentCard}>
                 <form onSubmit={handleSubmit} className={styles.form}>
-                    {loading && <div className="spinner"></div>}
-                    {error && <p className="error-message">{error}</p>}
-                    {success && <p className="success-message">{success}</p>}
+                    {error && <p className="error-message" style={{ color: 'red', marginBottom: '1rem' }}>{error}</p>}
 
                     <div className={styles.formGrid}>
                         <div className={styles.formGroup}>
-                            <label htmlFor="instituteName">Institute Name</label>
-                            <input type="text" id="instituteName" name="instituteName" value={formData.instituteName} onChange={handleChange} required />
+                            <label>Institution Name</label>
+                            <input name="instituteName" value={formData.instituteName} onChange={handleChange} required />
                         </div>
+
                         <div className={styles.formGroup}>
-                            <label htmlFor="email">Contact Email</label>
-                            <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required disabled />
+                            <label>City</label>
+                            <input name="city" value={formData.city} onChange={handleChange} required />
                         </div>
+
                         <div className={styles.formGroup}>
-                            <label htmlFor="phone">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} />
+                            <label>Phone</label>
+                            <input name="phone" value={formData.phone} onChange={handleChange} />
                         </div>
+
                         <div className={styles.formGroup}>
-                            <label htmlFor="city">City</label>
-                            <input type="text" id="city" name="city" value={formData.city} onChange={handleChange} />
+                            <label>Website</label>
+                            <input name="website" value={formData.website} onChange={handleChange} />
                         </div>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="yearEstablished">Year Established</label>
-                            <input type="number" id="yearEstablished" name="yearEstablished" value={formData.yearEstablished} onChange={handleChange} />
-                        </div>
+
                         <div className={styles.formGroup} style={{ gridColumn: '1 / -1' }}>
-                            <label htmlFor="website">Website URL</label>
-                            <input type="url" id="website" name="website" value={formData.website} onChange={handleChange} />
+                            <label>Description</label>
+                            <textarea name="description" value={formData.description} onChange={handleChange} rows={5} />
                         </div>
+
                         <div className={styles.formGroup} style={{ gridColumn: '1 / -1' }}>
-                            <label htmlFor="description">Description</label>
-                            <textarea id="description" name="description" value={formData.description} onChange={handleChange} rows="4"></textarea>
+                            <label>Gallery Images</label>
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                disabled={uploading}
+                                style={{ marginBottom: '1rem' }}
+                            />
+                            {uploading && <p>Uploading images...</p>}
+
+                            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
+                                {formData.gallery.map((url, index) => (
+                                    <div key={index} style={{ position: 'relative', width: '100px', height: '100px' }}>
+                                        <img
+                                            src={url}
+                                            alt={`Gallery ${index}`}
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => removeImage(index)}
+                                            style={{
+                                                position: 'absolute',
+                                                top: '-5px',
+                                                right: '-5px',
+                                                background: 'red',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '50%',
+                                                width: '20px',
+                                                height: '20px',
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontSize: '12px'
+                                            }}
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
+
                         <div className={styles.checkboxGroup}>
-                            <input type="checkbox" id="isExclusive" name="isExclusive" checked={formData.isExclusive} onChange={handleChange} />
-                            <label htmlFor="isExclusive">Mark as Exclusive</label>
-                            <p>Exclusive institutions are featured on the homepage.</p>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <input
+                                    type="checkbox"
+                                    name="isExclusive"
+                                    checked={formData.isExclusive}
+                                    onChange={handleChange}
+                                />
+                                Mark as Exclusive (Featured on Homepage)
+                            </label>
                         </div>
                     </div>
 
-                    <div className={styles.formActions}>
-                        <button type="button" onClick={() => router.back()} className="btn-secondary" disabled={loading}>Cancel</button>
-                        <button type="submit" className="btn-primary" disabled={loading}>
+                    <div className={styles.formActions} style={{ marginTop: '2rem' }}>
+                        <button type="submit" className="btn-primary" disabled={loading || uploading}>
                             {loading ? 'Saving...' : 'Save Changes'}
                         </button>
                     </div>
