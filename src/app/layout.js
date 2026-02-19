@@ -1,9 +1,9 @@
 
-import { Outfit, Inter } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
-const outfit = Outfit({
+const playfair = Playfair_Display({
   variable: "--font-heading",
   subsets: ["latin"],
   display: "swap",
@@ -23,7 +23,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${outfit.variable} ${inter.variable}`}>
+      <body className={`${playfair.variable} ${inter.variable}`}>
         <Providers>{children}</Providers>
       </body>
     </html>

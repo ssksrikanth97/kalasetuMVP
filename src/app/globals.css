@@ -1,24 +1,25 @@
 :root {
-  /* Elegant Indian Classical Theme - Earth Tones */
-  --color-maroon: #f1501c;
-  --color-maroon-dark: #c43e12;
-  --color-maroon-light: #ff7043;
+  /* Elegant Indian Classical Theme - Enhanced Palette */
+  --color-maroon: #7B1E3A;
+  --color-maroon-dark: #581226;
+  --color-maroon-light: #9B2C4D;
 
-  --color-gold: #FFD700;
-  --color-gold-dark: #DAA520;
-  --color-gold-light: #FFE55C;
+  --color-gold: #C6A75E;
+  --color-gold-dark: #A68A45;
+  --color-gold-light: #E0C888;
 
-  --color-beige: #F5F5DC;
-  --color-beige-dark: #E8E4C9;
+  --color-beige: #E8D8C3;
+  --color-beige-dark: #D4C0A5;
+  --color-terracotta: #C4622D;
 
-  --color-text-primary: #333333;
-  --color-text-secondary: #666666;
+  --color-text-primary: #2C2C2C;
+  --color-text-secondary: #5A5A5A;
   --color-text-light: #ffffff;
 
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9f9f9;
-  /* Light Beige background */
-  --bg-glass: rgba(255, 255, 255, 0.8);
+  --bg-primary: #FAF7F2;
+  /* Ivory */
+  --bg-secondary: #ffffff;
+  --bg-glass: rgba(250, 247, 242, 0.85);
 
   /* Spacing */
   --spacing-xs: 0.25rem;
@@ -33,9 +34,10 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
   /* Typography */
-  --font-heading: 'Outfit', sans-serif;
-  /* Example modern font */
-  --font-body: 'Inter', sans-serif;
+  /* --font-heading is set by next/font in layout.js */
+  --font-heading-fallback: 'Times New Roman', serif;
+  /* --font-body is set by next/font in layout.js */
+  --font-body-fallback: 'Arial', sans-serif;
 }
 
 [data-theme='dark'] {
@@ -267,13 +269,16 @@ a:hover {
 
 /* Navbar */
 .navbar {
-  background-color: var(--bg-primary);
-  /* Or glassmorphism */
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(198, 167, 94, 0.2);
+  /* Subtle gold border */
   padding: var(--spacing-md) 0;
   position: sticky;
   top: 0;
   z-index: 1000;
+  transition: all 0.3s ease;
 }
 
 .nav-link {

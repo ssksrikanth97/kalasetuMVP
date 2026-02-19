@@ -2,15 +2,46 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-import TopInstitutions from '@/components/TopInstitutions/TopInstitutions';
 import styles from './page.module.css';
 import { db } from '@/lib/firebase/firebase';
-import { collection, query, where, limit, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, limit, getDocs, orderBy } from 'firebase/firestore';
 import { useCart } from '@/context/CartContext';
+
+const defaultImage = "https://images.unsplash.com/photo-1524230659092-07f99a75c013?q=80&w=500&auto=format&fit=crop";
+
+// Product Modal Component
+const ProductModal = ({ product, onClose, onAddToCart }) => {
+  if (!product) return null;
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, backgroundColor: 'rgba(36, 25, 25, 0.6)', backdropFilter: 'blur(5px)',
+      display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000
+    }} onClick={onClose}>
+      <div style={{
+        backgroundColor: 'white', borderRadius: '16px', padding: '2rem', maxWidth: '900px', width: '90%',
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', position: 'relative',
+        boxShadow: '0 20px 50px rgba(0,0,0,0.2)'
+      }} onClick={e => e.stopPropagation()}>
+        <button onClick={onClose} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#666' }}>✕</button>
+        <div style={{ borderRadius: '12px', overflow: 'hidden', height: '400px' }}>
+          <img src={product.mainImage || defaultImage} alt={product.productName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => e.target.src = defaultImage} />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <span style={{ color: 'var(--color-maroon)', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '0.9rem', marginBottom: '0.5rem' }}>{product.categoryId}</span>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.5rem', marginBottom: '1rem', lineHeight: 1.2 }}>{product.productName}</h2>
+          <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-gold-dark)', marginBottom: '1.5rem' }}>₹{product.price?.toLocaleString('en-IN')}</p>
+          <p style={{ lineHeight: 1.6, color: '#555', marginBottom: '2rem' }}>{product.description || "Experience the authentic craftsmanship of India with this exquisite piece."}</p>
+          <button className="btn-primary" onClick={() => { onAddToCart(product); onClose(); alert("Added to cart"); }}>Add to Cart - ₹{product.price?.toLocaleString('en-IN')}</button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function Home() {
   const [featuredEvents, setFeaturedEvents] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [institutions, setInstitutions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { addToCart } = useCart();
@@ -20,17 +51,21 @@ export default function Home() {
       try {
         setLoading(true);
 
-        // Fetch Approved Events (Showing all for now to ensure visibility)
-        const eventsQuery = query(collection(db, 'events'), limit(4));
+        // 1. Fetch Events
+        const eventsQuery = query(collection(db, 'events'), limit(3));
         const eventsSnap = await getDocs(eventsQuery);
-        const eventsData = eventsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setFeaturedEvents(eventsData);
+        setFeaturedEvents(eventsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
 
-        // Fetch Approved Products (Showing all for now to ensure visibility)
-        const productQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(4));
+        // 2. Fetch Products
+        const productQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(8)); // 8 products for grid
         const productSnap = await getDocs(productQuery);
-        const productData = productSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setFeaturedProducts(productData);
+        setFeaturedProducts(productSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+
+        // 3. Fetch Institutions (Sample limited set)
+        const instQuery = query(collection(db, 'institutions'), limit(6));
+        const instSnap = await getDocs(instQuery);
+        setInstitutions(instSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+
       } catch (error) {
         console.error("Error fetching homepage data:", error);
       } finally {
@@ -41,276 +76,184 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const defaultImage = "https://images.unsplash.com/photo-1524230659092-07f99a75c013?q=80&w=500&auto=format&fit=crop";
-
   return (
-    <div style={{ backgroundColor: '#fff', minHeight: '100vh', paddingBottom: '2rem' }}>
+    <div className={styles.mainContainer}>
       <Navbar />
 
-      {/* Hero Section */}
+      {/* SECTION 1: HERO */}
       <header className={styles.hero} style={{ backgroundImage: 'url("/dance-img.png")' }}>
         <div className={styles.heroOverlay}></div>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroTitle} style={{ color: '#ffffff' }}>
-            Discover the Soul of
-            <span style={{ color: '#f1501c' }}> Indian Classical Arts</span>
+          <span className={styles.heroTagline}>Where Tradition Meets Modernity</span>
+          <h1 className={styles.heroTitle}>
+            Discover the Soul of <br />
+            <span>Indian Classical Arts</span>
           </h1>
           <p className={styles.heroSubtitle}>
-            Connect with verified artists, explore prestigious institutions, and shop for authentic cultural artifacts.
-            The bridge between tradition and the world.
+            Journey into the timeless art forms, exquisite crafts, and rich heritage of India through a curated digital experience.
           </p>
           <div className={styles.ctaGroup}>
-            <Link href="/auth/signup?role=artist">
-              <button className={styles.ctaPrimary}>Join as Artist</button>
-            </Link>
-            <Link href="/shop">
-              <button className={styles.ctaSecondary}>Shop Collection</button>
-            </Link>
+            <Link href="/events" className={styles.ctaPrimary}>Explore Events</Link>
+            <Link href="/shop" className={styles.ctaSecondary}>Visit Marketplace</Link>
           </div>
         </div>
       </header>
 
-      {/* Upcoming Events Section */}
-      <section className={styles.section}>
+      {/* SECTION 2: UPCOMING EVENTS */}
+      <section className={styles.section} style={{ background: '#fff' }}>
         <div className={styles.sectionHeader}>
-          <div>
-            <h2 className={styles.sectionTitle}>Upcoming Events</h2>
-            <p className={styles.sectionSubtitle}>Don't miss these upcoming performances and workshops.</p>
-          </div>
-          <Link href="/admin/events" className={styles.viewAllLink}>View All Events →</Link>
+          <span className={styles.sectionSubtitle}>CULTURAL CALENDAR</span>
+          <h2 className={styles.sectionTitle}>Upcoming Events</h2>
+          <p>Immerse yourself in live performances, workshops, and exhibitions.</p>
         </div>
 
-        <div className={styles.scrollContainer}>
+        <div className={styles.grid}>
           {loading ? (
-            [1, 2, 3, 4].map(n => (
-              <div key={n} className={styles.card} style={{ height: '350px', background: '#f3f4f6' }}></div>
-            ))
+            [1, 2, 3].map(n => <div key={n} style={{ height: 400, background: '#f5f5f5', borderRadius: 16 }}></div>)
           ) : featuredEvents.length > 0 ? (
-            featuredEvents.map(event => (
-              <Link href={`/events/${event.id}`} key={event.id} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div className={styles.card}>
-                  <div className={styles.cardImage}>
-                    <img
-                      src={event.imageUrl || defaultImage}
-                      alt={event.name}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={(e) => e.target.src = defaultImage}
-                    />
+            featuredEvents.map(event => {
+              const dateObj = event.date ? new Date(event.date) : new Date();
+              return (
+                <Link href={`/events/${event.id}`} key={event.id} className={styles.eventCard}>
+                  <div className={styles.cardImageWrapper}>
+                    <img src={event.imageUrl || defaultImage} alt={event.name} onError={e => e.target.src = defaultImage} />
+                    <div className={styles.dateBadge}>
+                      <span className={styles.dateDay}>{dateObj.getDate()}</span>
+                      <span className={styles.dateMonth}>{dateObj.toLocaleString('default', { month: 'short' })}</span>
+                    </div>
                   </div>
                   <div className={styles.cardContent}>
-                    <p className={styles.cardLabel}>{event.date ? new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Date'}</p>
-                    <h3 className={styles.cardTitle}>{event.name || 'Event Name'}</h3>
-                    {event.location && <p className={styles.cardLocation}>📍 {event.location}</p>}
-                    {event.artists && <p className={styles.cardArtists}>🎤 {event.artists.join(', ')}</p>}
+                    <h3 className={styles.cardTitle}>{event.name}</h3>
+                    <div className={styles.cardLocation}>
+                      <span>📍</span> {event.location || 'Online'}
+                    </div>
+                    <p className={styles.cardDesc}>{event.description ? event.description.substring(0, 80) + '...' : 'Join us for this special cultural event.'}</p>
+                    <span className={styles.cardAction}>View Details →</span>
                   </div>
+                </Link>
+              )
+            })
+          ) : (
+            <p style={{ textAlign: 'center', gridColumn: '1/-1' }}>No upcoming events currently listed.</p>
+          )}
+        </div>
+        <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+          <Link href="/events" className={styles.viewAllLink}>View Full Calendar →</Link>
+        </div>
+      </section>
+
+      {/* SECTION 3: MARKETPLACE */}
+      <section className={styles.section} style={{ backgroundColor: 'var(--bg-secondary)' }}>
+        <div className={styles.sectionHeader}>
+          <span className={styles.sectionSubtitle}>CURATED MARKETPLACE</span>
+          <h2 className={styles.sectionTitle}>Artisanal Treasures</h2>
+          <p>Discover hand-picked masterpieces from India's finest artisans.</p>
+        </div>
+
+        <div className={styles.productGrid}>
+          {loading ? (
+            [1, 2, 3, 4].map(n => <div key={n} style={{ height: 350, background: '#eee', borderRadius: 20 }}></div>)
+          ) : featuredProducts.length > 0 ? (
+            featuredProducts.map(product => (
+              <div key={product.id} className={styles.productCard} onClick={() => setSelectedProduct(product)}>
+                <div className={styles.productImage}>
+                  <img src={product.mainImage || defaultImage} alt={product.productName} onError={e => e.target.src = defaultImage} />
                 </div>
+                <span className={styles.productCat}>{product.categoryId}</span>
+                <h3 className={styles.productTitle}>{product.productName}</h3>
+                <span className={styles.productPrice}>₹{product.price?.toLocaleString('en-IN')}</span>
+                <button
+                  className={styles.addToCartBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToCart(product);
+                    alert("Added to cart");
+                  }}
+                >
+                  <span>Add to Cart</span>
+                </button>
+              </div>
+            ))
+          ) : (
+            <p style={{ textAlign: 'center', width: '100%' }}>Marketplace is empty.</p>
+          )}
+        </div>
+        <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+          <Link href="/shop" className="btn-secondary" style={{ padding: '0.8rem 2rem', borderRadius: '50px' }}>Browse All Products</Link>
+        </div>
+      </section>
+
+      {/* SECTION 4: INSTITUTIONS */}
+      <section className={styles.section} style={{ background: '#fff' }}>
+        <div className={styles.sectionHeader}>
+          <span className={styles.sectionSubtitle}>PARTNER NETWORK</span>
+          <h2 className={styles.sectionTitle}>Top Institutions</h2>
+          <p>Collaborating with India's most prestigious cultural centers.</p>
+        </div>
+
+        <div className={styles.institutionScroll}>
+          {loading ? (
+            [1, 2, 3, 4].map(n => <div key={n} style={{ minWidth: 250, height: 200, background: '#f9f9f9' }}></div>)
+          ) : institutions.length > 0 ? (
+            institutions.map(inst => (
+              <Link href={`/institution-details?id=${inst.id}`} key={inst.id} className={styles.instCard} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className={styles.instLogo}>
+                  🏛️
+                </div>
+                <h3>{inst.basicDetails?.instituteName}</h3>
+                <p style={{ fontSize: '0.9rem', color: '#666' }}>{inst.basicDetails?.city || 'India'}</p>
+                <span style={{ marginTop: '1rem', fontSize: '0.8rem', color: 'var(--color-maroon)', fontWeight: '600' }}>Explore Profile</span>
               </Link>
             ))
           ) : (
-            <div style={{ padding: '2rem', color: '#666' }}>No upcoming events found.</div>
+            <p>No institutions found.</p>
           )}
         </div>
       </section>
 
-      {/* Shop Section */}
-      <section className={styles.section} style={{ background: '#fdfbf7' }}>
-        <div className={styles.sectionHeader}>
-          <div>
-            <h2 className={styles.sectionTitle}>Curated Marketplace</h2>
-            <p className={styles.sectionSubtitle}>Authentic instruments, costumes, and accessories.</p>
-          </div>
-          <Link href="/shop" className={styles.viewAllLink}>Visit Shop →</Link>
-        </div>
-
-        <div className={styles.scrollContainer}>
-          {loading ? (
-            [1, 2, 3, 4].map(n => (
-              <div key={n} className={styles.card} style={{ height: '350px', background: '#f3f4f6' }}></div>
-            ))
-          ) : featuredProducts.length > 0 ? (
-            featuredProducts.map(product => (
-              <div
-                key={product.id}
-                className={styles.card}
-                onClick={() => setSelectedProduct(product)}
-                style={{ cursor: 'pointer', transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.02)' } }}
-              >
-                <div className={styles.cardImage}>
-                  <img
-                    src={product.mainImage || defaultImage}
-                    alt={product.productName}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    onError={(e) => e.target.src = defaultImage}
-                  />
-                </div>
-                <div className={styles.cardContent}>
-                  <p className={styles.cardLabel}>{product.categoryId}</p>
-                  <h3 className={styles.cardTitle}>{product.productName}</h3>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
-                    <p className={styles.cardPrice}>₹{product.price.toLocaleString('en-IN')}</p>
-                    <button
-                      className="btn-primary"
-                      style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        addToCart(product);
-                        alert("Added to cart!");
-                      }}
-                    >
-                      Add +
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div style={{ padding: '2rem', color: '#666' }}>No products found in the marketplace.</div>
-          )}
-        </div>
-      </section>
-
-      {/* Product Details Modal */}
-      {selectedProduct && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(0,0,0,0.6)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000,
-          backdropFilter: 'blur(5px)'
-        }} onClick={() => setSelectedProduct(null)}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '2rem',
-            borderRadius: '16px',
-            maxWidth: '800px',
-            width: '90%',
-            maxHeight: '90vh',
-            overflowY: 'auto',
-            position: 'relative',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '2rem',
-            boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
-          }} onClick={e => e.stopPropagation()}>
-
-            <button
-              onClick={() => setSelectedProduct(null)}
-              style={{
-                position: 'absolute',
-                top: '1rem',
-                right: '1rem',
-                background: 'none',
-                border: 'none',
-                fontSize: '1.5rem',
-                cursor: 'pointer',
-                color: '#666'
-              }}
-            >
-              ✕
-            </button>
-
-            {/* Left: Image */}
-            <div style={{ height: '400px', borderRadius: '8px', overflow: 'hidden' }}>
-              <img
-                src={selectedProduct.mainImage || defaultImage}
-                alt={selectedProduct.productName}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                onError={(e) => e.target.src = defaultImage}
-              />
-            </div>
-
-            {/* Right: Details */}
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <span style={{
-                color: 'var(--color-maroon)',
-                fontWeight: '600',
-                fontSize: '0.9rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                marginBottom: '0.5rem'
-              }}>
-                {selectedProduct.categoryId}
-              </span>
-
-              <h2 style={{ fontSize: '2rem', marginBottom: '1rem', lineHeight: 1.2 }}>{selectedProduct.productName}</h2>
-
-              <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-primary)', marginBottom: '1.5rem' }}>
-                ₹{selectedProduct.price.toLocaleString('en-IN')}
-              </p>
-
-              <p style={{ lineHeight: '1.6', color: '#555', marginBottom: '2rem' }}>
-                {selectedProduct.description || "No description available for this product."}
-              </p>
-
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <button
-                  className="btn-primary"
-                  style={{ flex: 1, padding: '1rem', fontSize: '1rem' }}
-                  onClick={() => {
-                    addToCart(selectedProduct);
-                    setSelectedProduct(null); // Close modal on add? Or keep open? Let's close for now or show toast.
-                    alert("Product added to cart!");
-                  }}
-                >
-                  Add to Cart 🛒
-                </button>
-              </div>
-
-              <div style={{ marginTop: '2rem', paddingTop: '1rem', borderTop: '1px solid #eee', fontSize: '0.9rem', color: '#888' }}>
-                <p>✓ Authentic Quality Guaranteed</p>
-                <p>✓ Secure Shipping Worldwide</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Top Institutions Section */}
-      <TopInstitutions />
-
-      {/* Why Choose Us */}
+      {/* SECTION 5: WHY KALASETU */}
       <section className={styles.whySection}>
-        <h2 className={styles.sectionTitle} style={{ textAlign: 'center' }}>Why KalaSetu?</h2>
-        <div className={styles.grid}>
-          <div data-aos="fade-up">
-            <span className={styles.featureIcon} style={{ color: 'var(--color-maroon)' }}>🛡️</span>
-            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>Verified Profiles</h3>
-            <p style={{ color: 'var(--color-text-secondary)' }}>Every artist and institution is vetted to ensure authenticity and quality.</p>
-          </div>
-          <div data-aos="fade-up" data-aos-delay="100">
-            <span className={styles.featureIcon} style={{ color: 'var(--color-gold-dark)' }}>🤝</span>
-            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>Direct Connection</h3>
-            <p style={{ color: 'var(--color-text-secondary)' }}>Connect directly with artists without middlemen for bookings and classes.</p>
-          </div>
-          <div data-aos="fade-up" data-aos-delay="200">
-            <span className={styles.featureIcon} style={{ color: 'var(--color-maroon)' }}>🌏</span>
-            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: 'var(--color-text-primary)' }}>Global Reach</h3>
-            <p style={{ color: 'var(--color-text-secondary)' }}>Bringing Indian Classical Arts to a global audience through technology.</p>
+        <div className="container">
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.5rem', marginBottom: '1rem', color: 'white' }}>Why KalaSetu?</h2>
+          <p style={{ opacity: 0.8, maxWidth: '600px', margin: '0 auto' }}>Bridging the gap between India's classical heritage and the modern world.</p>
+
+          <div className={styles.whyGrid}>
+            <div className={styles.feature}>
+              <span className={styles.featureIcon}>🛡️</span>
+              <h3>Verified Authenticity</h3>
+              <p style={{ fontSize: '0.9rem', opacity: 0.8 }}>Every artist and artifact is vetted for quality and tradition.</p>
+            </div>
+            <div className={styles.feature}>
+              <span className={styles.featureIcon}>🤝</span>
+              <h3>Direct Support</h3>
+              <p style={{ fontSize: '0.9rem', opacity: 0.8 }}>Empowering artisans by connecting them directly to you.</p>
+            </div>
+            <div className={styles.feature}>
+              <span className={styles.featureIcon}>🌏</span>
+              <h3>Global Reach</h3>
+              <p style={{ fontSize: '0.9rem', opacity: 0.8 }}>Taking Indian culture to the world stage.</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <footer className="footer" style={{ borderTop: '1px solid #eee', marginTop: 0 }}>
-        <div className="container" style={{ textAlign: 'center', padding: '4rem 1rem' }}>
-          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', color: 'var(--color-maroon)', marginBottom: '1rem' }}>KalaSetu</h3>
+      <footer className={styles.footer} style={{ borderTop: '1px solid #eee', marginTop: 0, padding: '4rem 1rem', background: '#2C1A1D', color: '#E8D8C3' }}>
+        <div className="container" style={{ textAlign: 'center' }}>
+          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', color: 'var(--color-gold)', marginBottom: '1rem' }}>KalaSetu</h3>
           <p style={{ marginBottom: '2rem', opacity: 0.8, maxWidth: '600px', margin: '0 auto 2rem' }}>
             "Preserving the past, inspiring the future."<br />
             Join us in our mission to keep the eternal flame of Indian Classical Arts burning bright.
           </p>
           <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', marginBottom: '2rem' }}>
-            <Link href="/about" style={{ opacity: 0.7 }}>About Us</Link>
-            <Link href="/contact" style={{ opacity: 0.7 }}>Contact</Link>
-            <Link href="/privacy" style={{ opacity: 0.7 }}>Privacy Policy</Link>
+            <Link href="/about" style={{ opacity: 0.7, color: '#E8D8C3' }}>About Us</Link>
+            <Link href="/contact" style={{ opacity: 0.7, color: '#E8D8C3' }}>Contact</Link>
+            <Link href="/privacy" style={{ opacity: 0.7, color: '#E8D8C3' }}>Privacy Policy</Link>
           </div>
           <p style={{ fontSize: '0.9rem', opacity: 0.5 }}>© 2026 KalaSetu. All rights reserved.</p>
         </div>
       </footer>
+
+      <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onAddToCart={addToCart} />
     </div>
   );
 }
