@@ -40,9 +40,13 @@ export default function CartPage() {
             const docRef = await addDoc(collection(db, 'orders'), orderData);
             console.log("Order written with ID: ", docRef.id);
 
+            // WhatsApp Notification to Admin
+            const message = `New Order Received!%0AOrder ID: ${docRef.id}%0ACustomer: ${user.displayName || user.email}%0AAmount: ₹${totalAmount}%0AItems: ${cartItems.length}`;
+            const whatsappUrl = `https://wa.me/917075976451?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+
             alert(`Order placed successfully! Order ID: ${docRef.id}`);
-            clearCart(); // Assuming this function exists. If not, user will have to manually clear or we reload.
-            // Since I can't verify clearCart exists in one shot, I'll just redirect.
+            clearCart();
             router.push('/customer/dashboard');
 
         } catch (e) {

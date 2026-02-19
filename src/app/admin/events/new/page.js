@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, query, where } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase/firebase';
 import { useRouter } from 'next/navigation';
@@ -16,6 +16,7 @@ export default function NewEventPage() {
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [sendNotification, setSendNotification] = useState(false);
 
     const handleImageChange = (e) => {
         if (e.target.files[0]) {
@@ -45,6 +46,31 @@ export default function NewEventPage() {
                 status: 'Approved', // Auto-approve admin created events
                 createdAt: serverTimestamp(),
             });
+
+            if (sendNotification) {
+                // Fetch Customers and Artists
+                const customerQuery = query(collection(db, 'users'), where('role', '==', 'customer'));
+                const artistQuery = query(collection(db, 'users'), where('role', '==', 'artist'));
+
+                const [custSnap, artistSnap] = await Promise.all([getDocs(customerQuery), getDocs(artistQuery)]);
+
+                const emails = new Set();
+                custSnap.forEach(doc => { if (doc.data().email) emails.add(doc.data().email) });
+                artistSnap.forEach(doc => { if (doc.data().email) emails.add(doc.data().email) });
+
+                if (emails.size > 0) {
+                    await addDoc(collection(db, 'mail_queue'), {
+                        to: Array.from(emails),
+                        message: {
+                            subject: `New Event: ${name}`,
+                            html: `<h1>New Event Announced: ${name}</h1><p>${description}</p><p>Location: ${location}</p><p>Date: ${date}</p><img src="${imageUrl}" alt="${name}" style="max-width:100%"/>`
+                        },
+                        status: 'pending',
+                        createdAt: serverTimestamp()
+                    });
+                    alert(`Newsletter queued for ${emails.size} recipients.`);
+                }
+            }
 
             router.push('/admin/events');
         } catch (err) {
@@ -139,6 +165,17 @@ export default function NewEventPage() {
                         <button type="submit" className="btn-primary" disabled={loading}>
                             {loading ? 'Creating Event...' : 'Create Event'}
                         </button>
+                    </div>
+
+                    <div className={styles.formGroup} style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <input
+                            id="sendNewsletter"
+                            type="checkbox"
+                            checked={sendNotification}
+                            onChange={(e) => setSendNotification(e.target.checked)}
+                            style={{ width: '20px', height: '20px' }}
+                        />
+                        <label htmlFor="sendNewsletter" style={{ margin: 0 }}>Notify Customers & Artists via Email Newsletter</label>
                     </div>
                 </form>
             </div>
