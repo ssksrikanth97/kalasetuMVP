@@ -148,7 +148,7 @@ export default function About() {
 
                     {/* Approach & Commitment */}
                     <div style={{
-                        background: '#1f2937',
+                        background: '#2C1A1D',
                         color: '#fff',
                         borderRadius: '20px',
                         padding: '3rem',

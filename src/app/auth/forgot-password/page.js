@@ -31,47 +31,50 @@ export default function ForgotPassword() {
     };
 
     return (
-        <div className={styles.authContainer}>
-            <div className={styles.authLeft}>
-                <div className={styles.authContent}>
-                    <h2 className={styles.authTitle}>Recover Access</h2>
-                    <p className={styles.authDescription}>
-                        Don't worry, we can help you reset your password.
-                    </p>
-                </div>
-            </div>
-
-            <div className={styles.authRight}>
-                <div className={styles.formCard}>
-                    <div className={styles.formHeader}>
-                        <h3 className={styles.formTitle}>Forgot Password?</h3>
-                        <p className={styles.formSubtitle}>Enter your email to receive a reset link.</p>
+        <div style={{ backgroundColor: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            <Navbar />
+            <div className={styles.authContainer}>
+                <div className={styles.authLeft}>
+                    <div className={styles.authContent}>
+                        <h2 className={styles.authTitle}>Recover Access</h2>
+                        <p className={styles.authDescription}>
+                            Don't worry, we can help you reset your password.
+                        </p>
                     </div>
+                </div>
 
-                    {message && <div style={{ marginBottom: '1rem', padding: '0.75rem', borderRadius: '4px', backgroundColor: '#dcfce7', color: '#166534', textAlign: 'center' }}>{message}</div>}
-                    {error && <div style={{ marginBottom: '1rem', padding: '0.75rem', borderRadius: '4px', backgroundColor: '#fee2e2', color: '#b91c1c', textAlign: 'center' }}>{error}</div>}
-
-                    <form onSubmit={handleSubmit}>
-                        <div className={styles.inputGroup}>
-                            <label className={styles.label}>Email Address</label>
-                            <input
-                                type="email"
-                                name="email"
-                                className={styles.input}
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                placeholder="Enter your registered email"
-                            />
+                <div className={styles.authRight}>
+                    <div className={styles.formCard}>
+                        <div className={styles.formHeader}>
+                            <h3 className={styles.formTitle}>Forgot Password?</h3>
+                            <p className={styles.formSubtitle}>Enter your email to receive a reset link.</p>
                         </div>
 
-                        <button type="submit" className={styles.submitBtn} disabled={loading}>
-                            {loading ? 'Sending...' : 'Send Reset Link'}
-                        </button>
-                    </form>
+                        {message && <div style={{ marginBottom: '1rem', padding: '0.75rem', borderRadius: '4px', backgroundColor: '#dcfce7', color: '#166534', textAlign: 'center' }}>{message}</div>}
+                        {error && <div style={{ marginBottom: '1rem', padding: '0.75rem', borderRadius: '4px', backgroundColor: '#fee2e2', color: '#b91c1c', textAlign: 'center' }}>{error}</div>}
 
-                    <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-                        <Link href="/auth/login" className={styles.link}>Back to Login</Link>
+                        <form onSubmit={handleSubmit}>
+                            <div className={styles.inputGroup}>
+                                <label className={styles.label}>Email Address</label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    className={styles.input}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                    placeholder="Enter your registered email"
+                                />
+                            </div>
+
+                            <button type="submit" className={styles.submitBtn} disabled={loading}>
+                                {loading ? 'Sending...' : 'Send Reset Link'}
+                            </button>
+                        </form>
+
+                        <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+                            <Link href="/auth/login" className={styles.link}>Back to Login</Link>
+                        </div>
                     </div>
                 </div>
             </div>

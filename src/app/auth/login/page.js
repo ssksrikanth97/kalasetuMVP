@@ -122,15 +122,7 @@ export default function LoginPage() {
             <div className={styles.authContainer}>
                 <div className={styles.authLeft}>
                     <div className={styles.authContent}>
-                        <div style={{ position: 'relative', width: '250px', height: '80px', marginBottom: '1rem' }}>
-                            <Image
-                                src="/logo.png"
-                                alt="KalaSetu"
-                                fill
-                                style={{ objectFit: 'contain', objectPosition: 'left' }}
-                                priority
-                            />
-                        </div>
+                        <h2 className={styles.authTitle}>Welcome to Kalasetu</h2>
                         <p className={styles.authDescription}>
                             "The bridge between tradition and the world."<br /><br />
                             Sign in to access curated Indian classical arts, verified artists, and authentic products.
