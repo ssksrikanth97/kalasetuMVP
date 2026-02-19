@@ -72,11 +72,11 @@ export default function Footer() {
                             {/* Address Removed as per request */}
                             <div className={styles.contactItem}>
                                 <span>📞</span>
-                                <span>+91 11 2345 6789</span>
+                                <span>70759 76451</span>
                             </div>
                             <div className={styles.contactItem}>
                                 <span>✉️</span>
-                                <span>namaste@kalasetu.in</span>
+                                <span>kalasetuarts@gmail.com</span>
                             </div>
                         </div>
                     </div>

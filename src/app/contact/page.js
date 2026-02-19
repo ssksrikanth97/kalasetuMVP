@@ -15,11 +15,11 @@ export default function Contact() {
                     <div style={{ display: 'grid', gap: '1.5rem' }}>
                         <div>
                             <h3 style={{ marginBottom: '0.5rem' }}>Email</h3>
-                            <a href="mailto:support@kalasetu.art" style={{ color: 'var(--color-maroon)' }}>support@kalasetu.art</a>
+                            <a href="mailto:kalasetuarts@gmail.com" style={{ color: 'var(--color-maroon)' }}>kalasetuarts@gmail.com</a>
                         </div>
                         <div>
                             <h3 style={{ marginBottom: '0.5rem' }}>Phone</h3>
-                            <p>+91 98765 43210</p>
+                            <p>70759 76451</p>
                         </div>
 
                     </div>
