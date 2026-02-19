@@ -1,6 +1,5 @@
 'use client';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import Image from 'next/image';
 import styles from '../explore.module.css';
 
@@ -174,7 +173,7 @@ export default function About() {
                 </div>
             </main>
 
-            <Footer />
+
         </div>
     );
 }
