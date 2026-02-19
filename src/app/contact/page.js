@@ -21,10 +21,7 @@ export default function Contact() {
                             <h3 style={{ marginBottom: '0.5rem' }}>Phone</h3>
                             <p>+91 98765 43210</p>
                         </div>
-                        <div>
-                            <h3 style={{ marginBottom: '0.5rem' }}>Address</h3>
-                            <p>KalaSetu Art Foundation<br />123 Culture Street, Heritage City<br />Mumbai, Maharashtra, India - 400001</p>
-                        </div>
+
                     </div>
                 </div>
             </div>

@@ -2,6 +2,7 @@
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import Footer from "@/components/Footer";
 
 const playfair = Playfair_Display({
   variable: "--font-heading",
@@ -24,7 +25,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${playfair.variable} ${inter.variable}`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
