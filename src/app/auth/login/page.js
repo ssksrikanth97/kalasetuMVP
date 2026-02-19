@@ -1,6 +1,5 @@
 'use client';
 import { useState } from 'react';
-import Image from 'next/image';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase/firebase';
