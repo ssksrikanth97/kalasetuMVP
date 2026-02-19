@@ -1,6 +1,8 @@
 :root {
   /* Elegant Indian Classical Theme - Enhanced Palette */
-  --color-maroon: #7B1E3A;
+  --color-brand: #F1501C;
+  --color-maroon: #F1501C;
+  --color-maroon1: #7B1E3A;
   --color-maroon-dark: #581226;
   --color-maroon-light: #9B2C4D;
 
@@ -70,7 +72,7 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading);
-  color: var(--color-maroon);
+  color: var(--color-brand);
   margin-bottom: var(--spacing-md);
 }
 
