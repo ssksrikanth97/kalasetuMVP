@@ -2,7 +2,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { auth, db } from '@/lib/firebase/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
@@ -55,9 +55,7 @@ function SignupForm() {
             });
 
             // Send OTP email via mail_queue
-            const collectionRef = require('firebase/firestore').collection;
-            const addDocFn = require('firebase/firestore').addDoc;
-            await addDocFn(collectionRef(db, 'mail_queue'), {
+            await addDoc(collection(db, 'mail_queue'), {
                 to: [formData.email],
                 message: {
                     subject: 'Verify your email - KalaSetu',
