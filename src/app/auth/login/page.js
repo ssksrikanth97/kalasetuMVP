@@ -6,7 +6,7 @@ import { auth, db } from '@/lib/firebase/firebase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-import styles from '../auth.module.css';
+import styles from '@/app/auth/auth.module.css';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');

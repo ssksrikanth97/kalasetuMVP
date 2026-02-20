@@ -42,6 +42,7 @@ export default function Home() {
   const [featuredEvents, setFeaturedEvents] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [institutions, setInstitutions] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { addToCart } = useCart();
@@ -65,6 +66,11 @@ export default function Home() {
         const instQuery = query(collection(db, 'institutions'), limit(6));
         const instSnap = await getDocs(instQuery);
         setInstitutions(instSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+
+        // 4. Fetch Testimonials
+        const testimonialQuery = query(collection(db, 'testimonials'));
+        const testimonialSnap = await getDocs(testimonialQuery);
+        setTestimonials(testimonialSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
 
       } catch (error) {
         console.error("Error fetching homepage data:", error);
@@ -234,7 +240,27 @@ export default function Home() {
         </div>
       </section >
 
-
+      {/* SECTION 6: TESTIMONIALS */}
+      {!loading && testimonials.length > 0 && (
+        <section className={styles.testimonialsSection}>
+          <div className={styles.sectionHeader} style={{ marginBottom: '3rem' }}>
+            <h2 className={styles.sectionTitle}>What People Say</h2>
+            <p>Voices from our vibrant community of artists and art lovers.</p>
+          </div>
+          <div className={styles.testimonialTrack}>
+            {/* Duplicate the array to create a seamless scrolling loop */}
+            {[...testimonials, ...testimonials, ...testimonials].map((t, index) => (
+              <div key={`${t.id}-${index}`} className={styles.testimonialCard}>
+                {t.logoImg && (
+                  <img src={t.logoImg} alt={t.title} className={styles.testimonialLogo} />
+                )}
+                <p className={styles.testimonialText}>"{t.description}"</p>
+                <h4 className={styles.testimonialTitle}>- {t.title}</h4>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onAddToCart={addToCart} />
     </div >

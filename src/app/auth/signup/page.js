@@ -6,7 +6,7 @@ import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
-import styles from '../auth.module.css';
+import styles from '@/app/auth/auth.module.css';
 
 function SignupForm() {
     const searchParams = useSearchParams();

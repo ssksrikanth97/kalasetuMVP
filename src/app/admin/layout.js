@@ -62,6 +62,9 @@ export default function AdminLayout({ children }) {
                     <Link href="/admin/institutions" className={getLinkClass('/admin/institutions')}>
                         <span className={styles.navIcon}>🏢</span> Manage Institutions
                     </Link>
+                    <Link href="/admin/testimonials" className={getLinkClass('/admin/testimonials')}>
+                        <span className={styles.navIcon}>💬</span> Testimonials
+                    </Link>
                     <Link href="/" target="_blank" className={styles.navItem} style={{ marginTop: 'auto' }}>
                         <span className={styles.navIcon}>🌐</span> Live Site
                     </Link>
