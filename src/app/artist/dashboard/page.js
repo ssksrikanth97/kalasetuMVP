@@ -14,6 +14,31 @@ export default function ArtistDashboard() {
     const [loading, setLoading] = useState(true);
     const [orders, setOrders] = useState([]);
     const [isEmailVerified, setIsEmailVerified] = useState(true);
+    const [profileCompletion, setProfileCompletion] = useState(0);
+
+    const calculateArtistCompletion = (data) => {
+        if (!data) return 0;
+        let score = 0;
+        let total = 10;
+
+        const pd = data.personalDetails || {};
+        if (pd.name) score++;
+        if (pd.phone) score++;
+        if (pd.gender) score++;
+        if (pd.location) score++;
+        if (pd.specialization) score++;
+
+        const prof = data.professionalDetails || {};
+        if (prof.bio) score++;
+        if (prof.experience) score++;
+        if (prof.instagram || prof.youtube || prof.website) score++;
+
+        const m = data.media || {};
+        if (m.profilePicture) score++;
+        if (m.gallery && m.gallery.length > 0) score++;
+
+        return Math.round((score / total) * 100);
+    };
 
     useEffect(() => {
         if (!user) return;
@@ -23,7 +48,9 @@ export default function ArtistDashboard() {
                 // Fetch Artist Profile
                 const artistDoc = await getDoc(doc(db, 'artists', user.uid));
                 if (artistDoc.exists()) {
-                    setArtistData(artistDoc.data());
+                    const data = artistDoc.data();
+                    setArtistData(data);
+                    setProfileCompletion(calculateArtistCompletion(data));
                 }
 
                 // Fetch User Details to check Email Verification status
@@ -100,6 +127,21 @@ export default function ArtistDashboard() {
             )}
 
             <div className={styles.dashboardContainer}>
+
+                {profileCompletion < 100 && (
+                    <div style={{ padding: '2rem', marginBottom: '2rem', borderLeft: '4px solid var(--color-orange)', backgroundColor: '#fff8f1', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                            <div>
+                                <h3 style={{ color: 'var(--color-maroon)', marginBottom: '0.5rem', marginTop: 0 }}>Complete Your Profile</h3>
+                                <p style={{ margin: 0, color: '#666' }}>Your profile is {profileCompletion}% complete. Add your details for more visibility on the platform.</p>
+                            </div>
+                            <Link href="/artist/onboarding" className="btn-primary" style={{ backgroundColor: 'var(--color-orange)', border: 'none' }}>Complete Now</Link>
+                        </div>
+                        <div style={{ height: '8px', width: '100%', backgroundColor: '#fcd34d', borderRadius: '4px', marginTop: '1.5rem', overflow: 'hidden' }}>
+                            <div style={{ height: '100%', width: `${profileCompletion}%`, backgroundColor: 'var(--color-orange)', transition: 'width 0.5s ease-in-out' }}></div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Header / Profile Resume Section */}
                 <header className={styles.headerSection}>
