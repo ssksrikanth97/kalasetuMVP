@@ -19,7 +19,7 @@ function SignupForm() {
         email: '',
         phone: '',
         password: '',
-        role: 'customer', // Default
+        role: 'artist', // Default
     });
 
     useEffect(() => {
@@ -42,12 +42,29 @@ function SignupForm() {
             const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
             const user = userCredential.user;
 
+            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
             await setDoc(doc(db, 'users', user.uid), {
                 name: formData.name,
                 email: formData.email,
                 phone: formData.phone,
                 role: formData.role,
+                isEmailVerified: false,
+                emailOtp: otp,
                 createdAt: serverTimestamp(),
+            });
+
+            // Send OTP email via mail_queue
+            const collectionRef = require('firebase/firestore').collection;
+            const addDocFn = require('firebase/firestore').addDoc;
+            await addDocFn(collectionRef(db, 'mail_queue'), {
+                to: [formData.email],
+                message: {
+                    subject: 'Verify your email - KalaSetu',
+                    html: `<h1>Welcome to KalaSetu!</h1><p>Your email verification OTP is: <strong>${otp}</strong></p>`
+                },
+                status: 'pending',
+                createdAt: serverTimestamp()
             });
 
             if (formData.role === 'artist') {
@@ -57,10 +74,10 @@ function SignupForm() {
                     status: 'pending',
                     createdAt: serverTimestamp(),
                 });
-                router.push('/artist/onboarding'); // Redirect to onboarding
-            } else {
-                router.push(`/${formData.role}/dashboard`);
             }
+
+            // Redirect everyone to verify their email via OTP
+            router.push('/auth/verify-email');
 
         } catch (err) {
             console.error(err);

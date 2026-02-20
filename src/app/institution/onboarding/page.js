@@ -6,7 +6,7 @@ import { db, storage } from '@/lib/firebase/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Navbar from '@/components/Navbar';
-import styles from '../../artist/onboarding/onboarding.module.css'; // Reusing the same CSS
+import styles from '@/app/artist/onboarding/onboarding.module.css'; // Reusing the same CSS
 
 const Steps = { 1: 'Basic Information', 2: 'About & Contact', 3: 'Logo & Media' };
 
@@ -15,7 +15,7 @@ export default function InstitutionOnboarding() {
     const router = useRouter();
     const [currentStep, setCurrentStep] = useState(1);
     const [loading, setLoading] = useState(false);
-    
+
     // Form Data
     const [basicDetails, setBasicDetails] = useState({ instituteName: '', city: '', yearEstablished: '' });
     const [about, setAbout] = useState({ description: '' });
@@ -60,7 +60,7 @@ export default function InstitutionOnboarding() {
             };
 
             await setDoc(doc(db, 'institutions', user.uid), institutionData, { merge: true });
-            
+
             router.push('/institution/dashboard');
         } catch (error) {
             console.error("Onboarding error:", error);
@@ -94,7 +94,7 @@ export default function InstitutionOnboarding() {
                                 <label>City, State</label>
                                 <input name="city" value={basicDetails.city} onChange={handleBasicChange} placeholder="e.g., Chennai, Tamil Nadu" />
                             </div>
-                             <div className={styles.inputGroup}>
+                            <div className={styles.inputGroup}>
                                 <label>Year Established</label>
                                 <input name="yearEstablished" type="number" value={basicDetails.yearEstablished} onChange={handleBasicChange} placeholder="e.g., 1936" />
                             </div>

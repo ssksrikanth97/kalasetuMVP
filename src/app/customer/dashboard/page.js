@@ -3,16 +3,31 @@ import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { db } from '@/lib/firebase/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function CustomerDashboard() {
     const { user, userRole, loading } = useAuth();
     const router = useRouter();
+    const [isEmailVerified, setIsEmailVerified] = useState(true);
 
     useEffect(() => {
         if (!loading && (!user || userRole !== 'customer')) {
             // router.push('/auth/login'); // Redirect if not authorized
+            return;
         }
+
+        const fetchUserData = async () => {
+            if (user) {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (userDoc.exists()) {
+                    setIsEmailVerified(userDoc.data().isEmailVerified ?? false);
+                }
+            }
+        };
+
+        fetchUserData();
     }, [user, userRole, loading, router]);
 
     if (loading) return <div>Loading...</div>;
@@ -20,6 +35,13 @@ export default function CustomerDashboard() {
     return (
         <div style={{ backgroundColor: 'var(--bg-secondary)', minHeight: '100vh' }}>
             <Navbar />
+
+            {!isEmailVerified && (
+                <div style={{ backgroundColor: '#fee2e2', color: '#b91c1c', padding: '1rem', textAlign: 'center', fontWeight: '500' }}>
+                    Your email is not verified yet. Please <Link href="/auth/verify-email" style={{ textDecoration: 'underline', fontWeight: '700' }}>verify your email</Link> to secure your account.
+                </div>
+            )}
+
             <div className="container" style={{ padding: '2rem 1rem' }}>
                 <h1 style={{ color: 'var(--color-maroon)', marginBottom: '1.5rem' }}>Customer Dashboard</h1>
                 <div className="card glass-panel" style={{ marginBottom: '2rem' }}>

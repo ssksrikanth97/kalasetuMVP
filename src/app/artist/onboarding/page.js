@@ -6,7 +6,7 @@ import { db, storage } from '@/lib/firebase/firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Navbar from '@/components/Navbar';
-import styles from './onboarding.module.css';
+import styles from '@/app/artist/onboarding/onboarding.module.css';
 
 const Steps = { 1: 'Personal Details', 2: 'Professional Info', 3: 'Media' };
 
@@ -175,7 +175,12 @@ export default function ArtistOnboarding() {
                 <div className={styles.formContainer}>
                     <div className={styles.stepper}>
                         {[1, 2, 3].map(step => (
-                            <div key={step} className={`${styles.step} ${currentStep === step ? styles.activeStep : ''}`}>
+                            <div
+                                key={step}
+                                className={`${styles.step} ${currentStep === step ? styles.activeStep : ''}`}
+                                onClick={() => setCurrentStep(step)}
+                                style={{ cursor: 'pointer' }}
+                            >
                                 {Steps[step]}
                             </div>
                         ))}
@@ -262,8 +267,9 @@ export default function ArtistOnboarding() {
                         </div>
                     )}
 
-                    <div className={styles.navigation}>
-                        {currentStep > 1 ? <button onClick={prevStep} className={styles.btnSecondary}>Back</button> : <div></div>}
+                    <div className={styles.navigation} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                        <button onClick={() => router.push('/artist/dashboard')} className={styles.btnSecondary} style={{ marginRight: 'auto', outline: 'none', border: 'none', backgroundColor: 'transparent', textDecoration: 'underline' }}>Cancel</button>
+                        {currentStep > 1 ? <button onClick={prevStep} className={styles.btnSecondary}>Back</button> : null}
                         {currentStep < 3 && <button onClick={nextStep} className={styles.btnPrimary}>Next</button>}
                         {currentStep === 3 && <button onClick={handleSubmit} disabled={loading} className={styles.btnPrimary}>{loading ? 'Saving...' : 'Finish & Save'}</button>}
                     </div>

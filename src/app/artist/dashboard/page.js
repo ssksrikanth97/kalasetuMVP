@@ -6,13 +6,14 @@ import { useAuth } from '@/context/AuthContext';
 import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase/firebase';
 import Navbar from '@/components/Navbar';
-import styles from './artist-dashboard.module.css';
+import styles from '@/app/artist/dashboard/artist-dashboard.module.css';
 
 export default function ArtistDashboard() {
     const { user, loading: authLoading } = useAuth();
     const [artistData, setArtistData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [orders, setOrders] = useState([]);
+    const [isEmailVerified, setIsEmailVerified] = useState(true);
 
     useEffect(() => {
         if (!user) return;
@@ -23,6 +24,12 @@ export default function ArtistDashboard() {
                 const artistDoc = await getDoc(doc(db, 'artists', user.uid));
                 if (artistDoc.exists()) {
                     setArtistData(artistDoc.data());
+                }
+
+                // Fetch User Details to check Email Verification status
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (userDoc.exists()) {
+                    setIsEmailVerified(userDoc.data().isEmailVerified ?? false);
                 }
 
                 // Fetch Orders
@@ -85,6 +92,13 @@ export default function ArtistDashboard() {
     return (
         <div style={{ backgroundColor: '#f3f4f6', minHeight: '100vh' }}>
             <Navbar />
+
+            {!isEmailVerified && (
+                <div style={{ backgroundColor: '#fee2e2', color: '#b91c1c', padding: '1rem', textAlign: 'center', fontWeight: '500' }}>
+                    Your email is not verified yet. Please <Link href="/auth/verify-email" style={{ textDecoration: 'underline', fontWeight: '700' }}>verify your email</Link> to secure your account.
+                </div>
+            )}
+
             <div className={styles.dashboardContainer}>
 
                 {/* Header / Profile Resume Section */}
