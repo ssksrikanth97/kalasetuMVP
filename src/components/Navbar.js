@@ -151,22 +151,25 @@ export default function Navbar() {
                 @media (max-width: 768px) {
                     .mobile-menu-btn {
                         display: block;
+                        position: relative;
+                        z-index: 101;
                     }
 
                     .nav-links-container {
-                        position: fixed;
-                        top: 0;
+                        position: absolute;
+                        top: 100%;
                         left: 0;
                         right: 0;
-                        bottom: 0;
-                        background-color: rgba(255, 255, 255, 0.98);
-                        backdrop-filter: blur(10px);
+                        height: 100vh;
+                        background-color: #ffffff;
                         flex-direction: column;
-                        justify-content: center;
+                        justify-content: flex-start;
+                        align-items: center;
                         padding: 2rem;
-                        transform: translateY(-100%);
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                        transform: translateY(-10px);
                         transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-                        z-index: 100;
+                        z-index: 99;
                         opacity: 0;
                         visibility: hidden;
                         overflow-y: auto;
