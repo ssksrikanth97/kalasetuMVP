@@ -75,6 +75,8 @@ function SignupForm() {
             }
 
             // Redirect everyone to verify their email via OTP
+            alert(`TESTING MODE: Your initial OTP is ${otp}`);
+            console.log("INITIAL TESTING OTP:", otp);
             router.push('/auth/verify-email');
 
         } catch (err) {

@@ -103,7 +103,11 @@ export default function VerifyEmail() {
 
             // Update local state so testing works without refreshing
             setUserData(prev => ({ ...prev, emailOtp: newOtp }));
-            setSuccess('New OTP has been sent to your email.');
+            setSuccess('New OTP has been generated. (Check your email, or use the alert if testing locally)');
+
+            // Fallback for local testing if emails are slow
+            console.log("TESTING OTP:", newOtp);
+            alert(`TESTING MODE: Your OTP is ${newOtp}`);
 
         } catch (err) {
             console.error('Error resending OTP:', err);
