@@ -15,6 +15,7 @@ export default function ArtistDashboard() {
     const [orders, setOrders] = useState([]);
     const [isEmailVerified, setIsEmailVerified] = useState(true);
     const [profileCompletion, setProfileCompletion] = useState(0);
+    const [selectedImageIndex, setSelectedImageIndex] = useState(null);
 
     const calculateArtistCompletion = (data) => {
         if (!data) return 0;
@@ -96,7 +97,33 @@ export default function ArtistDashboard() {
     }, [user]);
 
     if (authLoading || loading) {
-        return <div className="page-loading">Loading your portfolio...</div>;
+        return (
+            <div style={{ backgroundColor: '#f3f4f6', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <Navbar />
+                <div className={styles.dashboardContainer} style={{ paddingTop: '2rem' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginBottom: '2rem', padding: '2rem', backgroundColor: 'white', borderRadius: '16px' }}>
+                        <div style={{ width: '150px', height: '150px', borderRadius: '50%', backgroundColor: '#e5e7eb', animation: 'pulse 1.5s infinite' }}></div>
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center', minWidth: '250px' }}>
+                            <div style={{ width: '40%', height: '30px', backgroundColor: '#e5e7eb', borderRadius: '8px', animation: 'pulse 1.5s infinite' }}></div>
+                            <div style={{ width: '30%', height: '20px', backgroundColor: '#e5e7eb', borderRadius: '8px', animation: 'pulse 1.5s infinite' }}></div>
+                            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                                <div style={{ width: '100px', height: '16px', backgroundColor: '#e5e7eb', borderRadius: '8px', animation: 'pulse 1.5s infinite' }}></div>
+                                <div style={{ width: '100px', height: '16px', backgroundColor: '#e5e7eb', borderRadius: '8px', animation: 'pulse 1.5s infinite' }}></div>
+                                <div style={{ width: '100px', height: '16px', backgroundColor: '#e5e7eb', borderRadius: '8px', animation: 'pulse 1.5s infinite' }}></div>
+                            </div>
+                            <div style={{ width: '80%', height: '16px', backgroundColor: '#e5e7eb', borderRadius: '8px', animation: 'pulse 1.5s infinite', marginTop: '1rem' }}></div>
+                            <div style={{ width: '70%', height: '16px', backgroundColor: '#e5e7eb', borderRadius: '8px', animation: 'pulse 1.5s infinite' }}></div>
+                        </div>
+                    </div>
+                </div>
+                <style>{`
+                    @keyframes pulse {
+                        0%, 100% { opacity: 1; }
+                        50% { opacity: .5; }
+                    }
+                `}</style>
+            </div>
+        );
     }
 
     if (!artistData) {
@@ -188,17 +215,59 @@ export default function ArtistDashboard() {
                         <h2 className={styles.sectionTitle}>Portfolio Gallery</h2>
                         <div className={styles.galleryGrid}>
                             {media.gallery.map((imgUrl, index) => (
-                                <div key={index} className={styles.galleryItem}>
+                                <div
+                                    key={index}
+                                    className={styles.galleryItem}
+                                    onClick={() => setSelectedImageIndex(index)}
+                                    style={{ cursor: 'pointer' }}
+                                >
                                     <Image
                                         src={imgUrl}
                                         alt={`Gallery ${index + 1}`}
                                         fill
                                         className={styles.galleryImage}
+                                        style={{ transition: 'transform 0.3s' }}
+                                        onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                                        onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                                    />
+                                    <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0)', transition: 'background-color 0.3s' }}
+                                        onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.1)'}
+                                        onMouseOut={e => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0)'}
                                     />
                                 </div>
                             ))}
                         </div>
                     </section>
+                )}
+
+                {/* Full Screen Gallery Modal / Carousel */}
+                {selectedImageIndex !== null && (
+                    <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.95)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setSelectedImageIndex(null)}>
+                        <button onClick={() => setSelectedImageIndex(null)} style={{ position: 'absolute', top: '20px', right: '30px', color: 'white', fontSize: '3rem', background: 'none', border: 'none', cursor: 'pointer', zIndex: 10000 }}>&times;</button>
+
+                        <button
+                            onClick={(e) => { e.stopPropagation(); setSelectedImageIndex(prev => prev > 0 ? prev - 1 : media.gallery.length - 1); }}
+                            style={{ position: 'absolute', left: '20px', color: 'white', fontSize: '4rem', background: 'none', border: 'none', cursor: 'pointer', zIndex: 10000, padding: '20px' }}>
+                            &#8249;
+                        </button>
+
+                        <div style={{ position: 'relative', width: '80vw', height: '80vh' }} onClick={e => e.stopPropagation()}>
+                            <img
+                                src={media.gallery[selectedImageIndex]}
+                                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                alt={`Gallery View ${selectedImageIndex + 1}`}
+                            />
+                            <div style={{ position: 'absolute', bottom: '-40px', left: '0', right: '0', textAlign: 'center', color: 'white' }}>
+                                {selectedImageIndex + 1} of {media.gallery.length}
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={(e) => { e.stopPropagation(); setSelectedImageIndex(prev => prev < media.gallery.length - 1 ? prev + 1 : 0); }}
+                            style={{ position: 'absolute', right: '20px', color: 'white', fontSize: '4rem', background: 'none', border: 'none', cursor: 'pointer', zIndex: 10000, padding: '20px' }}>
+                            &#8250;
+                        </button>
+                    </div>
                 )}
 
                 {/* Orders Table */}
