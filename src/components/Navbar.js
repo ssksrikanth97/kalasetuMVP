@@ -165,12 +165,17 @@ export default function Navbar() {
                         justify-content: center;
                         padding: 2rem;
                         transform: translateY(-100%);
-                        transition: transform 0.3s ease-in-out;
+                        transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
                         z-index: 100;
+                        opacity: 0;
+                        visibility: hidden;
+                        overflow-y: auto;
                     }
 
                     .nav-links-container.active {
                         transform: translateY(0);
+                        opacity: 1;
+                        visibility: visible;
                     }
 
                     .nav-link {
