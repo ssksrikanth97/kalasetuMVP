@@ -6,6 +6,7 @@ import { db } from '@/lib/firebase/firebase';
 import { useCart } from '@/context/CartContext';
 import { useStoreSettings } from '@/context/StoreSettingsContext';
 import Navbar from '@/components/Navbar';
+import Link from 'next/link';
 import styles from '../explore.module.css';
 import Toast from '@/components/Toast';
 import BulkEnquiryModal from '@/components/BulkEnquiryModal';
@@ -148,44 +149,47 @@ export default function Shop() {
                                 {filteredProducts.map((product) => (
                                     <div key={product.id} className={styles.card}>
                                         <div className={styles.cardContent}>
-                                            <img
-                                                src={product.mainImage || defaultImage}
-                                                alt={product.productName}
-                                                className={styles.cardImage}
-                                                style={{
-                                                    marginBottom: '1rem',
-                                                    borderRadius: '8px',
-                                                    width: '100%',
-                                                    height: '200px',
-                                                    objectFit: 'cover'
-                                                }}
-                                                onError={(e) => e.target.src = defaultImage}
-                                            />
+                                            <Link href={`/products/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <img
+                                                    src={product.mainImage || defaultImage}
+                                                    alt={product.productName}
+                                                    className={styles.cardImage}
+                                                    style={{
+                                                        marginBottom: '1rem',
+                                                        borderRadius: '8px',
+                                                        width: '100%',
+                                                        height: '200px',
+                                                        objectFit: 'cover',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                    onError={(e) => e.target.src = defaultImage}
+                                                />
 
-                                            <div
-                                                style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    alignItems: 'flex-start'
-                                                }}
-                                            >
-                                                <div>
-                                                    <h3
-                                                        className={styles.cardTitle}
-                                                        style={{ fontSize: '1.1rem', margin: 0 }}
-                                                    >
-                                                        {product.productName}
-                                                    </h3>
-                                                    <p
-                                                        className={styles.cardSubtitle}
-                                                        style={{ fontSize: '0.85rem' }}
-                                                    >
-                                                        {product.categoryId}
-                                                    </p>
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'flex-start'
+                                                    }}
+                                                >
+                                                    <div>
+                                                        <h3
+                                                            className={styles.cardTitle}
+                                                            style={{ fontSize: '1.1rem', margin: 0, cursor: 'pointer' }}
+                                                        >
+                                                            {product.productName}
+                                                        </h3>
+                                                        <p
+                                                            className={styles.cardSubtitle}
+                                                            style={{ fontSize: '0.85rem' }}
+                                                        >
+                                                            {product.categoryId}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                                <div className={styles.cardPrice}>
-                                                    ₹{product.price?.toLocaleString('en-IN')}
-                                                </div>
+                                            </Link>
+                                            <div className={styles.cardPrice} style={{ marginTop: '0.5rem' }}>
+                                                ₹{product.price?.toLocaleString('en-IN')}
                                             </div>
 
                                             <p

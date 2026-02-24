@@ -321,18 +321,22 @@ export default function EventDetailsPage() {
                                                 zIndex: 1
                                             }}>{product.type}</div>
 
-                                            <div style={{ position: 'relative', height: '150px' }}>
-                                                <Image
-                                                    src={product.imageUrl || defaultImage}
-                                                    alt={product.name || product.productName}
-                                                    fill
-                                                    style={{ objectFit: 'cover' }}
-                                                />
-                                            </div>
+                                            <Link href={`/products/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <div style={{ position: 'relative', height: '150px' }}>
+                                                    <Image
+                                                        src={product.imageUrl || defaultImage}
+                                                        alt={product.name || product.productName}
+                                                        fill
+                                                        style={{ objectFit: 'cover' }}
+                                                    />
+                                                </div>
 
-                                            <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                                                <h4 style={{ marginBottom: '0.5rem', fontSize: '1rem' }}>{product.name || product.productName}</h4>
+                                                <div style={{ padding: '1rem 1rem 0', display: 'flex', flexDirection: 'column' }}>
+                                                    <h4 style={{ marginBottom: '0.5rem', fontSize: '1rem', cursor: 'pointer' }}>{product.name || product.productName}</h4>
+                                                </div>
+                                            </Link>
 
+                                            <div style={{ padding: '0 1rem 1rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
                                                     <span style={{ fontWeight: 'bold', color: 'var(--color-maroon)', fontSize: '1.1rem' }}>
                                                         ₹{discountedPrice.toLocaleString('en-IN')}
