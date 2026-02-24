@@ -101,6 +101,7 @@ function EditProductContent() {
                 price: parseFloat(formData.price) || 0,
                 stockQuantity: parseInt(formData.stockQuantity) || 0,
                 shippingCharges: parseFloat(formData.shippingCharges) || 0,
+                discountPercentage: Number(formData.discountPercentage) || 0,
                 mainImage: mainImageUrl,
                 updatedAt: serverTimestamp(),
             };

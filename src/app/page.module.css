@@ -289,6 +289,15 @@
     background: linear-gradient(to bottom, #FAF7F2, #F5EFE6);
 }
 
+.productGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
 .productCarouselContainer {
     overflow: hidden;
     position: relative;
@@ -394,19 +403,13 @@
 }
 
 /* Institutions */
-.institutionScroll {
-    display: flex;
-    overflow-x: auto;
+.instGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
-    padding: 2rem 0;
-    scrollbar-width: none;
-    /* Hide scrollbar Firefox */
-    -ms-overflow-style: none;
-    scroll-behavior: smooth;
-}
-
-.institutionScroll::-webkit-scrollbar {
-    display: none;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .instCard {

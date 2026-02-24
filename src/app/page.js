@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import styles from './page.module.css';
 import { db } from '@/lib/firebase/firebase';
-import { collection, query, limit, getDocs, orderBy, where } from 'firebase/firestore';
+import { collection, query, limit, getDocs, orderBy } from 'firebase/firestore';
 import { useCart } from '@/context/CartContext';
 
 const defaultImage = "https://images.unsplash.com/photo-1524230659092-07f99a75c013?q=80&w=500&auto=format&fit=crop";
@@ -58,24 +58,20 @@ export default function Home() {
         const eventsSnap = await getDocs(eventsQuery);
         setFeaturedEvents(eventsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
 
-        // 2. Fetch Products (Now 8 products)
-        const productQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(8));
+        // 2. Fetch Products
+        // We fetch a larger pool of recent products to safely filter discounted items 
+        // since older records might have 'discountPercentage' saved as a string (e.g., "50" instead of 50).
+        // Firestore single-field queries (>) strictly check type, ignoring strings in a number query.
+        const productQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(50));
         const productSnap = await getDocs(productQuery);
-        setFeaturedProducts(productSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        const allProducts = productSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        // 2b. Fetch Discounted Products (> 5%)
-        try {
-          const discountQuery = query(collection(db, 'products'), where('discountPercentage', '>', 5), limit(8));
-          const discountSnap = await getDocs(discountQuery);
-          setDiscountedProducts(discountSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        } catch (e) {
-          console.warn("Index may be missing for discount query, attempting fallback.", e);
-          // Fallback: manually filter from a larger set if index is missing
-          const fallbackQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(50));
-          const fallbackSnap = await getDocs(fallbackQuery);
-          const allProducts = fallbackSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          setDiscountedProducts(allProducts.filter(p => p.discountPercentage > 5).slice(0, 8));
-        }
+        // Take the first 8 for Artisanal Treasures
+        setFeaturedProducts(allProducts.slice(0, 8));
+
+        // Safely parse and filter for discounted items
+        const discounted = allProducts.filter(p => Number(p.discountPercentage) > 5).slice(0, 8);
+        setDiscountedProducts(discounted);
 
         // 3. Fetch Institutions (Sample limited set)
         const instQuery = query(collection(db, 'institutions'), limit(6));
@@ -207,43 +203,39 @@ export default function Home() {
       </section>
 
       {/* SECTION 3B: DISCOUNTED PRODUCTS */}
-      <section className={styles.section} style={{ backgroundColor: '#fff' }}>
-        <div className={styles.sectionHeader}>
+      <section className={styles.section} style={{ backgroundColor: '#fff', paddingTop: '2rem', paddingBottom: '4rem' }}>
+        <div className={styles.sectionHeader} style={{ marginBottom: '2rem' }}>
           <h2 className={styles.sectionTitle}>50% Discount Products</h2>
           <p>Grab these exclusive deals with incredible discounts.</p>
         </div>
 
-        <div className={styles.productCarouselContainer}>
+        <div className={styles.productGrid}>
           {loading ? (
-            <div className={styles.productCarouselTrack} style={{ animation: 'none' }}>
-              {[1, 2, 3, 4, 5].map(n => <div key={n} className={styles.productCard} style={{ height: 350, background: '#eee' }}></div>)}
-            </div>
+            [1, 2, 3, 4].map(n => <div key={n} className={styles.productCard} style={{ height: 350, background: '#eee' }}></div>)
           ) : discountedProducts.length > 0 ? (
-            <div className={styles.productCarouselTrack}>
-              {[...discountedProducts, ...discountedProducts, ...discountedProducts].map((product, index) => (
-                <div key={`${product.id}-${index}`} className={styles.productCard} onClick={() => setSelectedProduct(product)} style={{ width: '280px', flexShrink: 0 }}>
-                  <div className={styles.productImage}>
-                    <img src={product.mainImage || defaultImage} alt={product.productName} onError={e => e.target.src = defaultImage} />
-                  </div>
-                  <span className={styles.productCat}>{product.categoryId}</span>
-                  <h3 className={styles.productTitle}>{product.productName}</h3>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                    <span className={styles.productPrice} style={{ marginBottom: 0 }}>₹{product.price?.toLocaleString('en-IN')}</span>
-                    <span style={{ color: '#059669', fontSize: '0.9rem', fontWeight: 'bold' }}>({product.discountPercentage || 50}% OFF)</span>
-                  </div>
-                  <button
-                    className={styles.addToCartBtn}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addToCart(product);
-                      alert("Added to cart");
-                    }}
-                  >
-                    <span>Add to Cart</span>
-                  </button>
+            discountedProducts.map((product, index) => (
+              <div key={`${product.id}-${index}`} className={styles.productCard} onClick={() => setSelectedProduct(product)} style={{ width: '100%' }}>
+                <div className={styles.productImage}>
+                  <img src={product.mainImage || defaultImage} alt={product.productName} onError={e => e.target.src = defaultImage} />
                 </div>
-              ))}
-            </div>
+                <span className={styles.productCat}>{product.categoryId}</span>
+                <h3 className={styles.productTitle}>{product.productName}</h3>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                  <span className={styles.productPrice} style={{ marginBottom: 0 }}>₹{product.price?.toLocaleString('en-IN')}</span>
+                  <span style={{ color: '#059669', fontSize: '0.9rem', fontWeight: 'bold' }}>({product.discountPercentage || 50}% OFF)</span>
+                </div>
+                <button
+                  className={styles.addToCartBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToCart(product);
+                    alert("Added to cart");
+                  }}
+                >
+                  <span>Add to Cart</span>
+                </button>
+              </div>
+            ))
           ) : (
             <p style={{ textAlign: 'center', width: '100%', padding: '2rem 0' }}>No special offers at the moment.</p>
           )}
@@ -251,15 +243,15 @@ export default function Home() {
       </section>
 
       {/* SECTION 4: INSTITUTIONS */}
-      <section className={styles.section} style={{ background: '#fff' }}>
-        <div className={styles.sectionHeader}>
+      <section className={styles.section} style={{ background: '#fff', paddingTop: '2rem', paddingBottom: '4rem' }}>
+        <div className={styles.sectionHeader} style={{ marginBottom: '2rem' }}>
           <h2 className={styles.sectionTitle}>Top Institutions</h2>
           <p>Collaborating with India's most prestigious cultural centers.</p>
         </div>
 
-        <div className={styles.institutionScroll}>
+        <div className={styles.instGrid}>
           {loading ? (
-            [1, 2, 3, 4].map(n => <div key={n} style={{ minWidth: 250, height: 200, background: '#f9f9f9' }}></div>)
+            [1, 2, 3, 4].map(n => <div key={n} className={styles.instCard} style={{ minWidth: 250, height: 200, background: '#f9f9f9' }}></div>)
           ) : institutions.length > 0 ? (
             institutions.map(inst => (
               <Link href={`/institution-details?id=${inst.id}`} key={inst.id} className={styles.instCard} style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -272,7 +264,7 @@ export default function Home() {
               </Link>
             ))
           ) : (
-            <p>No institutions found.</p>
+            <p style={{ textAlign: 'center', gridColumn: '1 / -1', padding: '2rem 0' }}>No institutions found.</p>
           )}
         </div>
       </section>
