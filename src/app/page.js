@@ -58,7 +58,7 @@ export default function Home() {
         setFeaturedEvents(eventsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
 
         // 2. Fetch Products
-        const productQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(8)); // 8 products for grid
+        const productQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(5)); // 5 products for carousel
         const productSnap = await getDocs(productQuery);
         setFeaturedProducts(productSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
 
@@ -154,32 +154,36 @@ export default function Home() {
           <p>Discover hand-picked masterpieces from India's finest artisans.</p>
         </div>
 
-        <div className={styles.productGrid}>
+        <div className={styles.productCarouselContainer}>
           {loading ? (
-            [1, 2, 3, 4].map(n => <div key={n} style={{ height: 350, background: '#eee', borderRadius: 20 }}></div>)
+            <div className={styles.productCarouselTrack} style={{ animation: 'none' }}>
+              {[1, 2, 3, 4, 5].map(n => <div key={n} className={styles.productCard} style={{ height: 350, background: '#eee' }}></div>)}
+            </div>
           ) : featuredProducts.length > 0 ? (
-            featuredProducts.map(product => (
-              <div key={product.id} className={styles.productCard} onClick={() => setSelectedProduct(product)}>
-                <div className={styles.productImage}>
-                  <img src={product.mainImage || defaultImage} alt={product.productName} onError={e => e.target.src = defaultImage} />
+            <div className={styles.productCarouselTrack}>
+              {[...featuredProducts, ...featuredProducts, ...featuredProducts].map((product, index) => (
+                <div key={`${product.id}-${index}`} className={styles.productCard} onClick={() => setSelectedProduct(product)} style={{ width: '280px', flexShrink: 0 }}>
+                  <div className={styles.productImage}>
+                    <img src={product.mainImage || defaultImage} alt={product.productName} onError={e => e.target.src = defaultImage} />
+                  </div>
+                  <span className={styles.productCat}>{product.categoryId}</span>
+                  <h3 className={styles.productTitle}>{product.productName}</h3>
+                  <span className={styles.productPrice}>₹{product.price?.toLocaleString('en-IN')}</span>
+                  <button
+                    className={styles.addToCartBtn}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addToCart(product);
+                      alert("Added to cart");
+                    }}
+                  >
+                    <span>Add to Cart</span>
+                  </button>
                 </div>
-                <span className={styles.productCat}>{product.categoryId}</span>
-                <h3 className={styles.productTitle}>{product.productName}</h3>
-                <span className={styles.productPrice}>₹{product.price?.toLocaleString('en-IN')}</span>
-                <button
-                  className={styles.addToCartBtn}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addToCart(product);
-                    alert("Added to cart");
-                  }}
-                >
-                  <span>Add to Cart</span>
-                </button>
-              </div>
-            ))
+              ))}
+            </div>
           ) : (
-            <p style={{ textAlign: 'center', width: '100%' }}>Marketplace is empty.</p>
+            <p style={{ textAlign: 'center', width: '100%', padding: '2rem 0' }}>Marketplace is empty.</p>
           )}
         </div>
         <div style={{ textAlign: 'center', marginTop: '3rem' }}>

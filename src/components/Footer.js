@@ -60,8 +60,6 @@ export default function Footer() {
                             <Link href="/events" className={styles.footerLink}>Upcoming Events</Link>
                             <Link href="/shop" className={styles.footerLink}>Marketplace</Link>
                             <Link href="/explore-institutions" className={styles.footerLink}>Institutions</Link>
-                            <Link href="#" className={styles.footerLink}>Artisan Stories</Link>
-                            <Link href="#" className={styles.footerLink}>Membership</Link>
                         </div>
                     </div>
 

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from '../../dashboard/admin.module.css';
 import { useEffect, useState, Suspense } from 'react';
-import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, Timestamp, collection, getDocs } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase/firebase';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -33,11 +33,20 @@ function EditEventContent() {
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(true);
 
+    const [availableProducts, setAvailableProducts] = useState([]);
+    const [mappedProducts, setMappedProducts] = useState([]);
+
     useEffect(() => {
         if (id) {
-            const fetchEvent = async () => {
+            const fetchEventAndProducts = async () => {
                 setLoading(true);
                 try {
+                    // Fetch products
+                    const prodSnap = await getDocs(collection(db, 'products'));
+                    const prods = prodSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    setAvailableProducts(prods);
+
+                    // Fetch event
                     const docRef = doc(db, 'events', id);
                     const docSnap = await getDoc(docRef);
                     if (docSnap.exists()) {
@@ -47,18 +56,19 @@ function EditEventContent() {
                         setDate(formatDateForInput(event.date));
                         setLocation(event.location || '');
                         setImageUrl(event.imageUrl || '');
+                        setMappedProducts(event.mappedProducts || []);
                     } else {
                         alert('Event not found.');
                         router.push('/admin/events');
                     }
                 } catch (error) {
-                    console.error('Error fetching event:', error);
-                    alert('Failed to fetch event data.');
+                    console.error('Error fetching data:', error);
+                    alert('Failed to fetch data.');
                 } finally {
                     setLoading(false);
                 }
             };
-            fetchEvent();
+            fetchEventAndProducts();
         } else {
             setLoading(false);
         }
@@ -68,6 +78,22 @@ function EditEventContent() {
         if (e.target.files[0]) {
             setImage(e.target.files[0]);
         }
+    };
+
+    const addMappedProduct = () => {
+        setMappedProducts([...mappedProducts, { productId: '', type: 'Optional', discount: 0 }]);
+    };
+
+    const updateMappedProduct = (index, field, value) => {
+        const updated = [...mappedProducts];
+        updated[index][field] = value;
+        setMappedProducts(updated);
+    };
+
+    const removeMappedProduct = (index) => {
+        const updated = [...mappedProducts];
+        updated.splice(index, 1);
+        setMappedProducts(updated);
     };
 
     const updateEvent = async (e) => {
@@ -96,6 +122,7 @@ function EditEventContent() {
                 date: new Date(date),
                 location,
                 imageUrl: newImageUrl,
+                mappedProducts: mappedProducts.filter(p => p.productId !== ''),
             });
 
             alert('Event updated successfully!');
@@ -160,7 +187,57 @@ function EditEventContent() {
                         {image && <p style={{ marginTop: '0.5rem' }}>Selected: {image.name}</p>}
                     </div>
 
-                    <div className={styles.formActions}>
+                    <div className={styles.formGroup} style={{ borderTop: '1px solid #e5e7eb', paddingTop: '1.5rem', marginTop: '1.5rem' }}>
+                        <h3 style={{ marginBottom: '1rem' }}>Map Related Products</h3>
+                        {mappedProducts.map((mappedProd, index) => (
+                            <div key={index} style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', alignItems: 'center', background: '#f9fafb', padding: '1rem', borderRadius: '8px' }}>
+                                <div style={{ flex: 2 }}>
+                                    <label style={{ fontSize: '0.85rem' }}>Select Product</label>
+                                    <select
+                                        className={styles.inputField}
+                                        value={mappedProd.productId}
+                                        onChange={(e) => updateMappedProduct(index, 'productId', e.target.value)}
+                                        required
+                                    >
+                                        <option value="" disabled>-- Choose a Product --</option>
+                                        {availableProducts.map(p => (
+                                            <option key={p.id} value={p.id}>{p.name || p.productName}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                    <label style={{ fontSize: '0.85rem' }}>Type</label>
+                                    <select
+                                        className={styles.inputField}
+                                        value={mappedProd.type}
+                                        onChange={(e) => updateMappedProduct(index, 'type', e.target.value)}
+                                    >
+                                        <option value="Recommended">Recommended</option>
+                                        <option value="Mandatory">Mandatory</option>
+                                        <option value="Optional">Optional</option>
+                                    </select>
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                    <label style={{ fontSize: '0.85rem' }}>Discount (%)</label>
+                                    <input
+                                        type="number"
+                                        className={styles.inputField}
+                                        value={mappedProd.discount}
+                                        onChange={(e) => updateMappedProduct(index, 'discount', Number(e.target.value))}
+                                        min="0" max="100"
+                                    />
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'flex-end', height: '100%', paddingBottom: '0.5rem' }}>
+                                    <button type="button" onClick={() => removeMappedProduct(index)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>Remove</button>
+                                </div>
+                            </div>
+                        ))}
+                        <button type="button" className="btn-secondary" onClick={addMappedProduct} style={{ fontSize: '0.9rem' }}>
+                            + Add Product
+                        </button>
+                    </div>
+
+                    <div className={styles.formActions} style={{ marginTop: '2rem' }}>
                         <button type="submit" className="btn-primary" disabled={uploading}>
                             {uploading ? 'Updating Event...' : 'Update Event'}
                         </button>

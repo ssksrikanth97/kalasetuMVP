@@ -4,11 +4,13 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
+import { useStoreSettings } from '@/context/StoreSettingsContext';
 import { useState } from 'react';
 
 export default function Navbar() {
     const { user, userRole, loading, logout } = useAuth();
     const { cartCount } = useCart();
+    const { settings } = useStoreSettings();
     const pathname = usePathname();
     const isAuthPage = pathname?.startsWith('/auth/');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -46,21 +48,23 @@ export default function Navbar() {
                     <Link href="/shop" className="nav-link" onClick={() => setIsMenuOpen(false)}>Shop</Link>
                     <Link href="/about" className="nav-link" onClick={() => setIsMenuOpen(false)}>About</Link>
 
-                    <Link href="/cart" className="nav-link" onClick={() => setIsMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                        <span>🛒</span>
-                        {cartCount > 0 && (
-                            <span style={{
-                                background: 'var(--color-maroon)',
-                                color: 'white',
-                                borderRadius: '50%',
-                                padding: '2px 8px',
-                                fontSize: '0.75rem',
-                                fontWeight: 'bold'
-                            }}>
-                                {cartCount}
-                            </span>
-                        )}
-                    </Link>
+                    {settings?.purchaseMode !== 'Order via WhatsApp' && (
+                        <Link href="/cart" className="nav-link" onClick={() => setIsMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                            <span>🛒</span>
+                            {cartCount > 0 && (
+                                <span style={{
+                                    background: 'var(--color-maroon)',
+                                    color: 'white',
+                                    borderRadius: '50%',
+                                    padding: '2px 8px',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 'bold'
+                                }}>
+                                    {cartCount}
+                                </span>
+                            )}
+                        </Link>
+                    )}
 
                     {!loading && (
                         user ? (

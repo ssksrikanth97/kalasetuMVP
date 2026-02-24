@@ -56,6 +56,9 @@ export default function AdminLayout({ children }) {
                     <Link href="/admin/orders" className={getLinkClass('/admin/orders')}>
                         <span className={styles.navIcon}>🛍️</span> Orders
                     </Link>
+                    <Link href="/admin/enquiries" className={getLinkClass('/admin/enquiries')}>
+                        <span className={styles.navIcon}>📝</span> Bulk Enquiries
+                    </Link>
                     <Link href="/admin/events" className={getLinkClass('/admin/events')}>
                         <span className={styles.navIcon}>🎉</span> Manage Events
                     </Link>
@@ -64,6 +67,9 @@ export default function AdminLayout({ children }) {
                     </Link>
                     <Link href="/admin/testimonials" className={getLinkClass('/admin/testimonials')}>
                         <span className={styles.navIcon}>💬</span> Testimonials
+                    </Link>
+                    <Link href="/admin/settings" className={getLinkClass('/admin/settings')}>
+                        <span className={styles.navIcon}>⚙️</span> Store Settings
                     </Link>
                     <Link href="/" target="_blank" className={styles.navItem} style={{ marginTop: 'auto' }}>
                         <span className={styles.navIcon}>🌐</span> Live Site

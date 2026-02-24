@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { db } from '@/lib/firebase/firebase';
-import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, deleteDoc, addDoc, serverTimestamp } from 'firebase/firestore';
 import dashboardStyles from '../dashboard/admin.module.css';
 import styles from './events.module.css';
 
@@ -36,6 +36,29 @@ export default function ManageEventsPage() {
         } catch (err) {
             console.error("Error deleting event:", err);
             setError('Failed to delete event.');
+        }
+    };
+
+    const handleClone = async (eventData) => {
+        if (!window.confirm(`Are you sure you want to clone "${eventData.name}"?`)) return;
+
+        try {
+            // Remove the ID so Firestore generates a new one
+            const { id, ...dataToClone } = eventData;
+
+            // Append (Copy) to the name
+            if (dataToClone.name) {
+                dataToClone.name = `${dataToClone.name} (Copy)`;
+            }
+
+            // Update timestamp
+            dataToClone.createdAt = serverTimestamp();
+
+            await addDoc(collection(db, 'events'), dataToClone);
+            fetchEvents();
+        } catch (error) {
+            console.error("Error cloning event:", error);
+            alert("Failed to clone event.");
         }
     };
 
@@ -85,6 +108,7 @@ export default function ManageEventsPage() {
                                             </span>
                                         </td>
                                         <td className={styles.actionButtons}>
+                                            <button onClick={() => handleClone(event)} className="btn-secondary btn-sm" style={{ marginRight: '0.5rem', backgroundColor: '#e2e8f0', color: '#333', border: 'none' }}>Clone</button>
                                             <Link href={`/admin/events/edit?id=${event.id}`} className="btn-secondary btn-sm">Edit</Link>
                                             <button onClick={() => handleDelete(event.id)} className="btn-danger btn-sm">Delete</button>
                                         </td>

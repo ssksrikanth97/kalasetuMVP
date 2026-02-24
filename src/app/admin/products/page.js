@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from '../dashboard/admin.module.css';
 import { useEffect, useState } from 'react';
-import { collection, getDocs, query, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, query, deleteDoc, doc, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase/firebase';
 
 export default function AdminProducts() {
@@ -41,6 +41,31 @@ export default function AdminProducts() {
                 console.error('Error deleting product: ', error);
                 alert('Failed to delete product. Please try again.');
             }
+        }
+    };
+
+    const handleClone = async (product) => {
+        if (!window.confirm(`Are you sure you want to clone "${product.productName || product.name}"?`)) return;
+
+        try {
+            // Remove the ID so Firestore generates a new one
+            const { id, ...dataToClone } = product;
+
+            // Append (Copy) to the name
+            if (dataToClone.productName) {
+                dataToClone.productName = `${dataToClone.productName} (Copy)`;
+            } else if (dataToClone.name) {
+                dataToClone.name = `${dataToClone.name} (Copy)`;
+            }
+
+            // Update timestamp
+            dataToClone.createdAt = serverTimestamp();
+
+            await addDoc(collection(db, 'products'), dataToClone);
+            fetchProducts();
+        } catch (error) {
+            console.error("Error cloning product:", error);
+            alert("Failed to clone product.");
         }
     };
 
@@ -81,10 +106,11 @@ export default function AdminProducts() {
                                 products.map(product => (
                                     <tr key={product.id}>
                                         <td>{product.id}</td>
-                                        <td>{product.name}</td>
+                                        <td>{product.productName || product.name}</td>
                                         <td>₹{product.price}</td>
                                         <td>{product.stock}</td>
                                         <td>
+                                            <button onClick={() => handleClone(product)} className="btn-secondary" style={{ marginRight: '0.5rem', backgroundColor: '#e2e8f0', color: '#333', border: 'none' }}>Clone</button>
                                             <Link href={`/admin/products/edit?id=${product.id}`}>
                                                 <button className="btn-secondary">Edit</button>
                                             </Link>

@@ -1,19 +1,30 @@
 'use client';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
+import { useStoreSettings } from '@/context/StoreSettingsContext';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import { db } from '@/lib/firebase/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import styles from './cart.module.css';
 
 export default function CartPage() {
-    const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart(); // Assuming clearCart exists in context, if not, need to check
+    const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
     const { user } = useAuth();
+    const { settings } = useStoreSettings();
     const router = useRouter();
     const tax = cartTotal * 0.18; // 18% GST example
     const totalAmount = cartTotal + tax;
+
+    useEffect(() => {
+        if (settings && !settings.loading) {
+            if (settings.purchaseMode === 'Order via WhatsApp') {
+                router.push('/shop');
+            }
+        }
+    }, [settings, router]);
 
     const handleCheckout = async () => {
         if (!user) {

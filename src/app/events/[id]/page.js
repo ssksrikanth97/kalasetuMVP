@@ -1,27 +1,61 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, where, documentId } from 'firebase/firestore';
 import { db } from '@/lib/firebase/firebase';
 import Navbar from '@/components/Navbar';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useCart } from '@/context/CartContext';
+import { useStoreSettings } from '@/context/StoreSettingsContext';
+import Toast from '@/components/Toast';
+import BulkEnquiryModal from '@/components/BulkEnquiryModal';
 
 export default function EventDetailsPage() {
     const { id } = useParams();
     const router = useRouter();
+    const { addToCart } = useCart();
+    const { settings } = useStoreSettings();
+
     const [event, setEvent] = useState(null);
+    const [mappedProducts, setMappedProducts] = useState([]); // Array of product objects mixed with mapping data
     const [loading, setLoading] = useState(true);
 
+    const [quantities, setQuantities] = useState({});
+    const [toastMessage, setToastMessage] = useState('');
+    const [bulkModalOpen, setBulkModalOpen] = useState(false);
+    const [selectedProductForBulk, setSelectedProductForBulk] = useState(null);
+
     useEffect(() => {
-        const fetchEvent = async () => {
+        const fetchEventAndProducts = async () => {
             if (!id) return;
             try {
                 const docRef = doc(db, 'events', id);
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
-                    setEvent({ id: docSnap.id, ...docSnap.data() });
+                    const eventData = { id: docSnap.id, ...docSnap.data() };
+                    setEvent(eventData);
+
+                    if (eventData.mappedProducts && eventData.mappedProducts.length > 0) {
+                        // Fetch the actual product documents
+                        const productIds = eventData.mappedProducts.map(p => p.productId);
+                        // Due to firestore 'in' query limit of 10, chunking might be needed if there are many products. 
+                        // Assuming < 10 related products per event for the MVP.
+                        if (productIds.length <= 10) {
+                            const productsQuery = query(collection(db, 'products'), where(documentId(), 'in', productIds));
+                            const productsSnap = await getDocs(productsQuery);
+                            const productsList = productsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+                            // Merge the product details with the mapping details
+                            const merged = eventData.mappedProducts.map(mapping => {
+                                const prodDetails = productsList.find(p => p.id === mapping.productId);
+                                return prodDetails ? { ...prodDetails, ...mapping } : null;
+                            }).filter(p => p !== null);
+
+                            setMappedProducts(merged);
+                        }
+                    }
                 } else {
                     console.error("No such event!");
                 }
@@ -32,8 +66,42 @@ export default function EventDetailsPage() {
             }
         };
 
-        fetchEvent();
+        fetchEventAndProducts();
     }, [id]);
+
+    const updateQuantity = (productId, delta) => {
+        setQuantities(prev => {
+            const current = prev[productId] || 1;
+            const newQty = Math.max(1, current + delta);
+            return { ...prev, [productId]: newQty };
+        });
+    };
+
+    const handleAddToCart = (product) => {
+        const qty = quantities[product.id] || 1;
+        // Apply discount if mapped
+        const priceToUse = product.discount > 0 ? product.price * (1 - product.discount / 100) : product.price;
+        // In a real app we might pass quantity to addToCart, assuming standard for MVP
+        addToCart({ ...product, price: priceToUse });
+        setToastMessage(`Added ${qty} ${product.productName || product.name} to cart`);
+        setTimeout(() => setToastMessage(''), 3000);
+    };
+
+    const handleWhatsAppOrder = (product) => {
+        const qty = quantities[product.id] || 1;
+        const priceToUse = product.discount > 0 ? product.price * (1 - product.discount / 100) : product.price;
+
+        let message = settings?.whatsappMessageTemplate || 'Hi, I want to order {ProductName}. Quantity: {Quantity}. Price: {Price}. Product Link: {Link}';
+        const productLink = `${window.location.origin}/events/${id}`;
+
+        message = message.replace('{ProductName}', product.productName || product.name || 'Item');
+        message = message.replace('{Quantity}', qty);
+        message = message.replace('{Price}', `₹${(priceToUse * qty).toLocaleString('en-IN')}`);
+        message = message.replace('{Link}', productLink);
+
+        const waUrl = `https://wa.me/${settings?.whatsappNumber}?text=${encodeURIComponent(message)}`;
+        window.open(waUrl, '_blank');
+    };
 
     const defaultImage = "https://images.unsplash.com/photo-1524230659092-07f99a75c013?q=80&w=1000&auto=format&fit=crop";
 
@@ -206,7 +274,7 @@ export default function EventDetailsPage() {
 
                                 <button
                                     className="btn-primary"
-                                    style={{ width: '100%', marginTop: '1rem', padding: '1rem' }}
+                                    style={{ width: '100%', marginTop: '1rem', padding: '1rem', display: 'none' }}
                                     onClick={() => alert("Booking functionality coming soon!")}
                                 >
                                     Book Tickets
@@ -215,8 +283,146 @@ export default function EventDetailsPage() {
                         </div>
 
                     </div>
+
+                    {/* Mapped Products Section */}
+                    {mappedProducts.length > 0 && (
+                        <div style={{ padding: '2rem', borderTop: '1px solid #eee', backgroundColor: '#fafafa' }}>
+                            <h3 style={{ color: 'var(--color-maroon)', marginBottom: '1.5rem' }}>Event Essentials & Merchandise</h3>
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+                                gap: '1.5rem'
+                            }}>
+                                {mappedProducts.map((product) => {
+                                    const qty = quantities[product.id] || 1;
+                                    const discountedPrice = product.discount > 0 ? product.price * (1 - product.discount / 100) : product.price;
+
+                                    return (
+                                        <div key={product.id} style={{
+                                            backgroundColor: 'white',
+                                            borderRadius: '8px',
+                                            overflow: 'hidden',
+                                            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            position: 'relative'
+                                        }}>
+                                            {/* Tag */}
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '10px',
+                                                left: '10px',
+                                                backgroundColor: product.type === 'Mandatory' ? '#ef4444' : product.type === 'Recommended' ? '#f59e0b' : '#3b82f6',
+                                                color: 'white',
+                                                padding: '0.25rem 0.5rem',
+                                                borderRadius: '4px',
+                                                fontSize: '0.75rem',
+                                                fontWeight: 'bold',
+                                                zIndex: 1
+                                            }}>{product.type}</div>
+
+                                            <div style={{ position: 'relative', height: '150px' }}>
+                                                <Image
+                                                    src={product.imageUrl || defaultImage}
+                                                    alt={product.name || product.productName}
+                                                    fill
+                                                    style={{ objectFit: 'cover' }}
+                                                />
+                                            </div>
+
+                                            <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                                                <h4 style={{ marginBottom: '0.5rem', fontSize: '1rem' }}>{product.name || product.productName}</h4>
+
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                                                    <span style={{ fontWeight: 'bold', color: 'var(--color-maroon)', fontSize: '1.1rem' }}>
+                                                        ₹{discountedPrice.toLocaleString('en-IN')}
+                                                    </span>
+                                                    {product.discount > 0 && (
+                                                        <>
+                                                            <span style={{ textDecoration: 'line-through', color: '#9ca3af', fontSize: '0.9rem' }}>
+                                                                ₹{product.price.toLocaleString('en-IN')}
+                                                            </span>
+                                                            <span style={{ color: '#059669', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                                                                (-{product.discount}%)
+                                                            </span>
+                                                        </>
+                                                    )}
+                                                </div>
+
+                                                <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'space-between',
+                                                        border: '1px solid #e5e7eb',
+                                                        borderRadius: '6px',
+                                                        overflow: 'hidden',
+                                                        marginBottom: '0.5rem'
+                                                    }}>
+                                                        <button
+                                                            style={{ padding: '0.4rem 0.8rem', background: '#f9fafb', border: 'none', cursor: 'pointer', borderRight: '1px solid #e5e7eb' }}
+                                                            onClick={() => updateQuantity(product.id, -1)}
+                                                        >-</button>
+                                                        <span style={{ padding: '0 1rem', fontWeight: '600' }}>{qty}</span>
+                                                        <button
+                                                            style={{ padding: '0.4rem 0.8rem', background: '#f9fafb', border: 'none', cursor: 'pointer', borderLeft: '1px solid #e5e7eb' }}
+                                                            onClick={() => updateQuantity(product.id, 1)}
+                                                        >+</button>
+                                                    </div>
+
+                                                    {product.enableBulkEnquiry && qty > product.bulkThreshold ? (
+                                                        <button
+                                                            className="btn-primary"
+                                                            onClick={() => {
+                                                                setSelectedProductForBulk(product);
+                                                                setBulkModalOpen(true);
+                                                            }}
+                                                            style={{ background: '#4b5563', borderColor: '#4b5563', width: '100%', fontSize: '0.9rem', padding: '0.6rem' }}
+                                                        >
+                                                            Submit Bulk Enquiry
+                                                        </button>
+                                                    ) : settings?.purchaseMode === 'Order via WhatsApp' ? (
+                                                        <button
+                                                            className="btn-primary"
+                                                            onClick={() => handleWhatsAppOrder(product)}
+                                                            style={{ background: '#25D366', borderColor: '#25D366', width: '100%', fontSize: '0.9rem', padding: '0.6rem' }}
+                                                        >
+                                                            WhatsApp Order
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            className="btn-primary"
+                                                            onClick={() => handleAddToCart(product)}
+                                                            style={{ width: '100%', fontSize: '0.9rem', padding: '0.6rem' }}
+                                                        >
+                                                            Add to Cart
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </main>
+
+            {/* Toast Notification */}
+            {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
+
+            {/* Bulk Enquiry Modal */}
+            <BulkEnquiryModal
+                isOpen={bulkModalOpen}
+                onClose={() => { setBulkModalOpen(false); setSelectedProductForBulk(null); }}
+                product={selectedProductForBulk}
+                quantity={selectedProductForBulk ? quantities[selectedProductForBulk.id] || 1 : 0}
+                onSuccess={() => {
+                    setToastMessage('Bulk enquiry submitted successfully!');
+                    setTimeout(() => setToastMessage(''), 3000);
+                }}
+            />
         </div>
     );
 }

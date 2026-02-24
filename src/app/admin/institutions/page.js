@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, deleteDoc, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase/firebase';
 import dashboardStyles from '../dashboard/admin.module.css';
 import styles from './institutions.module.css';
@@ -52,6 +52,29 @@ export default function ManageInstitutionsPage() {
         }
     };
 
+    const handleClone = async (institution) => {
+        if (!window.confirm(`Are you sure you want to clone "${institution.basicDetails?.instituteName}"?`)) return;
+
+        try {
+            // Remove the ID so Firestore generates a new one
+            const { id, ...dataToClone } = institution;
+
+            // Append (Copy) to the name
+            if (dataToClone.basicDetails && dataToClone.basicDetails.instituteName) {
+                dataToClone.basicDetails.instituteName = `${dataToClone.basicDetails.instituteName} (Copy)`;
+            }
+
+            // Update timestamp
+            dataToClone.createdAt = serverTimestamp();
+
+            await addDoc(collection(db, 'institutions'), dataToClone);
+            fetchInstitutions();
+        } catch (error) {
+            console.error("Error cloning institution:", error);
+            alert("Failed to clone institution.");
+        }
+    };
+
     return (
         <main className={dashboardStyles.mainContent}>
             <header className={dashboardStyles.header}>
@@ -99,6 +122,7 @@ export default function ManageInstitutionsPage() {
                                             </span>
                                         </td>
                                         <td className={styles.actionButtons}>
+                                            <button onClick={() => handleClone(inst)} className="btn-secondary btn-sm" style={{ marginRight: '0.5rem', backgroundColor: '#e2e8f0', color: '#333', border: 'none' }} disabled={loading}>Clone</button>
                                             <Link href={`/admin/institutions/edit?id=${inst.id}`} className="btn-secondary btn-sm">Edit</Link>
                                             <button onClick={() => handleDelete(inst.id)} className="btn-danger btn-sm" disabled={loading}>Delete</button>
                                         </td>

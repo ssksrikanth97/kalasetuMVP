@@ -19,6 +19,8 @@ function EditProductContent() {
     const [stock, setStock] = useState('');
     const [image, setImage] = useState(null);
     const [imageUrl, setImageUrl] = useState('');
+    const [enableBulkEnquiry, setEnableBulkEnquiry] = useState(false);
+    const [bulkThreshold, setBulkThreshold] = useState('');
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -35,6 +37,10 @@ function EditProductContent() {
                         setPrice(product.price);
                         setStock(product.stock);
                         setImageUrl(product.imageUrl);
+                        setEnableBulkEnquiry(product.enableBulkEnquiry || false);
+                        if (product.enableBulkEnquiry) {
+                            setBulkThreshold(product.bulkThreshold?.toString() || '');
+                        }
                     } else {
                         alert('Product not found.');
                         router.push('/admin/products');
@@ -76,6 +82,8 @@ function EditProductContent() {
                 description,
                 price: parseFloat(price),
                 stock: parseInt(stock, 10),
+                enableBulkEnquiry,
+                bulkThreshold: enableBulkEnquiry ? parseInt(bulkThreshold) : null,
                 imageUrl: newImageUrl,
             });
 
@@ -125,6 +133,35 @@ function EditProductContent() {
                             <input id="stock" type="number" value={stock} onChange={(e) => setStock(e.target.value)} className={styles.inputField} required />
                         </div>
                     </div>
+
+                    <div className={styles.formGroup} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem', marginBottom: '1rem' }}>
+                        <input
+                            id="enableBulkEnquiry"
+                            type="checkbox"
+                            checked={enableBulkEnquiry}
+                            onChange={(e) => setEnableBulkEnquiry(e.target.checked)}
+                            style={{ width: '20px', height: '20px' }}
+                        />
+                        <label htmlFor="enableBulkEnquiry" style={{ margin: 0 }}>Enable Bulk Order Enquiry</label>
+                    </div>
+
+                    {enableBulkEnquiry && (
+                        <div className={styles.formGroup}>
+                            <label htmlFor="bulkThreshold">Bulk Threshold Quantity</label>
+                            <input
+                                id="bulkThreshold"
+                                type="number"
+                                value={bulkThreshold}
+                                onChange={(e) => setBulkThreshold(e.target.value)}
+                                className={styles.inputField}
+                                required
+                                placeholder="e.g. 10"
+                            />
+                            <small style={{ color: '#6b7280', display: 'block', marginTop: '0.5rem' }}>
+                                If a user selects more than this quantity, they will be prompted to submit a bulk enquiry.
+                            </small>
+                        </div>
+                    )}
                     <div className={styles.formGroup}>
                         <label>Current Image</label>
                         {imageUrl && <Image src={imageUrl} alt={name} width={100} height={100} style={{ objectFit: 'cover', borderRadius: '8px' }} />}
