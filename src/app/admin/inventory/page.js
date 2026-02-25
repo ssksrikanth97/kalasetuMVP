@@ -84,7 +84,7 @@ export default function AdminInventory() {
                                             )}
                                         </td>
                                         <td style={{ fontWeight: 500 }}>{p.productName}</td>
-                                        <td>{p.categoryId?.replace('-', ' ')}</td>
+                                        <td>{p.categoryId || 'N/A'} {p.subCategory ? `(${p.subCategory})` : ''}</td>
                                         <td>{p.id?.replace('-', ' ')}</td>
                                         <td>₹{p.price?.toLocaleString('en-IN')}</td>
                                         <td>

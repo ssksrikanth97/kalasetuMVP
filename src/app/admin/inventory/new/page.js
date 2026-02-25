@@ -3,26 +3,30 @@ import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { db, storage } from '@/lib/firebase/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Link from 'next/link';
 import styles from './product-form.module.css';
-
-const CATEGORIES_DEFAULT = [
-    { id: 'musical-instruments', name: 'Musical Instruments' },
-    { id: 'classical-dance-items', name: 'Classical Dance Items' },
-    { id: 'return-gifts', name: 'Return Gifts' },
-    { id: 'mementos-awards', name: 'Mementos / Awards' },
-    { id: 'traditional-wear', name: 'Traditional Wear' },
-    { id: 'books', name: 'Books & Learning' }
-];
 
 export default function AddProduct() {
     const { user } = useAuth();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [categories, setCategories] = useState([]);
     const [imagePreview, setImagePreview] = useState(null);
     const [imageFile, setImageFile] = useState(null);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const snap = await getDocs(collection(db, 'categories'));
+                setCategories(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+            } catch (error) {
+                console.error("Error fetching categories", error);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const [formData, setFormData] = useState({
         productName: '',
@@ -72,7 +76,7 @@ export default function AddProduct() {
             return;
         }
         setLoading(true);
-        
+
         try {
             let mainImageUrl = '';
             if (imageFile) {
@@ -115,7 +119,7 @@ export default function AddProduct() {
             };
 
             await addDoc(collection(db, 'products'), newProductData);
-            
+
             router.push('/admin/inventory');
         } catch (error) {
             console.error('Error adding product:', error);
@@ -184,9 +188,20 @@ export default function AddProduct() {
                             <label className={styles.label}>Category *</label>
                             <select name="categoryId" value={formData.categoryId} onChange={handleChange} className={styles.select} required>
                                 <option value="">Select Category</option>
-                                {CATEGORIES_DEFAULT.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
                             </select>
                         </div>
+                        {formData.categoryId && categories.find(c => c.name === formData.categoryId)?.subcategories?.length > 0 && (
+                            <div className={styles.inputGroup}>
+                                <label className={styles.label}>Sub-Category</label>
+                                <select name="subCategory" value={formData.subCategory} onChange={handleChange} className={styles.select}>
+                                    <option value="">Select Sub-Category</option>
+                                    {categories.find(c => c.name === formData.categoryId).subcategories.map((sub, i) => (
+                                        <option key={i} value={sub}>{sub}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
                         <div className={styles.inputGroup}>
                             <label className={styles.label}>Tags</label>
                             <input name="tags" value={formData.tags} onChange={handleChange} className={styles.input} />

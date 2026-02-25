@@ -2,19 +2,10 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { db, storage } from '@/lib/firebase/firebase';
-import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, serverTimestamp, collection, getDocs } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Link from 'next/link';
 import styles from '../new/product-form.module.css';
-
-const CATEGORIES_DEFAULT = [
-    { id: 'musical-instruments', name: 'Musical Instruments' },
-    { id: 'classical-dance-items', name: 'Classical Dance Items' },
-    { id: 'return-gifts', name: 'Return Gifts' },
-    { id: 'mementos-awards', name: 'Mementos / Awards' },
-    { id: 'traditional-wear', name: 'Traditional Wear' },
-    { id: 'books', name: 'Books & Learning' }
-];
 
 function EditProductContent() {
     const router = useRouter();
@@ -23,10 +14,23 @@ function EditProductContent() {
 
     const [loading, setLoading] = useState(false);
     const [productLoading, setProductLoading] = useState(true);
+    const [categories, setCategories] = useState([]);
     const [imagePreview, setImagePreview] = useState(null);
     const [existingImageUrl, setExistingImageUrl] = useState('');
     const [formData, setFormData] = useState(null);
     const [newImageFile, setNewImageFile] = useState(null);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const snap = await getDocs(collection(db, 'categories'));
+                setCategories(snap.docs.map(c => ({ id: c.id, ...c.data() })));
+            } catch (error) {
+                console.error("Error fetching categories", error);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     useEffect(() => {
         if (!productId) return;
@@ -191,11 +195,22 @@ function EditProductContent() {
                         <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>Organization</h3>
                         <div style={{ marginBottom: '1rem' }}>
                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Category *</label>
-                            <select name="categoryId" value={formData.categoryId} onChange={handleChange} className={styles.select} style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '4px' }} required>
+                            <select name="categoryId" value={formData.categoryId || ''} onChange={handleChange} className={styles.select} style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '4px' }} required>
                                 <option value="">Select Category</option>
-                                {CATEGORIES_DEFAULT.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
                             </select>
                         </div>
+                        {formData.categoryId && categories.find(c => c.name === formData.categoryId)?.subcategories?.length > 0 && (
+                            <div style={{ marginBottom: '1rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Sub-Category</label>
+                                <select name="subCategory" value={formData.subCategory || ''} onChange={handleChange} className={styles.select} style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '4px' }}>
+                                    <option value="">Select Sub-Category</option>
+                                    {categories.find(c => c.name === formData.categoryId).subcategories.map((sub, i) => (
+                                        <option key={i} value={sub}>{sub}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
                         <div style={{ marginBottom: '1rem' }}>
                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Tags</label>
                             <input name="tags" value={formData.tags} onChange={handleChange} className={styles.input} style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '4px' }} placeholder="Comma separated" />

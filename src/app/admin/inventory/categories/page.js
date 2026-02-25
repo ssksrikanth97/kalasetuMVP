@@ -6,7 +6,7 @@ import styles from '../../dashboard/admin.module.css';
 
 export default function CategoriesPage() {
     const [categories, setCategories] = useState([]);
-    const [newCategory, setNewCategory] = useState({ name: '', description: '' });
+    const [newCategory, setNewCategory] = useState({ name: '', description: '', subcategories: '' });
     const [loading, setLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
 
@@ -33,12 +33,17 @@ export default function CategoriesPage() {
         e.preventDefault();
         setIsAdding(true);
         try {
+            const subCatArray = newCategory.subcategories
+                ? newCategory.subcategories.split(',').map(s => s.trim()).filter(Boolean)
+                : [];
+
             await addDoc(collection(db, 'categories'), {
                 name: newCategory.name,
                 description: newCategory.description,
+                subcategories: subCatArray,
                 createdAt: new Date().toISOString()
             });
-            setNewCategory({ name: '', description: '' });
+            setNewCategory({ name: '', description: '', subcategories: '' });
             fetchCategories(); // Refresh list
         } catch (error) {
             console.error("Error adding category:", error);
@@ -107,6 +112,22 @@ export default function CategoriesPage() {
                                 }}
                             />
                         </div>
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Subcategories (Optional)</label>
+                            <input
+                                type="text"
+                                value={newCategory.subcategories}
+                                onChange={e => setNewCategory({ ...newCategory, subcategories: e.target.value })}
+                                placeholder="E.g. Strings, Percussion, Wind"
+                                className={styles.inputField}
+                                style={{
+                                    width: '100%',
+                                    padding: '0.75rem',
+                                    borderRadius: '0.5rem',
+                                    border: '1px solid #e2e8f0'
+                                }}
+                            />
+                        </div>
                         <button type="submit" className="btn-primary" disabled={isAdding}>
                             {isAdding ? 'Adding...' : 'Add Category'}
                         </button>
@@ -136,7 +157,19 @@ export default function CategoriesPage() {
                                     categories.map(cat => (
                                         <tr key={cat.id}>
                                             <td style={{ fontWeight: 500 }}>{cat.name}</td>
-                                            <td style={{ color: '#666', fontSize: '0.9rem' }}>{cat.description}</td>
+                                            <td style={{ color: '#666', fontSize: '0.9rem' }}>
+                                                {cat.description}
+                                                {cat.subcategories && cat.subcategories.length > 0 && (
+                                                    <div style={{ marginTop: '0.5rem' }}>
+                                                        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-maroon)' }}>Subcategories:</span>
+                                                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
+                                                            {cat.subcategories.map((sub, i) => (
+                                                                <span key={i} style={{ background: '#f1f5f9', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.8rem' }}>{sub}</span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </td>
                                             <td>
                                                 <button
                                                     onClick={() => handleDelete(cat.id)}
