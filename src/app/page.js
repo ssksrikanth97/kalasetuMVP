@@ -183,45 +183,44 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 3: MARKETPLACE */}
-      <section className={styles.section} style={{ backgroundColor: 'white' }}>
-        <div className={styles.sectionHeader} style={{ marginBottom: '3rem' }}>
-          <h2 className={styles.sectionTitle}>Artisanal Treasures</h2>
-          <p>Discover hand-picked masterpieces from India's finest artisans.</p>
-        </div>
+      {/* SECTION 3: DYNAMIC CATEGORY MARKETPLACE */}
+      {categories.map((cat, catIndex) => {
+        const categoryProducts = featuredProducts.filter(p => p.categoryId === cat.name || p.categoryId === cat.id);
+        if (categoryProducts.length === 0) return null;
 
-        <div className={styles.productGrid}>
-          {loading ? (
-            [1, 2, 3, 4, 5, 6, 7, 8].map(n => <div key={n} className={styles.productCard} style={{ height: 350, background: '#eee' }}></div>)
-          ) : featuredProducts.length > 0 ? (
-            featuredProducts.map((product, index) => (
-              <div key={`${product.id}-${index}`} className={styles.productCard} onClick={() => setSelectedProduct(product)} style={{ width: '100%' }}>
-                <div className={styles.productImage}>
-                  <img src={product.mainImage || defaultImage} alt={product.productName} onError={e => e.target.src = defaultImage} />
+        return (
+          <section key={cat.id || catIndex} className={styles.section} style={{ backgroundColor: catIndex % 2 === 0 ? 'white' : 'var(--bg-secondary)' }}>
+            <div className={styles.sectionHeader} style={{ marginBottom: '3rem' }}>
+              <h2 className={styles.sectionTitle}>{cat.name}</h2>
+              <p>Explore the finest selections of {cat.name}.</p>
+            </div>
+
+            <div className={styles.productGrid}>
+              {categoryProducts.map((product, index) => (
+                <div key={`${product.id}-${index}`} className={styles.productCard} onClick={() => setSelectedProduct(product)}>
+                  <div className={styles.productImage}>
+                    <img src={product.mainImage || defaultImage} alt={product.productName} onError={e => e.target.src = defaultImage} />
+                    <button
+                      className={styles.hoverCartBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(product);
+                        alert("Added to cart");
+                      }}
+                    >
+                      <span>Add to Cart</span>
+                    </button>
+                  </div>
+                  <div className={styles.productInfo}>
+                    <h3 className={styles.productTitle}>{product.productName}</h3>
+                    <span className={styles.productPrice}>₹{product.price?.toLocaleString('en-IN')}</span>
+                  </div>
                 </div>
-                <span className={styles.productCat}>{product.categoryId}</span>
-                <h3 className={styles.productTitle}>{product.productName}</h3>
-                <span className={styles.productPrice}>₹{product.price?.toLocaleString('en-IN')}</span>
-                <button
-                  className={styles.addToCartBtn}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addToCart(product);
-                    alert("Added to cart");
-                  }}
-                >
-                  <span>Add to Cart</span>
-                </button>
-              </div>
-            ))
-          ) : (
-            <p style={{ textAlign: 'center', width: '100%', padding: '2rem 0' }}>Marketplace is empty.</p>
-          )}
-        </div>
-        <div style={{ textAlign: 'center', marginTop: '3rem' }}>
-          <Link href="/shop" className="btn-secondary" style={{ padding: '0.8rem 2rem', borderRadius: '50px' }}>Browse All Products</Link>
-        </div>
-      </section>
+              ))}
+            </div>
+          </section>
+        );
+      })}
 
       {/* SECTION 3B: DISCOUNTED PRODUCTS */}
       <section className={styles.section} style={{ backgroundColor: '#fff', paddingTop: '2rem', paddingBottom: '4rem' }}>
@@ -238,23 +237,24 @@ export default function Home() {
               <div key={`${product.id}-${index}`} className={styles.productCard} onClick={() => setSelectedProduct(product)} style={{ width: '100%' }}>
                 <div className={styles.productImage}>
                   <img src={product.mainImage || defaultImage} alt={product.productName} onError={e => e.target.src = defaultImage} />
+                  <button
+                    className={styles.hoverCartBtn}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addToCart(product);
+                      alert("Added to cart");
+                    }}
+                  >
+                    <span>Add to Cart</span>
+                  </button>
                 </div>
-                <span className={styles.productCat}>{product.categoryId}</span>
-                <h3 className={styles.productTitle}>{product.productName}</h3>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                  <span className={styles.productPrice} style={{ marginBottom: 0 }}>₹{product.price?.toLocaleString('en-IN')}</span>
-                  <span style={{ color: '#059669', fontSize: '0.9rem', fontWeight: 'bold' }}>({product.discountPercentage || 50}% OFF)</span>
+                <div className={styles.productInfo}>
+                  <h3 className={styles.productTitle}>{product.productName}</h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <span className={styles.productPrice} style={{ marginBottom: 0 }}>₹{product.price?.toLocaleString('en-IN')}</span>
+                    <span style={{ color: '#059669', fontSize: '0.9rem', fontWeight: 'bold' }}>({product.discountPercentage || 50}% OFF)</span>
+                  </div>
                 </div>
-                <button
-                  className={styles.addToCartBtn}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addToCart(product);
-                    alert("Added to cart");
-                  }}
-                >
-                  <span>Add to Cart</span>
-                </button>
               </div>
             ))
           ) : (
