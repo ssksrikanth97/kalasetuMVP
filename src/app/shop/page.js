@@ -37,10 +37,12 @@ export default function Shop() {
                     ...doc.data()
                 }));
                 setProducts(fetchedProducts);
+                // Fetch Categories
+                const categoriesQuery = query(collection(db, "categories"));
+                const categorySnap = await getDocs(categoriesQuery);
+                const fetchedCategoryNames = categorySnap.docs.map(doc => doc.data().name);
 
-                const fetchedCategories = [...new Set(fetchedProducts.map(p => p.categoryId))];
-                setCategories([...new Set(['All', ...fetchedCategories.filter(Boolean)])]);
-
+                setCategories(['All', ...fetchedCategoryNames].filter(Boolean));
                 // Initialize quantities to 1
                 const initialQuantities = {};
                 fetchedProducts.forEach(p => initialQuantities[p.id] = 1);
