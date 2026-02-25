@@ -7,6 +7,7 @@ import styles from '../../dashboard/admin.module.css';
 export default function CategoriesPage() {
     const [categories, setCategories] = useState([]);
     const [newCategory, setNewCategory] = useState({ name: '', description: '', parentCategoryId: '' });
+    const [isSubCategory, setIsSubCategory] = useState(false);
     const [loading, setLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
 
@@ -31,15 +32,20 @@ export default function CategoriesPage() {
 
     const handleAddCategory = async (e) => {
         e.preventDefault();
+        if (isSubCategory && !newCategory.parentCategoryId) {
+            alert("Please select a parent category for the sub-category.");
+            return;
+        }
         setIsAdding(true);
         try {
             await addDoc(collection(db, 'categories'), {
                 name: newCategory.name,
                 description: newCategory.description,
-                parentCategoryId: newCategory.parentCategoryId || null,
+                parentCategoryId: isSubCategory ? newCategory.parentCategoryId : null,
                 createdAt: new Date().toISOString()
             });
             setNewCategory({ name: '', description: '', parentCategoryId: '' });
+            setIsSubCategory(false);
             fetchCategories(); // Refresh list
         } catch (error) {
             console.error("Error adding category:", error);
@@ -109,25 +115,60 @@ export default function CategoriesPage() {
                             />
                         </div>
                         <div>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Parent Category (Optional)</label>
-                            <select
-                                value={newCategory.parentCategoryId}
-                                onChange={e => setNewCategory({ ...newCategory, parentCategoryId: e.target.value })}
-                                className={styles.inputField}
-                                style={{
-                                    width: '100%',
-                                    padding: '0.75rem',
-                                    borderRadius: '0.5rem',
-                                    border: '1px solid #e2e8f0',
-                                    background: 'white'
-                                }}
-                            >
-                                <option value="">None (Top-Level Category)</option>
-                                {categories.filter(c => !c.parentCategoryId).map(parent => (
-                                    <option key={parent.id} value={parent.id}>{parent.name}</option>
-                                ))}
-                            </select>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Type</label>
+                            <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                    <input
+                                        type="radio"
+                                        name="categoryType"
+                                        checked={!isSubCategory}
+                                        onChange={() => {
+                                            setIsSubCategory(false);
+                                            setNewCategory({ ...newCategory, parentCategoryId: '' });
+                                        }}
+                                        style={{
+                                            accentColor: 'var(--color-maroon)', width: '16px', height: '16px'
+                                        }}
+                                    />
+                                    Category
+                                </label>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                    <input
+                                        type="radio"
+                                        name="categoryType"
+                                        checked={isSubCategory}
+                                        onChange={() => setIsSubCategory(true)}
+                                        style={{
+                                            accentColor: 'var(--color-maroon)', width: '16px', height: '16px'
+                                        }}
+                                    />
+                                    Sub Category
+                                </label>
+                            </div>
                         </div>
+                        {isSubCategory && (
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Select Parent Category</label>
+                                <select
+                                    value={newCategory.parentCategoryId}
+                                    onChange={e => setNewCategory({ ...newCategory, parentCategoryId: e.target.value })}
+                                    className={styles.inputField}
+                                    required={isSubCategory}
+                                    style={{
+                                        width: '100%',
+                                        padding: '0.75rem',
+                                        borderRadius: '0.5rem',
+                                        border: '1px solid #e2e8f0',
+                                        background: 'white'
+                                    }}
+                                >
+                                    <option value="" disabled>Select a Top-Level Category</option>
+                                    {categories.filter(c => !c.parentCategoryId).map(parent => (
+                                        <option key={parent.id} value={parent.id}>{parent.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
                         <button type="submit" className="btn-primary" disabled={isAdding}>
                             {isAdding ? 'Adding...' : 'Add Category'}
                         </button>
