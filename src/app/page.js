@@ -44,6 +44,7 @@ export default function Home() {
   const [discountedProducts, setDiscountedProducts] = useState([]);
   const [institutions, setInstitutions] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { addToCart } = useCart();
@@ -57,6 +58,12 @@ export default function Home() {
         const eventsQuery = query(collection(db, 'events'), limit(3));
         const eventsSnap = await getDocs(eventsQuery);
         setFeaturedEvents(eventsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+
+        // 1B. Fetch Categories
+        const catQuery = query(collection(db, 'categories'));
+        const catSnap = await getDocs(catQuery);
+        const fetchedCats = catSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setCategories(fetchedCats.filter(c => !c.parentCategoryId).slice(0, 8)); // Top categories
 
         // 2. Fetch Products
         // We fetch a larger pool of recent products to safely filter discounted items 
@@ -158,41 +165,55 @@ export default function Home() {
         </div>
       </section>
 
+      {/* CATEGORIES SHOWCASE */}
+      <section className={styles.section} style={{ background: '#f5efe6' }}>
+        <div className={styles.sectionHeader} style={{ marginBottom: '2rem' }}>
+          <h2 className={styles.sectionTitle} style={{ fontSize: '2rem' }}>Shop by Category</h2>
+        </div>
+        <div className={styles.categoryGrid}>
+          {loading ? (
+            [1, 2, 3, 4, 5, 6].map(n => <div key={n} className={styles.categoryCard} style={{ height: 100, background: '#eee' }}></div>)
+          ) : categories.length > 0 ? (
+            categories.map(cat => (
+              <Link href={`/shop?category=${encodeURIComponent(cat.id)}`} key={cat.id} className={styles.categoryCard}>
+                <h3 className={styles.categoryTitle}>{cat.name}</h3>
+              </Link>
+            ))
+          ) : null}
+        </div>
+      </section>
+
       {/* SECTION 3: MARKETPLACE */}
-      <section className={styles.section} style={{ backgroundColor: 'var(--bg-secondary)' }}>
-        <div className={styles.sectionHeader}>
+      <section className={styles.section} style={{ backgroundColor: 'white' }}>
+        <div className={styles.sectionHeader} style={{ marginBottom: '3rem' }}>
           <h2 className={styles.sectionTitle}>Artisanal Treasures</h2>
           <p>Discover hand-picked masterpieces from India's finest artisans.</p>
         </div>
 
-        <div className={styles.productCarouselContainer}>
+        <div className={styles.productGrid}>
           {loading ? (
-            <div className={styles.productCarouselTrack} style={{ animation: 'none' }}>
-              {[1, 2, 3, 4, 5].map(n => <div key={n} className={styles.productCard} style={{ height: 350, background: '#eee' }}></div>)}
-            </div>
+            [1, 2, 3, 4, 5, 6, 7, 8].map(n => <div key={n} className={styles.productCard} style={{ height: 350, background: '#eee' }}></div>)
           ) : featuredProducts.length > 0 ? (
-            <div className={styles.productCarouselTrack}>
-              {[...featuredProducts, ...featuredProducts, ...featuredProducts].map((product, index) => (
-                <div key={`${product.id}-${index}`} className={styles.productCard} onClick={() => setSelectedProduct(product)} style={{ width: '280px', flexShrink: 0 }}>
-                  <div className={styles.productImage}>
-                    <img src={product.mainImage || defaultImage} alt={product.productName} onError={e => e.target.src = defaultImage} />
-                  </div>
-                  <span className={styles.productCat}>{product.categoryId}</span>
-                  <h3 className={styles.productTitle}>{product.productName}</h3>
-                  <span className={styles.productPrice}>₹{product.price?.toLocaleString('en-IN')}</span>
-                  <button
-                    className={styles.addToCartBtn}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addToCart(product);
-                      alert("Added to cart");
-                    }}
-                  >
-                    <span>Add to Cart</span>
-                  </button>
+            featuredProducts.map((product, index) => (
+              <div key={`${product.id}-${index}`} className={styles.productCard} onClick={() => setSelectedProduct(product)} style={{ width: '100%' }}>
+                <div className={styles.productImage}>
+                  <img src={product.mainImage || defaultImage} alt={product.productName} onError={e => e.target.src = defaultImage} />
                 </div>
-              ))}
-            </div>
+                <span className={styles.productCat}>{product.categoryId}</span>
+                <h3 className={styles.productTitle}>{product.productName}</h3>
+                <span className={styles.productPrice}>₹{product.price?.toLocaleString('en-IN')}</span>
+                <button
+                  className={styles.addToCartBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToCart(product);
+                    alert("Added to cart");
+                  }}
+                >
+                  <span>Add to Cart</span>
+                </button>
+              </div>
+            ))
           ) : (
             <p style={{ textAlign: 'center', width: '100%', padding: '2rem 0' }}>Marketplace is empty.</p>
           )}

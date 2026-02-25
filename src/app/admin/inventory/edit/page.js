@@ -229,16 +229,16 @@ function EditProductContent() {
                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Category *</label>
                             <select name="categoryId" value={formData.categoryId || ''} onChange={handleChange} className={styles.select} style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '4px' }} required>
                                 <option value="">Select Category</option>
-                                {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                                {categories.filter(c => !c.parentCategoryId).map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                             </select>
                         </div>
-                        {formData.categoryId && categories.find(c => c.name === formData.categoryId)?.subcategories?.length > 0 && (
+                        {formData.categoryId && categories.some(c => c.parentCategoryId === formData.categoryId) && (
                             <div style={{ marginBottom: '1rem' }}>
                                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Sub-Category</label>
                                 <select name="subCategory" value={formData.subCategory || ''} onChange={handleChange} className={styles.select} style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '4px' }}>
                                     <option value="">Select Sub-Category</option>
-                                    {categories.find(c => c.name === formData.categoryId).subcategories.map((sub, i) => (
-                                        <option key={i} value={sub}>{sub}</option>
+                                    {categories.filter(c => c.parentCategoryId === formData.categoryId).map(sub => (
+                                        <option key={sub.id} value={sub.id}>{sub.name}</option>
                                     ))}
                                 </select>
                             </div>
