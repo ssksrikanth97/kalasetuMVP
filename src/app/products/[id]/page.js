@@ -20,6 +20,7 @@ export default function ProductDetailsPage() {
 
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [activeImage, setActiveImage] = useState(null);
 
     const [quantity, setQuantity] = useState(1);
     const [toastMessage, setToastMessage] = useState('');
@@ -33,7 +34,9 @@ export default function ProductDetailsPage() {
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
-                    setProduct({ id: docSnap.id, ...docSnap.data() });
+                    const data = { id: docSnap.id, ...docSnap.data() };
+                    setProduct(data);
+                    setActiveImage(data.mainImage);
                 } else {
                     console.error("No such product!");
                 }
@@ -133,14 +136,47 @@ export default function ProductDetailsPage() {
                     boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
                 }}>
                     {/* Image Section */}
-                    <div style={{ position: 'relative', height: '400px', width: '100%', borderRadius: '12px', overflow: 'hidden' }}>
-                        <Image
-                            src={product.mainImage || defaultImage}
-                            alt={product.productName}
-                            fill
-                            style={{ objectFit: 'cover' }}
-                            onError={(e) => e.target.src = defaultImage}
-                        />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div style={{ position: 'relative', height: '400px', width: '100%', borderRadius: '12px', overflow: 'hidden' }}>
+                            <Image
+                                src={activeImage || defaultImage}
+                                alt={product.productName}
+                                fill
+                                style={{ objectFit: 'contain' }}
+                                onError={(e) => e.target.src = defaultImage}
+                            />
+                        </div>
+
+                        {/* Thumbnails Array */}
+                        {[product.mainImage, product.sideImage, product.backImage, product.dimensionsImage].filter(Boolean).length > 1 && (
+                            <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+                                {[product.mainImage, product.sideImage, product.backImage, product.dimensionsImage].filter(Boolean).map((imgUrl, index) => (
+                                    <div
+                                        key={index}
+                                        onClick={() => setActiveImage(imgUrl)}
+                                        style={{
+                                            position: 'relative',
+                                            width: '80px',
+                                            height: '80px',
+                                            borderRadius: '8px',
+                                            overflow: 'hidden',
+                                            cursor: 'pointer',
+                                            border: activeImage === imgUrl ? '2px solid var(--color-maroon)' : '2px solid transparent',
+                                            opacity: activeImage === imgUrl ? 1 : 0.7,
+                                            transition: 'all 0.2s',
+                                            flexShrink: 0
+                                        }}
+                                    >
+                                        <Image
+                                            src={imgUrl}
+                                            alt={`${product.productName} view ${index + 1}`}
+                                            fill
+                                            style={{ objectFit: 'cover' }}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Content Section */}

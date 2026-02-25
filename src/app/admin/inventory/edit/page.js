@@ -17,8 +17,16 @@ function EditProductContent() {
     const [categories, setCategories] = useState([]);
     const [imagePreview, setImagePreview] = useState(null);
     const [existingImageUrl, setExistingImageUrl] = useState('');
+
+    // Multiple images state
+    const [imageFiles, setImageFiles] = useState({
+        main: { file: null, preview: null, existing: '' },
+        side: { file: null, preview: null, existing: '' },
+        back: { file: null, preview: null, existing: '' },
+        dimensions: { file: null, preview: null, existing: '' }
+    });
+
     const [formData, setFormData] = useState(null);
-    const [newImageFile, setNewImageFile] = useState(null);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -47,9 +55,14 @@ function EditProductContent() {
                         ...data,
                         tags: Array.isArray(data.tags) ? data.tags.join(', ') : '',
                     });
-                    if (data.mainImage) {
-                        setExistingImageUrl(data.mainImage);
-                        setImagePreview(data.mainImage);
+                    if (data.mainImage || data.sideImage || data.backImage || data.dimensionsImage) {
+                        setImageFiles(prev => ({
+                            ...prev,
+                            main: { ...prev.main, existing: data.mainImage || '', preview: data.mainImage || null },
+                            side: { ...prev.side, existing: data.sideImage || '', preview: data.sideImage || null },
+                            back: { ...prev.back, existing: data.backImage || '', preview: data.backImage || null },
+                            dimensions: { ...prev.dimensions, existing: data.dimensionsImage || '', preview: data.dimensionsImage || null }
+                        }));
                     }
                 } else {
                     console.error("No such product!");
@@ -73,11 +86,17 @@ function EditProductContent() {
         }));
     };
 
-    const handleFileChange = (e) => {
+    const handleFileChange = (e, type) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
-            setNewImageFile(file);
-            setImagePreview(URL.createObjectURL(file));
+            setImageFiles(prev => ({
+                ...prev,
+                [type]: {
+                    ...prev[type],
+                    file: file,
+                    preview: URL.createObjectURL(file)
+                }
+            }));
         }
     };
 
@@ -87,17 +106,30 @@ function EditProductContent() {
         setLoading(true);
 
         try {
-            let mainImageUrl = existingImageUrl;
+            const uploadedUrls = {
+                mainImage: imageFiles.main.existing,
+                sideImage: imageFiles.side.existing,
+                backImage: imageFiles.back.existing,
+                dimensionsImage: imageFiles.dimensions.existing,
+            };
 
-            if (newImageFile) {
-                const storageRef = ref(storage, `products/${Date.now()}_${newImageFile.name}`);
-                await uploadBytes(storageRef, newImageFile);
-                mainImageUrl = await getDownloadURL(storageRef);
-            }
+            const uploadPromises = Object.keys(imageFiles).map(async (key) => {
+                if (imageFiles[key].file) {
+                    const storageRef = ref(storage, `products/${Date.now()}_${key}_${imageFiles[key].file.name}`);
+                    await uploadBytes(storageRef, imageFiles[key].file);
+                    const url = await getDownloadURL(storageRef);
+                    if (key === 'main') uploadedUrls.mainImage = url;
+                    if (key === 'side') uploadedUrls.sideImage = url;
+                    if (key === 'back') uploadedUrls.backImage = url;
+                    if (key === 'dimensions') uploadedUrls.dimensionsImage = url;
+                }
+            });
+
+            await Promise.all(uploadPromises);
 
             const productRef = doc(db, 'products', productId);
 
-            const { createdAt, createdBy, slug, ...restOfFormData } = formData;
+            const { createdAt, createdBy, slug, mainImage, sideImage, backImage, dimensionsImage, ...restOfFormData } = formData;
 
             const updatedData = {
                 ...restOfFormData,
@@ -106,7 +138,7 @@ function EditProductContent() {
                 stockQuantity: parseInt(formData.stockQuantity) || 0,
                 shippingCharges: parseFloat(formData.shippingCharges) || 0,
                 discountPercentage: Number(formData.discountPercentage) || 0,
-                mainImage: mainImageUrl,
+                ...uploadedUrls,
                 updatedAt: serverTimestamp(),
             };
 
@@ -217,28 +249,81 @@ function EditProductContent() {
                         </div>
                     </div>
 
-                    {/* Image */}
+                    {/* Images */}
                     <div className={styles.card} style={{ padding: '1.5rem', background: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>Product Image</h3>
-                        <div style={{ marginBottom: '1rem' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>Product Images</h3>
+
+                        {/* Cover Image */}
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Cover Image (Required)</label>
                             <label style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                border: '2px dashed #ddd',
-                                padding: '2rem',
-                                borderRadius: '8px',
-                                cursor: 'pointer',
-                                minHeight: '200px'
+                                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                                border: '2px dashed #ddd', padding: '1rem', borderRadius: '8px', cursor: 'pointer', minHeight: '150px'
                             }}>
-                                <input type="file" onChange={handleFileChange} accept="image/*" style={{ display: 'none' }} />
-                                {imagePreview ? (
-                                    <img src={imagePreview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }} />
+                                <input type="file" onChange={(e) => handleFileChange(e, 'main')} accept="image/*" style={{ display: 'none' }} />
+                                {imageFiles.main.preview ? (
+                                    <img src={imageFiles.main.preview} alt="Cover Preview" style={{ maxWidth: '100%', maxHeight: '150px', objectFit: 'contain' }} />
                                 ) : (
                                     <div style={{ textAlign: 'center', color: '#666' }}>
-                                        <span style={{ fontSize: '2rem' }}>📷</span>
-                                        <p>Click to upload image</p>
+                                        <span style={{ fontSize: '1.5rem' }}>📷</span>
+                                        <p style={{ margin: 0 }}>Click to update Cover Image</p>
+                                    </div>
+                                )}
+                            </label>
+                        </div>
+
+                        {/* Side Image */}
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Side / Different Angle Image</label>
+                            <label style={{
+                                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                                border: '2px dashed #ddd', padding: '1rem', borderRadius: '8px', cursor: 'pointer', minHeight: '150px'
+                            }}>
+                                <input type="file" onChange={(e) => handleFileChange(e, 'side')} accept="image/*" style={{ display: 'none' }} />
+                                {imageFiles.side.preview ? (
+                                    <img src={imageFiles.side.preview} alt="Side Preview" style={{ maxWidth: '100%', maxHeight: '150px', objectFit: 'contain' }} />
+                                ) : (
+                                    <div style={{ textAlign: 'center', color: '#666' }}>
+                                        <span style={{ fontSize: '1.5rem' }}>📷</span>
+                                        <p style={{ margin: 0 }}>Click to upload/update Side Image</p>
+                                    </div>
+                                )}
+                            </label>
+                        </div>
+
+                        {/* Back Image */}
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Backside Image</label>
+                            <label style={{
+                                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                                border: '2px dashed #ddd', padding: '1rem', borderRadius: '8px', cursor: 'pointer', minHeight: '150px'
+                            }}>
+                                <input type="file" onChange={(e) => handleFileChange(e, 'back')} accept="image/*" style={{ display: 'none' }} />
+                                {imageFiles.back.preview ? (
+                                    <img src={imageFiles.back.preview} alt="Back Preview" style={{ maxWidth: '100%', maxHeight: '150px', objectFit: 'contain' }} />
+                                ) : (
+                                    <div style={{ textAlign: 'center', color: '#666' }}>
+                                        <span style={{ fontSize: '1.5rem' }}>📷</span>
+                                        <p style={{ margin: 0 }}>Click to upload/update Backside Image</p>
+                                    </div>
+                                )}
+                            </label>
+                        </div>
+
+                        {/* Dimensions Image */}
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Dimensions Image</label>
+                            <label style={{
+                                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                                border: '2px dashed #ddd', padding: '1rem', borderRadius: '8px', cursor: 'pointer', minHeight: '150px'
+                            }}>
+                                <input type="file" onChange={(e) => handleFileChange(e, 'dimensions')} accept="image/*" style={{ display: 'none' }} />
+                                {imageFiles.dimensions.preview ? (
+                                    <img src={imageFiles.dimensions.preview} alt="Dimensions Preview" style={{ maxWidth: '100%', maxHeight: '150px', objectFit: 'contain' }} />
+                                ) : (
+                                    <div style={{ textAlign: 'center', color: '#666' }}>
+                                        <span style={{ fontSize: '1.5rem' }}>📷</span>
+                                        <p style={{ margin: 0 }}>Click to upload/update Dimensions Image</p>
                                     </div>
                                 )}
                             </label>

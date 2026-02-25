@@ -13,8 +13,12 @@ export default function AddProduct() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState([]);
-    const [imagePreview, setImagePreview] = useState(null);
-    const [imageFile, setImageFile] = useState(null);
+    const [imageFiles, setImageFiles] = useState({
+        main: { file: null, preview: null },
+        side: { file: null, preview: null },
+        back: { file: null, preview: null },
+        dimensions: { file: null, preview: null }
+    });
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -59,11 +63,16 @@ export default function AddProduct() {
         setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
     };
 
-    const handleFileChange = (e) => {
+    const handleFileChange = (e, type) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
-            setImageFile(file);
-            setImagePreview(URL.createObjectURL(file));
+            setImageFiles(prev => ({
+                ...prev,
+                [type]: {
+                    file: file,
+                    preview: URL.createObjectURL(file)
+                }
+            }));
         }
     };
 
@@ -71,19 +80,33 @@ export default function AddProduct() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.productName || !formData.categoryId || !formData.price) {
-            alert('Please fill all required fields.');
+        if (!formData.productName || !formData.categoryId || !formData.price || !imageFiles.main.file) {
+            alert('Please fill all required fields and upload a Cover Image.');
             return;
         }
         setLoading(true);
 
         try {
-            let mainImageUrl = '';
-            if (imageFile) {
-                const storageRef = ref(storage, `products/${Date.now()}_${imageFile.name}`);
-                await uploadBytes(storageRef, imageFile);
-                mainImageUrl = await getDownloadURL(storageRef);
-            }
+            const uploadedUrls = {
+                mainImage: '',
+                sideImage: '',
+                backImage: '',
+                dimensionsImage: ''
+            };
+
+            const uploadPromises = Object.keys(imageFiles).map(async (key) => {
+                if (imageFiles[key].file) {
+                    const storageRef = ref(storage, `products/${Date.now()}_${key}_${imageFiles[key].file.name}`);
+                    await uploadBytes(storageRef, imageFiles[key].file);
+                    const url = await getDownloadURL(storageRef);
+                    if (key === 'main') uploadedUrls.mainImage = url;
+                    if (key === 'side') uploadedUrls.sideImage = url;
+                    if (key === 'back') uploadedUrls.backImage = url;
+                    if (key === 'dimensions') uploadedUrls.dimensionsImage = url;
+                }
+            });
+
+            await Promise.all(uploadPromises);
 
             const newProductData = {
                 productName: formData.productName,
@@ -109,7 +132,7 @@ export default function AddProduct() {
                 shippingAvailable: formData.shippingAvailable,
                 shippingCharges: Number(formData.shippingCharges) || 0,
                 returnPolicyDays: Number(formData.returnPolicyDays) || 0,
-                mainImage: mainImageUrl,
+                ...uploadedUrls,
                 slug: generateSlug(formData.productName),
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
@@ -188,16 +211,16 @@ export default function AddProduct() {
                             <label className={styles.label}>Category *</label>
                             <select name="categoryId" value={formData.categoryId} onChange={handleChange} className={styles.select} required>
                                 <option value="">Select Category</option>
-                                {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                                {categories.filter(c => !c.parentCategoryId).map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                             </select>
                         </div>
-                        {formData.categoryId && categories.find(c => c.name === formData.categoryId)?.subcategories?.length > 0 && (
+                        {formData.categoryId && categories.some(c => c.parentCategoryId === formData.categoryId) && (
                             <div className={styles.inputGroup}>
                                 <label className={styles.label}>Sub-Category</label>
                                 <select name="subCategory" value={formData.subCategory} onChange={handleChange} className={styles.select}>
                                     <option value="">Select Sub-Category</option>
-                                    {categories.find(c => c.name === formData.categoryId).subcategories.map((sub, i) => (
-                                        <option key={i} value={sub}>{sub}</option>
+                                    {categories.filter(c => c.parentCategoryId === formData.categoryId).map(sub => (
+                                        <option key={sub.id} value={sub.id}>{sub.name}</option>
                                     ))}
                                 </select>
                             </div>

@@ -40,9 +40,9 @@ export default function Shop() {
                 // Fetch Categories
                 const categoriesQuery = query(collection(db, "categories"));
                 const categorySnap = await getDocs(categoriesQuery);
-                const fetchedCategoryNames = categorySnap.docs.map(doc => doc.data().name);
+                const fetchedCategories = categorySnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-                setCategories(['All', ...fetchedCategoryNames].filter(Boolean));
+                setCategories(fetchedCategories);
                 // Initialize quantities to 1
                 const initialQuantities = {};
                 fetchedProducts.forEach(p => initialQuantities[p.id] = 1);
@@ -61,7 +61,7 @@ export default function Shop() {
     const filteredProducts =
         filter === "All"
             ? products
-            : products.filter(p => p.categoryId === filter);
+            : products.filter(p => p.categoryId === filter || p.subCategory === filter);
 
     const handleQuantityChange = (productId, delta) => {
         setQuantities(prev => ({
@@ -126,23 +126,39 @@ export default function Shop() {
                                     marginBottom: '2rem'
                                 }}
                             >
-                                {categories.map(cat => (
+                                <button
+                                    onClick={() => setFilter("All")}
+                                    style={{
+                                        padding: '0.5rem 1.25rem',
+                                        borderRadius: '20px',
+                                        border: '1px solid #e5e7eb',
+                                        background: filter === "All" ? 'var(--color-maroon)' : 'white',
+                                        color: filter === "All" ? 'white' : 'var(--color-text-secondary)',
+                                        cursor: 'pointer',
+                                        fontWeight: 500,
+                                        whiteSpace: 'nowrap',
+                                        transition: 'all 0.2s'
+                                    }}
+                                >
+                                    All
+                                </button>
+                                {categories.filter(c => !c.parentCategoryId).map(cat => (
                                     <button
-                                        key={cat}
-                                        onClick={() => setFilter(cat)}
+                                        key={cat.id}
+                                        onClick={() => setFilter(cat.id)}
                                         style={{
                                             padding: '0.5rem 1.25rem',
                                             borderRadius: '20px',
                                             border: '1px solid #e5e7eb',
-                                            background: filter === cat ? 'var(--color-maroon)' : 'white',
-                                            color: filter === cat ? 'white' : 'var(--color-text-secondary)',
+                                            background: filter === cat.id ? 'var(--color-maroon)' : 'white',
+                                            color: filter === cat.id ? 'white' : 'var(--color-text-secondary)',
                                             cursor: 'pointer',
                                             fontWeight: 500,
                                             whiteSpace: 'nowrap',
                                             transition: 'all 0.2s'
                                         }}
                                     >
-                                        {cat}
+                                        {cat.name}
                                     </button>
                                 ))}
                             </div>
@@ -261,12 +277,13 @@ export default function Shop() {
                         </>
                     )}
                 </div>
-            </main>
+            </main >
 
             {/* Bulk Enquiry Modal */}
-            <BulkEnquiryModal
+            < BulkEnquiryModal
                 isOpen={bulkModalOpen}
-                onClose={() => { setBulkModalOpen(false); setSelectedProductForBulk(null); }}
+                onClose={() => { setBulkModalOpen(false); setSelectedProductForBulk(null); }
+                }
                 product={selectedProductForBulk}
                 quantity={selectedProductForBulk ? quantities[selectedProductForBulk.id] : 0}
                 onSuccess={() => {
@@ -274,6 +291,6 @@ export default function Shop() {
                     setTimeout(() => setToastMessage(''), 3000);
                 }}
             />
-        </div>
+        </div >
     );
 }

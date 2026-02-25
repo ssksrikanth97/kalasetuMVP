@@ -6,7 +6,7 @@ import styles from '../../dashboard/admin.module.css';
 
 export default function CategoriesPage() {
     const [categories, setCategories] = useState([]);
-    const [newCategory, setNewCategory] = useState({ name: '', description: '', subcategories: '' });
+    const [newCategory, setNewCategory] = useState({ name: '', description: '', parentCategoryId: '' });
     const [loading, setLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
 
@@ -33,17 +33,13 @@ export default function CategoriesPage() {
         e.preventDefault();
         setIsAdding(true);
         try {
-            const subCatArray = newCategory.subcategories
-                ? newCategory.subcategories.split(',').map(s => s.trim()).filter(Boolean)
-                : [];
-
             await addDoc(collection(db, 'categories'), {
                 name: newCategory.name,
                 description: newCategory.description,
-                subcategories: subCatArray,
+                parentCategoryId: newCategory.parentCategoryId || null,
                 createdAt: new Date().toISOString()
             });
-            setNewCategory({ name: '', description: '', subcategories: '' });
+            setNewCategory({ name: '', description: '', parentCategoryId: '' });
             fetchCategories(); // Refresh list
         } catch (error) {
             console.error("Error adding category:", error);
@@ -113,20 +109,24 @@ export default function CategoriesPage() {
                             />
                         </div>
                         <div>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Subcategories (Optional)</label>
-                            <input
-                                type="text"
-                                value={newCategory.subcategories}
-                                onChange={e => setNewCategory({ ...newCategory, subcategories: e.target.value })}
-                                placeholder="E.g. Strings, Percussion, Wind"
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Parent Category (Optional)</label>
+                            <select
+                                value={newCategory.parentCategoryId}
+                                onChange={e => setNewCategory({ ...newCategory, parentCategoryId: e.target.value })}
                                 className={styles.inputField}
                                 style={{
                                     width: '100%',
                                     padding: '0.75rem',
                                     borderRadius: '0.5rem',
-                                    border: '1px solid #e2e8f0'
+                                    border: '1px solid #e2e8f0',
+                                    background: 'white'
                                 }}
-                            />
+                            >
+                                <option value="">None (Top-Level Category)</option>
+                                {categories.filter(c => !c.parentCategoryId).map(parent => (
+                                    <option key={parent.id} value={parent.id}>{parent.name}</option>
+                                ))}
+                            </select>
                         </div>
                         <button type="submit" className="btn-primary" disabled={isAdding}>
                             {isAdding ? 'Adding...' : 'Add Category'}
@@ -159,14 +159,11 @@ export default function CategoriesPage() {
                                             <td style={{ fontWeight: 500 }}>{cat.name}</td>
                                             <td style={{ color: '#666', fontSize: '0.9rem' }}>
                                                 {cat.description}
-                                                {cat.subcategories && cat.subcategories.length > 0 && (
+                                                {cat.parentCategoryId && (
                                                     <div style={{ marginTop: '0.5rem' }}>
-                                                        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-maroon)' }}>Subcategories:</span>
-                                                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
-                                                            {cat.subcategories.map((sub, i) => (
-                                                                <span key={i} style={{ background: '#f1f5f9', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.8rem' }}>{sub}</span>
-                                                            ))}
-                                                        </div>
+                                                        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-maroon)' }}>
+                                                            Parent Category: {categories.find(c => c.id === cat.parentCategoryId)?.name || 'Unknown'}
+                                                        </span>
                                                     </div>
                                                 )}
                                             </td>
