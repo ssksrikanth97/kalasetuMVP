@@ -183,23 +183,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CATEGORIES SHOWCASE */}
-      <section className={styles.section} style={{ background: '#f5efe6' }}>
-        <div className={styles.sectionHeader} style={{ marginBottom: '2rem' }}>
-          <h2 className={styles.sectionTitle} style={{ fontSize: '2rem' }}>Shop by Category</h2>
-        </div>
-        <div className={styles.categoryGrid}>
-          {loading ? (
-            [1, 2, 3, 4, 5, 6].map(n => <div key={n} className={styles.categoryCard} style={{ height: 100, background: '#eee' }}></div>)
-          ) : categories.length > 0 ? (
-            categories.map(cat => (
-              <Link href={`/shop?category=${encodeURIComponent(cat.id)}`} key={cat.id} className={styles.categoryCard}>
-                <h3 className={styles.categoryTitle}>{cat.name}</h3>
-              </Link>
-            ))
-          ) : null}
-        </div>
-      </section>
+      {/* CATEGORIES SHOWCASE REMOVED AS REQUESTED */}
 
       {/* SECTION 3: DYNAMIC CATEGORY MARKETPLACE */}
       {categories.map((cat, catIndex) => {
@@ -301,7 +285,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 4: INSTITUTIONS */}
+      {/* SECTION 4: INSTITUTIONS 
       <section className={styles.section} style={{ background: '#fff', paddingTop: '2rem', paddingBottom: '4rem' }}>
         <div className={styles.sectionHeader} style={{ marginBottom: '2rem' }}>
           <h2 className={styles.sectionTitle}>Top Institutions</h2>
@@ -327,6 +311,7 @@ export default function Home() {
           )}
         </div>
       </section>
+      */}
 
       {/* SECTION 5: WHY KALASETU */}
       <section className={styles.whySection} style={{ background: '#2C1A1D' }}>

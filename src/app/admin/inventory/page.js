@@ -70,6 +70,9 @@ export default function AdminInventory() {
                     <p>Track products, prices, and stock levels.</p>
                 </div>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <Link href="/admin/inventory/import">
+                        <button className="btn-secondary" style={{ padding: '0.75rem 1.25rem', fontSize: '0.9rem' }}>Upload via CSV</button>
+                    </Link>
                     <Link href="/admin/inventory/categories">
                         <button className="btn-secondary" style={{ padding: '0.75rem 1.25rem', fontSize: '0.9rem' }}>Manage Categories</button>
                     </Link>
