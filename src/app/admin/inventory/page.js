@@ -13,6 +13,10 @@ export default function AdminInventory() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const [searchQuery, setSearchQuery] = useState('');
+    const [sortOption, setSortOption] = useState('newest');
+    const [stockFilter, setStockFilter] = useState('all');
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -33,6 +37,31 @@ export default function AdminInventory() {
         fetchProducts();
     }, []);
 
+    const filteredProducts = products.filter(p => {
+        // Search Filter
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            const matchesName = p.productName?.toLowerCase().includes(query);
+            const matchesSku = p.skuCode?.toLowerCase().includes(query);
+            if (!matchesName && !matchesSku) return false;
+        }
+
+        // Stock Filter
+        if (stockFilter === 'in-stock' && p.stockQuantity <= 0) return false;
+        if (stockFilter === 'out-of-stock' && p.stockQuantity > 0) return false;
+        if (stockFilter === 'low-stock' && (p.stockQuantity <= 0 || p.stockQuantity >= 5)) return false;
+
+        return true;
+    }).sort((a, b) => {
+        if (sortOption === 'newest') return (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0);
+        if (sortOption === 'oldest') return (a.createdAt?.toMillis?.() || 0) - (b.createdAt?.toMillis?.() || 0);
+        if (sortOption === 'price-low') return (a.price || 0) - (b.price || 0);
+        if (sortOption === 'price-high') return (b.price || 0) - (a.price || 0);
+        if (sortOption === 'stock-low') return (a.stockQuantity || 0) - (b.stockQuantity || 0);
+        if (sortOption === 'stock-high') return (b.stockQuantity || 0) - (a.stockQuantity || 0);
+        return 0;
+    });
+
     return (
         <main className={styles.mainContent}>
             <header className={styles.header}>
@@ -50,9 +79,49 @@ export default function AdminInventory() {
                 </div>
             </header>
 
+            <div className={styles.contentCard} style={{ marginBottom: '1.5rem', padding: '1rem 1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                <div style={{ flex: '1 1 300px' }}>
+                    <input
+                        type="text"
+                        placeholder="Search products by Name or SKU..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className={styles.input}
+                        style={{ width: '100%', padding: '0.6rem 1rem', borderRadius: '6px', border: '1px solid #d1d5db' }}
+                    />
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                    <select
+                        value={stockFilter}
+                        onChange={(e) => setStockFilter(e.target.value)}
+                        className={styles.select}
+                        style={{ padding: '0.6rem 2rem 0.6rem 1rem', borderRadius: '6px', border: '1px solid #d1d5db', background: 'white', minWidth: '150px' }}
+                    >
+                        <option value="all">All Stock Status</option>
+                        <option value="in-stock">In Stock</option>
+                        <option value="out-of-stock">Out of Stock</option>
+                        <option value="low-stock">Low Stock (&lt; 5)</option>
+                    </select>
+
+                    <select
+                        value={sortOption}
+                        onChange={(e) => setSortOption(e.target.value)}
+                        className={styles.select}
+                        style={{ padding: '0.6rem 2rem 0.6rem 1rem', borderRadius: '6px', border: '1px solid #d1d5db', background: 'white', minWidth: '150px' }}
+                    >
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="stock-low">Stock: Low to High</option>
+                        <option value="stock-high">Stock: High to Low</option>
+                    </select>
+                </div>
+            </div>
+
             <div className={styles.contentCard}>
                 <div className={styles.cardHeader}>
-                    <h2 className={styles.cardTitle}>Product List ({products.length})</h2>
+                    <h2 className={styles.cardTitle}>Product List ({filteredProducts.length})</h2>
                 </div>
                 <div className={styles.tableContainer}>
                     <table className={styles.table}>
@@ -73,8 +142,8 @@ export default function AdminInventory() {
                                 <tr>
                                     <td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Loading products...</td>
                                 </tr>
-                            ) : products.length > 0 ? (
-                                products.map(p => (
+                            ) : filteredProducts.length > 0 ? (
+                                filteredProducts.map(p => (
                                     <tr key={p.id}>
                                         <td>
                                             {p.mainImage ? (
@@ -85,10 +154,12 @@ export default function AdminInventory() {
                                         </td>
                                         <td style={{ fontWeight: 500 }}>{p.productName}</td>
                                         <td>{p.categoryId || 'N/A'} {p.subCategory ? `(${p.subCategory})` : ''}</td>
-                                        <td>{p.id?.replace('-', ' ')}</td>
+                                        <td>{p.skuCode || p.id?.substring(0, 8)}</td>
                                         <td>₹{p.price?.toLocaleString('en-IN')}</td>
                                         <td>
-                                            <span style={{ color: p.stockQuantity < 5 ? 'red' : 'inherit' }}>{p.stockQuantity}</span>
+                                            <span style={{ color: p.stockQuantity < 5 && p.stockQuantity > 0 ? '#d97706' : p.stockQuantity <= 0 ? '#dc2626' : 'inherit', fontWeight: p.stockQuantity < 5 ? 'bold' : 'normal' }}>
+                                                {p.stockQuantity}
+                                            </span>
                                         </td>
                                         <td>
                                             <span className={`${styles.statusBadge} ${p.stockQuantity > 0 ? styles.statusApproved : styles.statusPending}`}>

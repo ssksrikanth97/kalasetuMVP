@@ -25,6 +25,7 @@ export default function ProductDetailsPage() {
     const [quantity, setQuantity] = useState(1);
     const [toastMessage, setToastMessage] = useState('');
     const [bulkModalOpen, setBulkModalOpen] = useState(false);
+    const [selectedVariants, setSelectedVariants] = useState({});
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -34,7 +35,13 @@ export default function ProductDetailsPage() {
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
-                    const data = { id: docSnap.id, ...docSnap.data() };
+                    let data = { id: docSnap.id, ...docSnap.data() };
+
+                    // Defensively generate IDs for variants missing them
+                    if (data.variants && Array.isArray(data.variants)) {
+                        data.variants = data.variants.map((v, i) => ({ ...v, id: v.id || `v-${i}` }));
+                    }
+
                     setProduct(data);
                     setActiveImage(data.mainImage);
                 } else {
@@ -54,22 +61,64 @@ export default function ProductDetailsPage() {
         setQuantity(prev => Math.max(1, prev + delta));
     };
 
+    useEffect(() => {
+        if (product?.variants?.length > 0) {
+            const initialSelections = {};
+            const grouped = product.variants.reduce((acc, variant) => {
+                if (!acc[variant.type]) acc[variant.type] = [];
+                acc[variant.type].push(variant);
+                return acc;
+            }, {});
+
+            Object.keys(grouped).forEach(type => {
+                initialSelections[type] = grouped[type][0]; // default to first option
+            });
+            setSelectedVariants(initialSelections);
+        }
+    }, [product]);
+
+    const handleVariantChange = (type, variantId) => {
+        const variant = product?.variants?.find(v => v.id === variantId);
+        if (variant) {
+            setSelectedVariants(prev => ({ ...prev, [type]: variant }));
+        }
+    };
+
+    const groupedVariants = product?.variants?.reduce((acc, variant) => {
+        if (!acc[variant.type]) acc[variant.type] = [];
+        acc[variant.type].push(variant);
+        return acc;
+    }, {}) || {};
+
+    const activeExtraPrice = Object.values(selectedVariants).reduce((sum, v) => sum + (Number(v?.extraPrice) || 0), 0);
+    const finalPrice = (product?.price || 0) + activeExtraPrice;
+
     const handleAddToCart = () => {
-        // Calling addToCart quantity times or adapting it if it takes a quantity arg
+        const variantString = Object.values(selectedVariants).map(v => `${v.type}: ${v.value}`).join(' | ');
+        const cartItemProduct = {
+            ...product,
+            price: finalPrice,
+            productName: variantString ? `${product.productName} (${variantString})` : product.productName,
+            selectedVariants
+        };
+
         for (let i = 0; i < quantity; i++) {
-            addToCart(product);
+            addToCart(cartItemProduct);
         }
         setToastMessage(`Added ${quantity} ${product.productName || product.name} to cart`);
         setTimeout(() => setToastMessage(''), 3000);
     };
 
     const handleWhatsAppOrder = () => {
+        const variantString = Object.values(selectedVariants).map(v => `${v.type}: ${v.value}`).join(', ');
+        const displayedName = variantString ? `${product.productName || product.name || 'Item'} (${variantString})` : (product.productName || product.name || 'Item');
+
         let message = settings?.whatsappMessageTemplate || 'Hi, I want to order {ProductName}. Quantity: {Quantity}. Price: {Price}. Product Link: {Link}';
         const productLink = window.location.href;
 
-        message = message.replace('{ProductName}', product.productName || product.name || 'Item');
+        message = message.replace('{ProductName}', displayedName);
         message = message.replace('{Quantity}', quantity);
-        message = message.replace('{Price}', `₹${(product.price * quantity).toLocaleString('en-IN')}`);
+        message = message.replace('{Price}', `₹${(finalPrice * quantity).toLocaleString('en-IN')}`);
         message = message.replace('{Link}', productLink);
 
         const waUrl = `https://wa.me/${settings?.whatsappNumber}?text=${encodeURIComponent(message)}`;
@@ -189,8 +238,29 @@ export default function ProductDetailsPage() {
                         </h1>
 
                         <div style={{ fontSize: '1.75rem', fontWeight: 'bold', color: 'var(--color-maroon)', marginBottom: '1.5rem' }}>
-                            ₹{product.price?.toLocaleString('en-IN')}
+                            ₹{finalPrice.toLocaleString('en-IN')}
                         </div>
+
+                        {Object.keys(groupedVariants).length > 0 && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem', padding: '1.5rem', background: '#f9fafb', border: '1px solid #eee', borderRadius: '8px' }}>
+                                {Object.keys(groupedVariants).map(type => (
+                                    <div key={type} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                        <label style={{ fontWeight: '600', fontSize: '0.95rem' }}>{type}</label>
+                                        <select
+                                            value={selectedVariants[type]?.id || ''}
+                                            onChange={(e) => handleVariantChange(type, e.target.value)}
+                                            style={{ padding: '0.75rem', borderRadius: '6px', border: '1px solid #d1d5db', background: 'white', cursor: 'pointer', outline: 'none' }}
+                                        >
+                                            {groupedVariants[type].map(variant => (
+                                                <option key={variant.id} value={variant.id}>
+                                                    {variant.value}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
                         <p style={{ lineHeight: '1.7', color: 'var(--color-text-secondary)', marginBottom: '2rem', whiteSpace: 'pre-line' }}>
                             {product.description || product.shortDescription || "No detailed description provided."}

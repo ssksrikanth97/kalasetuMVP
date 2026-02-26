@@ -27,6 +27,7 @@ function EditProductContent() {
     });
 
     const [formData, setFormData] = useState(null);
+    const [variants, setVariants] = useState([]);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -60,9 +61,11 @@ function EditProductContent() {
                             ...prev,
                             main: { ...prev.main, existing: data.mainImage || '', preview: data.mainImage || null },
                             side: { ...prev.side, existing: data.sideImage || '', preview: data.sideImage || null },
-                            back: { ...prev.back, existing: data.backImage || '', preview: data.backImage || null },
                             dimensions: { ...prev.dimensions, existing: data.dimensionsImage || '', preview: data.dimensionsImage || null }
                         }));
+                    }
+                    if (data.variants && Array.isArray(data.variants)) {
+                        setVariants(data.variants.map((v, idx) => ({ ...v, id: v.id || `v-${Date.now()}-${idx}` })));
                     }
                 } else {
                     console.error("No such product!");
@@ -140,6 +143,7 @@ function EditProductContent() {
                 discountPercentage: Number(formData.discountPercentage) || 0,
                 ...uploadedUrls,
                 updatedAt: serverTimestamp(),
+                variants: variants.map(v => ({ type: v.type, value: v.value, extraPrice: Number(v.extraPrice) || 0 })),
             };
 
             await updateDoc(productRef, updatedData);
@@ -217,6 +221,35 @@ function EditProductContent() {
                                 <input type="number" name="stockQuantity" value={formData.stockQuantity} onChange={handleChange} className={styles.input} style={{ width: '100%', padding: '0.75rem', border: '1px solid #ddd', borderRadius: '4px' }} />
                             </div>
                         </div>
+                    </div>
+                    <div className={styles.card}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                            <h3 className={styles.cardTitle} style={{ margin: 0 }}>Product Variants</h3>
+                            <button type="button" onClick={() => setVariants([...variants, { id: Date.now().toString(), type: '', value: '', extraPrice: 0 }])} className="btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', borderRadius: '6px' }}>+ Add Variant</button>
+                        </div>
+                        {variants.length === 0 ? (
+                            <p style={{ fontSize: '0.9rem', color: '#666' }}>No variants added. Product will be sold as a single standard item.</p>
+                        ) : (
+                            variants.map((variant, index) => (
+                                <div key={variant.id} style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', alignItems: 'flex-start' }}>
+                                    <div className={styles.inputGroup} style={{ flex: 1, marginBottom: 0 }}>
+                                        {index === 0 && <label className={styles.label} style={{ fontSize: '0.8rem', marginBottom: '0.2rem' }}>Type (e.g. Size)</label>}
+                                        <input placeholder="Color, Size..." value={variant.type} onChange={e => setVariants(variants.map(v => v.id === variant.id ? { ...v, type: e.target.value } : v))} className={styles.input} style={{ padding: '0.5rem' }} required />
+                                    </div>
+                                    <div className={styles.inputGroup} style={{ flex: 1, marginBottom: 0 }}>
+                                        {index === 0 && <label className={styles.label} style={{ fontSize: '0.8rem', marginBottom: '0.2rem' }}>Option (e.g. XL)</label>}
+                                        <input placeholder="Red, XL..." value={variant.value} onChange={e => setVariants(variants.map(v => v.id === variant.id ? { ...v, value: e.target.value } : v))} className={styles.input} style={{ padding: '0.5rem' }} required />
+                                    </div>
+                                    <div className={styles.inputGroup} style={{ flex: 1, ...(index !== 0 ? { marginBottom: 0 } : {}) }}>
+                                        {index === 0 && <label className={styles.label} style={{ fontSize: '0.8rem', marginBottom: '0.2rem' }}>Extra Price (₹)</label>}
+                                        <input type="number" placeholder="+ ₹0" value={variant.extraPrice} onChange={e => setVariants(variants.map(v => v.id === variant.id ? { ...v, extraPrice: e.target.value } : v))} className={styles.input} style={{ padding: '0.5rem' }} />
+                                    </div>
+                                    <div style={{ marginTop: index === 0 ? '1.5rem' : '0' }}>
+                                        <button type="button" onClick={() => setVariants(variants.filter(v => v.id !== variant.id))} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '6px', width: '36px', height: '36px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </div>
 
