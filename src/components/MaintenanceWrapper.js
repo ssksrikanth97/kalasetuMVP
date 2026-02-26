@@ -2,15 +2,18 @@
 
 import { usePathname } from 'next/navigation';
 import { useStoreSettings } from '@/context/StoreSettingsContext';
+import { useAuth } from '@/context/AuthContext';
 
 export default function MaintenanceWrapper({ children }) {
     const { settings } = useStoreSettings();
+    const { userRole, loading: authLoading } = useAuth();
     const pathname = usePathname();
 
     // Do not block admin routes or login so the site can be recovered
     const isExemptRoute = pathname?.startsWith('/admin') || pathname?.startsWith('/login');
+    const isAdminUser = userRole === 'admin';
 
-    if (settings.loading) {
+    if (settings.loading || authLoading) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#fdfbf7' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
@@ -21,7 +24,7 @@ export default function MaintenanceWrapper({ children }) {
         );
     }
 
-    if (settings.maintenanceMode && !isExemptRoute) {
+    if (settings.maintenanceMode && !isExemptRoute && !isAdminUser) {
         return (
             <div style={{
                 display: 'flex', flexDirection: 'column', minHeight: '100vh',
