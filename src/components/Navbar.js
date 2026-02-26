@@ -45,7 +45,7 @@ export default function Navbar() {
                 </Link>
 
                 {/* Main Search Bar (Etsy Style) */}
-                <form onSubmit={handleSearch} style={{ flex: 1, maxWidth: '600px', margin: '0 1rem', display: 'flex', position: 'relative' }}>
+                <form onSubmit={handleSearch} style={{ flex: 1, maxWidth: '600px', margin: '0 6rem', display: 'flex', position: 'relative' }}>
                     <input
                         type="text"
                         placeholder="Search for anything..."
@@ -79,7 +79,7 @@ export default function Navbar() {
 
                     <Link href="/explore-institutions" className="nav-link" onClick={() => setIsMenuOpen(false)}>Institutions</Link>
                     <Link href="/shop" className="nav-link" onClick={() => setIsMenuOpen(false)}>Shop</Link>
-                    <Link href="/about" className="nav-link" onClick={() => setIsMenuOpen(false)}>About</Link>
+                    {/* <Link href="/about" className="nav-link" onClick={() => setIsMenuOpen(false)}>About</Link> */}
 
                     {settings?.purchaseMode !== 'Order via WhatsApp' && (
                         <Link href="/cart" className="nav-link" onClick={() => setIsMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -105,7 +105,7 @@ export default function Navbar() {
                                 <Link
                                     href={`/${userRole || 'customer'}/dashboard`}
                                     className="btn-primary"
-                                    style={{ padding: '0.5rem 1rem', display: 'inline-flex', gap: '0.5rem', alignItems: 'center', justifyContent: 'center' }}
+                                    style={{ padding: '7px 12px', fontSize: '14px', display: 'inline-flex', gap: '0.5rem', alignItems: 'center', justifyContent: 'center' }}
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
@@ -142,7 +142,7 @@ export default function Navbar() {
                         ) : (
                             !isAuthPage && (
                                 <div className="auth-buttons">
-                                    <Link href="/auth/login" className="btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', display: 'inline-flex', gap: '0.5rem', alignItems: 'center', justifyContent: 'center' }} onClick={() => setIsMenuOpen(false)}>
+                                    <Link href="/auth/login" className="btn-secondary" style={{ padding: '6px 12px', fontSize: '0.9rem', display: 'inline-flex', gap: '0.5rem', alignItems: 'center', justifyContent: 'center' }} onClick={() => setIsMenuOpen(false)}>
                                         <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                                             <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
                                             <polyline points="10 17 15 12 10 7" />
@@ -267,6 +267,6 @@ export default function Navbar() {
                     }
                 }
             `}</style>
-        </nav>
+        </nav >
     );
 }

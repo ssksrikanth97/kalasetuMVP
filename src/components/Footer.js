@@ -111,8 +111,8 @@ export default function Footer() {
                     <p>© 2026 KalaSetu. All rights reserved.</p>
                     <div className={styles.footerBottomLinks}>
                         <Link href="/privacy" className={styles.footerLink} style={{ fontSize: '0.85rem' }}>Privacy Policy</Link>
-                        <Link href="#" className={styles.footerLink} style={{ fontSize: '0.85rem' }}>Terms of Service</Link>
-                        <Link href="#" className={styles.footerLink} style={{ fontSize: '0.85rem' }}>Cookie Policy</Link>
+                        {/* <Link href="#" className={styles.footerLink} style={{ fontSize: '0.85rem' }}>Terms of Service</Link>
+                        <Link href="#" className={styles.footerLink} style={{ fontSize: '0.85rem' }}>Cookie Policy</Link> */}
                     </div>
                 </div>
             </div>
