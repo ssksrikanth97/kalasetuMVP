@@ -105,7 +105,7 @@ export default function Home() {
       <Navbar />
 
       {/* SECTION 1: HERO */}
-      <header className={styles.hero} style={{ backgroundImage: 'url("/dance-img.png")' }}>
+      <header className={styles.hero} style={{ backgroundImage: 'url("/dancer-hero.jpg")' }}>
         <div className={styles.heroOverlay}></div>
         <div className={styles.heroContent}>
           <span className={styles.heroTagline}>Where Tradition Meets Modernity</span>

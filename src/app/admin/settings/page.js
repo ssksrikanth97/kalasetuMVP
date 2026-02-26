@@ -10,6 +10,7 @@ export default function StoreSettingsPage() {
     const [purchaseMode, setPurchaseMode] = useState('Standard Checkout');
     const [whatsappNumber, setWhatsappNumber] = useState('');
     const [whatsappMessageTemplate, setWhatsappMessageTemplate] = useState('');
+    const [maintenanceMode, setMaintenanceMode] = useState(false);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
@@ -25,6 +26,7 @@ export default function StoreSettingsPage() {
                     setPurchaseMode(data.purchaseMode || 'Standard Checkout');
                     setWhatsappNumber(data.whatsappNumber || '');
                     setWhatsappMessageTemplate(data.whatsappMessageTemplate || 'Hi, I want to order {ProductName}. Quantity: {Quantity}. Price: {Price}. Product Link: {Link}');
+                    setMaintenanceMode(data.maintenanceMode || false);
                 }
             } catch (error) {
                 console.error("Error fetching settings:", error);
@@ -45,7 +47,8 @@ export default function StoreSettingsPage() {
             await setDoc(docRef, {
                 purchaseMode,
                 whatsappNumber,
-                whatsappMessageTemplate
+                whatsappMessageTemplate,
+                maintenanceMode
             }, { merge: true });
             setToastMessage('Settings saved successfully!');
         } catch (error) {
@@ -76,6 +79,27 @@ export default function StoreSettingsPage() {
 
             <div className={styles.contentCard}>
                 <form onSubmit={handleSave} className={styles.formLayout}>
+                    <div className={styles.formGroup} style={{ padding: '1rem', background: '#fff5f5', border: '1px solid #fed7d7', borderRadius: '8px', marginBottom: '1.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <div>
+                                <label htmlFor="maintenanceMode" style={{ fontWeight: 'bold', color: '#c53030', marginBottom: 0 }}>Under Construction / Maintenance Mode</label>
+                                <small style={{ color: '#e53e3e', display: 'block', marginTop: '0.25rem' }}>
+                                    When active, the public website will be hidden. Only Admins can access the site.
+                                </small>
+                            </div>
+                            <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                                <input
+                                    type="checkbox"
+                                    id="maintenanceMode"
+                                    checked={maintenanceMode}
+                                    onChange={(e) => setMaintenanceMode(e.target.checked)}
+                                    style={{ width: '24px', height: '24px', accentColor: '#c53030' }}
+                                />
+                                <span style={{ marginLeft: '0.5rem', fontWeight: '600' }}>{maintenanceMode ? 'ACTIVE' : 'OFF'}</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div className={styles.formGroup}>
                         <label htmlFor="purchaseMode">Global Purchase Mode</label>
                         <select

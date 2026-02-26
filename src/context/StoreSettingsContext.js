@@ -11,13 +11,14 @@ export function StoreSettingsProvider({ children }) {
         purchaseMode: 'Standard Checkout', // 'Standard Checkout' | 'Order via WhatsApp'
         whatsappNumber: '',
         whatsappMessageTemplate: 'Hi, I want to order {ProductName}. Quantity: {Quantity}. Price: {Price}. Product Link: {Link}',
+        maintenanceMode: false,
         loading: true
     });
 
     useEffect(() => {
         // Listen to changes in system_settings/store_settings
         const docRef = doc(db, 'system_settings', 'store_settings');
-        
+
         const unsubscribe = onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
                 setSettings({ ...docSnap.data(), loading: false });
