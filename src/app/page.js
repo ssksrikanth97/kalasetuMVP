@@ -136,7 +136,7 @@ export default function Home() {
           </p>
           <div className={styles.ctaGroup}>
             <Link href="/events" className={styles.ctaPrimary}>Explore Events</Link>
-            <Link href="/shop" className={styles.ctaSecondary}>Visit Marketplace</Link>
+            <Link href="/shop" className={styles.ctaSecondary}>Visit Shop</Link>
           </div>
         </div>
       </header>

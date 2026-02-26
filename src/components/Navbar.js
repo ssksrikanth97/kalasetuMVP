@@ -77,7 +77,7 @@ export default function Navbar() {
                 {/* Navigation Links */}
                 <div className={`nav-links-container ${isMenuOpen ? 'active' : ''}`}>
 
-                    <Link href="/explore-institutions" className="nav-link" onClick={() => setIsMenuOpen(false)}>Institutions</Link>
+                    <Link href="/events" className="nav-link" onClick={() => setIsMenuOpen(false)}>Events</Link>
                     <Link href="/shop" className="nav-link" onClick={() => setIsMenuOpen(false)}>Shop</Link>
                     {/* <Link href="/about" className="nav-link" onClick={() => setIsMenuOpen(false)}>About</Link> */}
 

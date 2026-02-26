@@ -59,7 +59,7 @@ export default function Footer() {
                             <Link href="/about" className={styles.footerLink}>About Us</Link>
                             <Link href="/events" className={styles.footerLink}>Upcoming Events</Link>
                             <Link href="/shop" className={styles.footerLink}>Marketplace</Link>
-                            <Link href="/explore-institutions" className={styles.footerLink}>Institutions</Link>
+                            {/* <Link href="/explore-institutions" className={styles.footerLink}>Institutions</Link> */}
                         </div>
                     </div>
 
