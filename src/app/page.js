@@ -105,7 +105,7 @@ export default function Home() {
       <Navbar />
 
       {/* SECTION 1: HERO */}
-      <header className={styles.hero} style={{ backgroundImage: 'url("/dancer-hero.jpg")' }}>
+      <header className={styles.hero} style={{ backgroundImage: 'url("/KALASETU_Cultural_Ecosystem_img.jpg")' }}>
         <div className={styles.heroOverlay}></div>
         <div className={styles.heroContent}>
           <span className={styles.heroTagline}>Where Tradition Meets Modernity</span>
