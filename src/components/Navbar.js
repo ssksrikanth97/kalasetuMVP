@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { useStoreSettings } from '@/context/StoreSettingsContext';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import { useRouter } from 'next/navigation';
 
@@ -17,9 +17,32 @@ export default function Navbar() {
     const router = useRouter();
     const isAuthPage = pathname?.startsWith('/auth/');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const searchInputRef = useRef(null);
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (isMobileSearchOpen && searchInputRef.current) {
+                // Check if click is outside the search form and not on the toggle button
+                if (!event.target.closest('.search-form') && !event.target.closest('.mobile-search-toggle')) {
+                    setIsMobileSearchOpen(false);
+                }
+            }
+        };
+
+        if (isMobileSearchOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+            document.addEventListener('touchstart', handleClickOutside); // Also handle touch for mobile
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('touchstart', handleClickOutside);
+        };
+    }, [isMobileSearchOpen]);
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -32,7 +55,7 @@ export default function Navbar() {
     return (
         <nav className="navbar">
             <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                <Link href="/" style={{ textDecoration: 'none', zIndex: 101, display: 'flex', alignItems: 'center' }}>
+                <Link href="/" className="logo-link" style={{ textDecoration: 'none', zIndex: 101, display: 'flex', alignItems: 'center' }}>
                     <div style={{ position: 'relative', width: '180px', height: '50px' }}>
                         <Image
                             src="/logo.png"
@@ -45,12 +68,13 @@ export default function Navbar() {
                 </Link>
 
                 {/* Main Search Bar (Etsy Style) */}
-                <form onSubmit={handleSearch} style={{ flex: 1, maxWidth: '600px', margin: '0 6rem', display: 'flex', position: 'relative' }}>
+                <form className={`search-form ${isMobileSearchOpen ? 'mobile-open' : ''}`} onSubmit={handleSearch}>
                     <input
                         type="text"
                         placeholder="Search for anything..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        ref={searchInputRef}
                         style={{
                             width: '100%',
                             padding: '0.6rem 3rem 0.6rem 1.2rem',
@@ -65,14 +89,31 @@ export default function Navbar() {
                     </button>
                 </form>
 
-                {/* Mobile Menu Button */}
-                <button
-                    className="mobile-menu-btn"
-                    onClick={toggleMenu}
-                    aria-label="Toggle Navigation"
-                >
-                    <span className={`hamburger ${isMenuOpen ? 'open' : ''}`}></span>
-                </button>
+                <div className="mobile-controls">
+                    {!isMobileSearchOpen && (
+                        <button
+                            className="mobile-search-toggle"
+                            onClick={() => {
+                                setIsMobileSearchOpen(!isMobileSearchOpen);
+                                if (!isMobileSearchOpen) {
+                                    setTimeout(() => searchInputRef.current?.focus(), 100);
+                                }
+                            }}
+                            aria-label="Toggle Search"
+                        >
+                            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </button>
+                    )}
+
+                    {/* Mobile Menu Button */}
+                    <button
+                        className="mobile-menu-btn"
+                        onClick={toggleMenu}
+                        aria-label="Toggle Navigation"
+                    >
+                        <span className={`hamburger ${isMenuOpen ? 'open' : ''}`}></span>
+                    </button>
+                </div>
 
                 {/* Navigation Links */}
                 <div className={`nav-links-container ${isMenuOpen ? 'active' : ''}`}>
@@ -215,11 +256,62 @@ export default function Navbar() {
                     align-items: center;
                 }
 
+                .search-form {
+                    flex: 1;
+                    max-width: 600px;
+                    margin: 0 6rem;
+                    display: flex;
+                    position: relative;
+                }
+
+                .mobile-title {
+                    display: none;
+                }
+
+                .mobile-controls {
+                    display: none;
+                }
+
                 @media (max-width: 768px) {
+                    .mobile-controls {
+                        display: flex;
+                        align-items: center;
+                        gap: 1.5rem;
+                        order: 2;
+                        z-index: 101;
+                    }
+
+                    .mobile-search-toggle {
+                        background: none;
+                        border: none;
+                        color: var(--color-maroon);
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        padding: 0;
+                    }
+
                     .mobile-menu-btn {
                         display: block;
                         position: relative;
                         z-index: 101;
+                    }
+
+                    .logo-link {
+                        order: 1;
+                    }
+
+                    .search-form {
+                        display: none;
+                        margin: 0.5rem 0 0 0;
+                        width: 100%;
+                        max-width: 100%;
+                        order: 3;
+                        animation: slideDown 0.3s ease forwards;
+                    }
+
+                    .search-form.mobile-open {
+                        display: flex;
                     }
 
                     .nav-links-container {
@@ -264,6 +356,17 @@ export default function Navbar() {
                         width: 100% !important;
                         justify-content: center;
                         box-sizing: border-box;
+                    }
+                }
+
+                @keyframes slideDown {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-10px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
                     }
                 }
             `}</style>
