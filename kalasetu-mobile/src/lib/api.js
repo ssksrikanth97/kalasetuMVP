@@ -1,10 +1,6 @@
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 
-// Next.js Dev Server Default
-// Ensure the Next.js app is running on Port 3000
-const DEV_PORT = 3000;
-
 const getBaseUrl = () => {
     // Always use the production API URL since the web app is already hosted on Firebase
     return 'https://kalasetu.art/api/mobile';
@@ -32,7 +28,7 @@ export const fetchAPI = async (endpoint, options = {}) => {
 
         return data;
     } catch (error) {
-        console.error(`Fetch API Error for ${endpoint}:`, error);
+        console.error(`Fetch API Error for ${endpoint}: `, error);
         throw error;
     }
 };

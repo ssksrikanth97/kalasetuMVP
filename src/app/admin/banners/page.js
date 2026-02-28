@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { db, storage } from '@/lib/firebase';
+import { db, storage } from '@/lib/firebase/firebase';
 import { collection, query, getDocs, doc, deleteDoc, updateDoc, addDoc, orderBy } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
 import Image from 'next/image';

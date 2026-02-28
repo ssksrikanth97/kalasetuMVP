@@ -1,10 +1,18 @@
 import { NextResponse } from 'next/server';
-import { adminDb } from '@/lib/firebase-admin';
+import admin from '@/lib/firebase/firebase-admin';
+
+export const dynamic = 'force-dynamic';
+
+// Initialize db dynamically to avoid crashing Next.js build when env vars are unavailable
+const getDb = () => admin.apps.length ? admin.firestore() : null;
 
 export async function GET(request) {
     try {
+        const db = getDb();
+        if (!db) return NextResponse.json({ error: 'Firestore not initialized' }, { status: 500 });
+
         // Fetch only active banners, ordered by priority
-        const bannersSnapshot = await adminDb.collection('mobile_banners')
+        const bannersSnapshot = await db.collection('mobile_banners')
             .where('isActive', '==', true)
             .orderBy('order', 'asc')
             .get();
