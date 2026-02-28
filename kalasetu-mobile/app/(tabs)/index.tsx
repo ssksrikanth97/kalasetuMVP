@@ -6,13 +6,15 @@ import { useRouter } from 'expo-router';
 import { fetchAPI } from '../../src/lib/api';
 import { useAuth } from '../../src/context/AuthContext';
 import { useWishlist } from '../../src/context/WishlistContext';
+import { useCart } from '../../src/context/CartContext';
 const { width, height } = Dimensions.get('window');
 export default function HomeScreen() {
     const [homeData, setHomeData] = useState(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
-    const { user } = useAuth() as any;
+    const { user, userData } = useAuth() as any;
     const { isInWishlist, toggleWishlist } = useWishlist() as any;
+    const { addToCart } = useCart() as any;
 
     useEffect(() => {
         const fetchHomeData = async () => {
@@ -46,7 +48,14 @@ export default function HomeScreen() {
             {/* Custom Header */}
             <View style={styles.header}>
                 <View>
-                    <Image source={require('../../assets/images/logo.png')} style={{ width: 120, height: 40 }} resizeMode="contain" />
+                    {user ? (
+                        <>
+                            <Text style={styles.greetingText}>Welcome back,</Text>
+                            <Text style={styles.userName}>{userData?.name || user.displayName || 'User'}</Text>
+                        </>
+                    ) : (
+                        <Image source={require('../../assets/images/logo.png')} style={{ width: 120, height: 40 }} resizeMode="contain" />
+                    )}
                 </View>
                 <View style={styles.headerIcons}>
                     <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/cart')}>
@@ -98,11 +107,6 @@ export default function HomeScreen() {
                         </View>
                     </View>
                 )}
-
-                <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
-                    <Text style={styles.greetingText}>Welcome back,</Text>
-                    <Text style={styles.userName}>{user ? user.displayName || 'User' : 'Guest'}</Text>
-                </View>
 
                 {/* DYNAMIC SECTIONS AND CATEGORIES */}
                 {sections.map((section: any, sectionIndex: number) => {
@@ -156,7 +160,7 @@ export default function HomeScreen() {
 
                                             <View style={styles.priceRow}>
                                                 <Text style={styles.productPrice}>₹{product.price?.toLocaleString('en-IN')}</Text>
-                                                <TouchableOpacity style={styles.addBtn}>
+                                                <TouchableOpacity style={styles.addBtn} onPress={() => addToCart(product)}>
                                                     <FontAwesome name="plus" size={12} color="white" />
                                                 </TouchableOpacity>
                                             </View>

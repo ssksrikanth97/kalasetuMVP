@@ -1,30 +1,43 @@
-'use client';
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const WishlistContext = createContext();
+const WishlistContext = createContext({});
 
 export const WishlistProvider = ({ children }) => {
     const [wishlistItems, setWishlistItems] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
 
+    // Load wishlist from AsyncStorage on mount
     useEffect(() => {
-        if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-            const stored = localStorage.getItem('kalasetu_wishlist');
-            if (stored) {
-                try {
-                    setWishlistItems(JSON.parse(stored));
-                } catch (e) {
-                    console.error('Failed to parse wishlist', e);
+        const loadWishlist = async () => {
+            try {
+                const storedWishlist = await AsyncStorage.getItem('kalasetu_wishlist');
+                if (storedWishlist !== null) {
+                    setWishlistItems(JSON.parse(storedWishlist));
                 }
+            } catch (error) {
+                console.error('Failed to parse mobile wishlist data:', error);
+            } finally {
+                setIsLoaded(true);
             }
-        }
-        setIsLoaded(true);
+        };
+
+        loadWishlist();
     }, []);
 
+    // Save wishlist to AsyncStorage whenever it changes
     useEffect(() => {
-        if (isLoaded && typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-            localStorage.setItem('kalasetu_wishlist', JSON.stringify(wishlistItems));
-        }
+        const saveWishlist = async () => {
+            if (isLoaded) {
+                try {
+                    await AsyncStorage.setItem('kalasetu_wishlist', JSON.stringify(wishlistItems));
+                } catch (error) {
+                    console.error('Failed to save mobile wishlist data:', error);
+                }
+            }
+        };
+
+        saveWishlist();
     }, [wishlistItems, isLoaded]);
 
     const addToWishlist = (product) => {

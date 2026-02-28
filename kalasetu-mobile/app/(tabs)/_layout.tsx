@@ -12,10 +12,25 @@ export default function TabLayout() {
     const router = useRouter();
     const [searchVisible, setSearchVisible] = useState(false);
 
-    const renderSearchIcon = () => (
-        <TouchableOpacity style={{ marginRight: 16 }} onPress={() => setSearchVisible(true)}>
-            <FontAwesome name="search" size={20} color="#2C1A1D" />
-        </TouchableOpacity>
+    const renderHeaderRight = () => (
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity style={{ marginRight: 16 }} onPress={() => setSearchVisible(true)}>
+                <FontAwesome name="search" size={20} color="#2C1A1D" />
+            </TouchableOpacity>
+            <TouchableOpacity style={{ marginRight: 16 }} onPress={() => router.push('/cart')}>
+                <View>
+                    <FontAwesome name="shopping-bag" size={20} color="#2C1A1D" />
+                    {cartCount > 0 && (
+                        <View style={{
+                            position: 'absolute', top: -5, right: -10, backgroundColor: '#f1501c',
+                            borderRadius: 10, width: 16, height: 16, justifyContent: 'center', alignItems: 'center'
+                        }}>
+                            <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>{cartCount}</Text>
+                        </View>
+                    )}
+                </View>
+            </TouchableOpacity>
+        </View>
     );
 
     const insets = useSafeAreaInsets();
@@ -24,9 +39,9 @@ export default function TabLayout() {
         <View style={{ flex: 1 }}>
             {searchVisible && <GlobalSearchBar onClose={() => setSearchVisible(false)} />}
             <Tabs screenOptions={{
-                headerShown: false,
                 tabBarActiveTintColor: '#2C1A1D',
                 tabBarInactiveTintColor: '#888',
+                headerRight: renderHeaderRight,
                 tabBarStyle: {
                     height: 60 + insets.bottom,
                     paddingBottom: Math.max(10, insets.bottom),
@@ -42,6 +57,7 @@ export default function TabLayout() {
                     name="index"
                     options={{
                         title: 'Home',
+                        headerShown: false,
                         tabBarIcon: ({ color }) => <FontAwesome size={24} name="home" color={color} />,
                     }}
                 />

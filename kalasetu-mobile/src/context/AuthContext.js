@@ -10,6 +10,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [userRole, setUserRole] = useState(null);
+    const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -19,10 +20,13 @@ export const AuthProvider = ({ children }) => {
                 try {
                     const userDoc = await getDoc(doc(db, 'users', authUser.uid));
                     if (userDoc.exists()) {
-                        setUserRole(userDoc.data().role || 'customer');
+                        const data = userDoc.data();
+                        setUserRole(data.role || 'customer');
+                        setUserData(data);
                     } else {
                         // Default to customer if no doc
                         setUserRole('customer');
+                        setUserData(null);
                     }
                 } catch (error) {
                     console.error("Error fetching user role:", error);
@@ -30,6 +34,7 @@ export const AuthProvider = ({ children }) => {
             } else {
                 setUser(null);
                 setUserRole(null);
+                setUserData(null);
             }
             setLoading(false);
         });
@@ -61,7 +66,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, userRole, loading, login, signup, logout }}>
+        <AuthContext.Provider value={{ user, userRole, userData, loading, login, signup, logout }}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Linking } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Linking, Image } from 'react-native';
 import { useAuth } from '../../src/context/AuthContext';
 import { useWishlist } from '../../src/context/WishlistContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useRouter } from 'expo-router';
 
 export default function ProfileScreen() {
-    const { user, loading, login, signup, logout } = useAuth() as any;
+    const { user, userData, loading, login, signup, logout } = useAuth() as any;
     const router = useRouter();
     const { wishlistItems, removeFromWishlist } = useWishlist() as any;
 
@@ -72,7 +72,7 @@ export default function ProfileScreen() {
                     {/* Customer Dashboard title hidden */}
 
                     <View style={[styles.card, styles.welcomeCard]}>
-                        <Text style={styles.welcomeTitle}>Welcome back, {user.displayName || name || 'Art Appreciator'}!</Text>
+                        <Text style={styles.welcomeTitle}>Welcome back, {userData?.name || user.displayName || name || 'Art Appreciator'}!</Text>
                         <Text style={styles.welcomeText}>Explore KalaSetu to find verified artists and authentic products.</Text>
                     </View>
 
@@ -99,7 +99,7 @@ export default function ProfileScreen() {
                                 <FontAwesome name="user" size={18} color="#2C1A1D" />
                                 <Text style={styles.cardTitle}>My Profile</Text>
                             </View>
-                            <Text style={styles.cardInfo}>Name: {user.displayName || name || 'N/A'}</Text>
+                            <Text style={styles.cardInfo}>Name: {userData?.name || user.displayName || name || 'N/A'}</Text>
                             <Text style={styles.cardInfo} numberOfLines={1}>Email: {user.email}</Text>
 
                             <TouchableOpacity style={styles.secondaryBtn} onPress={() => Alert.alert('Coming Soon', 'Edit Profile functionality will be available soon.')}>
@@ -169,7 +169,7 @@ export default function ProfileScreen() {
             <ScrollView contentContainerStyle={styles.authContainer}>
 
                 <View style={styles.authHeader}>
-                    <Text style={styles.authTitle}>KalaSetu</Text>
+                    <Image source={require('../../assets/images/logo.png')} style={{ width: 150, height: 60, marginBottom: 15 }} resizeMode="contain" />
                     <Text style={styles.authSubtitle}>{isLoginMode ? 'Sign in to your account' : 'Create a new account'}</Text>
                 </View>
 
