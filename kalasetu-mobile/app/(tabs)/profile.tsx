@@ -4,7 +4,7 @@ import { useAuth } from '../../src/context/AuthContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default function ProfileScreen() {
-    const { user, loading, login, signup, logout } = useAuth();
+    const { user, loading, login, signup, logout } = useAuth() as any;
 
     // Auth UI State
     const [isLoginMode, setIsLoginMode] = useState(true);
@@ -230,11 +230,11 @@ const styles = StyleSheet.create({
     label: { fontSize: 13, fontWeight: '600', color: '#374151', marginBottom: 6 },
     input: { backgroundColor: '#f9fafb', borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, fontSize: 15 },
 
-    submitBtn: { backgroundColor: '#f1501c', borderRadius: 8, paddingVertical: 14, alignItems: 'center', marginTop: 10 },
-    submitBtnDisabled: { backgroundColor: '#fca5a5' },
+    submitBtn: { backgroundColor: '#2C1A1D', borderRadius: 8, paddingVertical: 14, alignItems: 'center', marginTop: 10 },
+    submitBtnDisabled: { backgroundColor: '#a3a3a3' },
     submitBtnText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
 
-    linkText: { color: '#f1501c', fontSize: 14 },
+    linkText: { color: '#2C1A1D', fontSize: 14 },
     authFooter: { flexDirection: 'row', justifyContent: 'center', marginTop: 24 },
     footerText: { color: '#6b7280', fontSize: 14 },
 
@@ -243,6 +243,7 @@ const styles = StyleSheet.create({
     headerTitle: { fontSize: 26, fontWeight: 'bold', color: '#2C1A1D', marginBottom: 20 },
 
     card: { backgroundColor: 'white', borderRadius: 12, padding: 20, marginBottom: 20, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 5, elevation: 2 },
+    welcomeCard: { backgroundColor: '#fff', borderLeftWidth: 4, borderLeftColor: '#f1501c' },
     welcomeTitle: { fontSize: 20, fontWeight: 'bold', color: '#111', marginBottom: 8 },
     welcomeText: { fontSize: 14, color: '#666', lineHeight: 20 },
 

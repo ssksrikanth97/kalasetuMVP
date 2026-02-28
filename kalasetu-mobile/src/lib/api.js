@@ -5,24 +5,8 @@ import Constants from 'expo-constants';
 // Ensure the Next.js app is running on Port 3000
 const DEV_PORT = 3000;
 
-// Dynamically target the host computer through Expo's debugger host IP
 const getBaseUrl = () => {
-    if (__DEV__) {
-        let hostUri = Constants.expoConfig?.hostUri || Constants.manifest?.debuggerHost || Constants.manifest2?.extra?.expoGo?.debuggerHost;
-
-        if (hostUri) {
-            // e.g hostUri might be "192.168.1.10:8081". We extract the IP and inject 3000.
-            const localIp = hostUri.split(':')[0];
-            return `http://${localIp}:${DEV_PORT}/api/mobile`;
-        }
-
-        if (Platform.OS === 'android') {
-            return `http://10.0.2.2:${DEV_PORT}/api/mobile`;
-        }
-        // iOS Simulator or Physical Device Fallback (hardcoded to your current Mac IP)
-        return `http://192.168.1.13:${DEV_PORT}/api/mobile`;
-    }
-    // Production API URL
+    // Always use the production API URL since the web app is already hosted on Firebase
     return 'https://kalasetu.art/api/mobile';
 };
 

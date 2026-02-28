@@ -18,7 +18,15 @@ export default function CartScreen() {
                 </View>
             )}
             <View style={styles.itemDetails}>
-                <Text style={styles.itemTitle} numberOfLines={2}>{item.productName}</Text>
+                <Text style={styles.itemTitle} numberOfLines={2}>{item.name}</Text>
+
+                {/* Variant display string based on context data */}
+                {(item.variant?.size || item.variant?.color || item.variant?.material) && (
+                    <Text style={styles.itemVariantText}>
+                        {[item.variant?.size, item.variant?.color, item.variant?.material].filter(Boolean).join(' • ')}
+                    </Text>
+                )}
+
                 <Text style={styles.itemPrice}>₹{item.price?.toLocaleString('en-IN')}</Text>
 
                 <View style={styles.quantityContainer}>
@@ -100,7 +108,7 @@ const styles = StyleSheet.create({
     emptyIconCircle: { width: 100, height: 100, borderRadius: 50, backgroundColor: '#f3f4f6', justifyContent: 'center', alignItems: 'center', marginBottom: 24 },
     emptyTitle: { fontSize: 24, fontWeight: 'bold', color: '#2C1A1D', marginBottom: 8 },
     emptySubtitle: { fontSize: 16, color: '#6b7280', textAlign: 'center', marginBottom: 32 },
-    shopBtn: { backgroundColor: '#f1501c', paddingVertical: 14, paddingHorizontal: 32, borderRadius: 8 },
+    shopBtn: { backgroundColor: '#2C1A1D', paddingVertical: 14, paddingHorizontal: 32, borderRadius: 8 },
     shopBtnText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
 
     // Header
@@ -116,6 +124,9 @@ const styles = StyleSheet.create({
     itemDetails: { flex: 1, marginLeft: 12 },
     itemTitle: { fontSize: 15, fontWeight: '600', color: '#111', marginBottom: 4 },
     itemPrice: { fontSize: 16, fontWeight: 'bold', color: '#2C1A1D', marginBottom: 8 },
+
+    // Variant info added here
+    itemVariantText: { fontSize: 12, color: '#666', marginBottom: 6 },
 
     quantityContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f3f4f6', alignSelf: 'flex-start', borderRadius: 6 },
     qtyBtn: { padding: 8, paddingHorizontal: 12 },

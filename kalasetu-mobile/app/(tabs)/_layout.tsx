@@ -5,6 +5,7 @@ import { useCart } from '../../src/context/CartContext';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import GlobalSearchBar from '../../src/components/GlobalSearchBar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
     const { cartCount } = useCart() as any;
@@ -17,13 +18,22 @@ export default function TabLayout() {
         </TouchableOpacity>
     );
 
+    const insets = useSafeAreaInsets();
+
     return (
         <View style={{ flex: 1 }}>
             {searchVisible && <GlobalSearchBar onClose={() => setSearchVisible(false)} />}
             <Tabs screenOptions={{
-                tabBarActiveTintColor: '#f1501c',
+                tabBarActiveTintColor: '#2C1A1D',
                 tabBarInactiveTintColor: '#888',
-                tabBarStyle: { height: 60, paddingBottom: 10, paddingTop: 5, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#f0f0f0' },
+                tabBarStyle: {
+                    height: 60 + insets.bottom,
+                    paddingBottom: Math.max(10, insets.bottom),
+                    paddingTop: 5,
+                    backgroundColor: '#fff',
+                    borderTopWidth: 1,
+                    borderTopColor: '#f0f0f0'
+                },
                 headerStyle: { backgroundColor: '#fff', elevation: 0, shadowOpacity: 0 },
                 headerTitleStyle: { fontWeight: 'bold', color: '#2C1A1D' }
             }}>
@@ -31,10 +41,22 @@ export default function TabLayout() {
                     name="index"
                     options={{
                         title: 'Home',
-                        // Home usually uses a custom native header, but if header is shown:
-                        // headerRight: renderSearchIcon, 
                         headerShown: false,
                         tabBarIcon: ({ color }) => <FontAwesome size={24} name="home" color={color} />,
+                    }}
+                />
+                <Tabs.Screen
+                    name="explore" // We'll map marketplace to explore functionality or create a new route later
+                    options={{
+                        title: 'Explore',
+                        tabBarIcon: ({ color }) => <FontAwesome size={24} name="search" color={color} />,
+                    }}
+                />
+                <Tabs.Screen
+                    name="orders"
+                    options={{
+                        title: 'Orders',
+                        tabBarIcon: ({ color }) => <FontAwesome size={24} name="list-alt" color={color} />,
                     }}
                 />
                 <Tabs.Screen
@@ -45,30 +67,10 @@ export default function TabLayout() {
                     }}
                 />
                 <Tabs.Screen
-                    name="marketplace"
-                    options={{
-                        title: 'Shop',
-                        tabBarIcon: ({ color }) => <FontAwesome size={24} name="shopping-bag" color={color} />,
-                        headerRight: () => (
-                            <TouchableOpacity style={{ marginRight: 16 }} onPress={() => router.push('/cart')}>
-                                <View>
-                                    <FontAwesome name="shopping-cart" size={22} color="#2C1A1D" />
-                                    {cartCount > 0 && (
-                                        <View style={{ position: 'absolute', right: -6, top: -6, backgroundColor: '#dc2626', borderRadius: 10, width: 18, height: 18, justifyContent: 'center', alignItems: 'center' }}>
-                                            <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>{cartCount}</Text>
-                                        </View>
-                                    )}
-                                </View>
-                            </TouchableOpacity>
-                        ),
-                    }}
-                />
-                <Tabs.Screen
                     name="profile"
                     options={{
                         title: 'Profile',
-                        headerRight: renderSearchIcon,
-                        tabBarIcon: ({ color }) => <FontAwesome size={24} name="user" color={color} />,
+                        tabBarIcon: ({ color }) => <FontAwesome size={24} name="user-o" color={color} />,
                     }}
                 />
             </Tabs>
