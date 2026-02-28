@@ -108,5 +108,19 @@ service cloud.firestore {
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }
+
+    // 13. Notifications Collection
+    match /notifications/{notificationId} {
+      allow read: if isAuth();
+      allow create: if isAuth();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // 14. Mobile Banners Collection
+    match /mobile_banners/{bannerId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
   }
 }
