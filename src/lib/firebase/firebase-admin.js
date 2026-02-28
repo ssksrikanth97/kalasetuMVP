@@ -3,7 +3,7 @@ import admin from 'firebase-admin';
 
 if (!admin.apps.length) {
     try {
-        if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
+        if (process.env.NODE_ENV === 'development' && process.env.FIREBASE_PRIVATE_KEY) {
             admin.initializeApp({
                 credential: admin.credential.cert({
                     projectId: process.env.FIREBASE_PROJECT_ID,
@@ -12,7 +12,8 @@ if (!admin.apps.length) {
                 }),
             });
         } else {
-            console.warn('Firebase Admin not initialized: Missing environment variables.');
+            // Rely on Firebase App Hosting / Cloud Run Application Default Credentials in production
+            admin.initializeApp();
         }
     } catch (error) {
         console.error('Firebase admin initialization error', error.stack);
