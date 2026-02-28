@@ -87,9 +87,7 @@ export default function OrdersScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.title}>My Orders</Text>
-            </View>
+            {/* Orders title hidden */}
 
             {orders.length === 0 ? (
                 <View style={styles.emptyContainer}>

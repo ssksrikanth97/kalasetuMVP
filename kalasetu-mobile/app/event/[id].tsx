@@ -92,11 +92,7 @@ export default function EventDetailsScreen() {
                 </View>
             </ScrollView>
 
-            <View style={styles.footer}>
-                <TouchableOpacity style={styles.bookBtn} onPress={() => alert("Ticket booking flow coming soon!")}>
-                    <Text style={styles.bookBtnText}>Book Tickets</Text>
-                </TouchableOpacity>
-            </View>
+            {/* Ticket booking button temporarily hidden */}
         </SafeAreaView>
     );
 }

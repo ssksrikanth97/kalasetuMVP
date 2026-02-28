@@ -24,6 +24,7 @@ export default function TabLayout() {
         <View style={{ flex: 1 }}>
             {searchVisible && <GlobalSearchBar onClose={() => setSearchVisible(false)} />}
             <Tabs screenOptions={{
+                headerShown: false,
                 tabBarActiveTintColor: '#2C1A1D',
                 tabBarInactiveTintColor: '#888',
                 tabBarStyle: {
@@ -41,7 +42,6 @@ export default function TabLayout() {
                     name="index"
                     options={{
                         title: 'Home',
-                        headerShown: false,
                         tabBarIcon: ({ color }) => <FontAwesome size={24} name="home" color={color} />,
                     }}
                 />

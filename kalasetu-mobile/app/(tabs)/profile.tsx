@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Linking } from 'react-native';
 import { useAuth } from '../../src/context/AuthContext';
+import { useWishlist } from '../../src/context/WishlistContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useRouter } from 'expo-router';
 
 export default function ProfileScreen() {
     const { user, loading, login, signup, logout } = useAuth() as any;
+    const router = useRouter();
+    const { wishlistItems, removeFromWishlist } = useWishlist() as any;
 
     // Auth UI State
     const [isLoginMode, setIsLoginMode] = useState(true);
@@ -65,7 +69,7 @@ export default function ProfileScreen() {
         return (
             <View style={styles.container}>
                 <ScrollView contentContainerStyle={styles.scrollPadding}>
-                    <Text style={styles.headerTitle}>Customer Dashboard</Text>
+                    {/* Customer Dashboard title hidden */}
 
                     <View style={[styles.card, styles.welcomeCard]}>
                         <Text style={styles.welcomeTitle}>Welcome back, {user.displayName || name || 'Art Appreciator'}!</Text>
@@ -79,7 +83,7 @@ export default function ProfileScreen() {
                                     <Text style={styles.warningTitle}>Complete Your Profile</Text>
                                     <Text style={styles.warningText}>Your profile is {profileCompletion}% complete. Add your details for a better experience.</Text>
                                 </View>
-                                <TouchableOpacity style={styles.actionBtn}>
+                                <TouchableOpacity style={styles.actionBtn} onPress={() => Alert.alert('Coming Soon', 'Profile completion will be available soon.')}>
                                     <Text style={styles.actionBtnText}>Complete Now</Text>
                                 </TouchableOpacity>
                             </View>
@@ -98,7 +102,7 @@ export default function ProfileScreen() {
                             <Text style={styles.cardInfo}>Name: {user.displayName || name || 'N/A'}</Text>
                             <Text style={styles.cardInfo} numberOfLines={1}>Email: {user.email}</Text>
 
-                            <TouchableOpacity style={styles.secondaryBtn}>
+                            <TouchableOpacity style={styles.secondaryBtn} onPress={() => Alert.alert('Coming Soon', 'Edit Profile functionality will be available soon.')}>
                                 <Text style={styles.secondaryBtnText}>Edit Profile</Text>
                             </TouchableOpacity>
                         </View>
@@ -110,16 +114,41 @@ export default function ProfileScreen() {
                             </View>
                             <Text style={styles.cardInfo}>View and track your recent purchases.</Text>
 
-                            <TouchableOpacity style={styles.primaryBtn}>
+                            <TouchableOpacity style={styles.primaryBtn} onPress={() => { router.push('/orders') }}>
                                 <Text style={styles.primaryBtnText}>View History</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
 
+                    {/* WISHLIST SECTION */}
+                    <View style={styles.card}>
+                        <View style={styles.cardHeader}>
+                            <FontAwesome name="heart" size={18} color="#f1501c" />
+                            <Text style={styles.cardTitle}>My Wishlist</Text>
+                        </View>
+                        {wishlistItems && wishlistItems.length > 0 ? (
+                            wishlistItems.map((item: any) => (
+                                <View key={item.id} style={styles.wishlistItem}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                                        <View style={{ flex: 1 }}>
+                                            <Text style={styles.wishlistItemName} numberOfLines={1}>{item.productName || item.name}</Text>
+                                            <Text style={styles.wishlistItemPrice}>₹{item.price?.toLocaleString('en-IN')}</Text>
+                                        </View>
+                                    </View>
+                                    <TouchableOpacity onPress={() => removeFromWishlist(item.id)} style={{ padding: 5 }}>
+                                        <FontAwesome name="trash" size={18} color="#dc2626" />
+                                    </TouchableOpacity>
+                                </View>
+                            ))
+                        ) : (
+                            <Text style={styles.emptyText}>Your wishlist is empty.</Text>
+                        )}
+                    </View>
+
                     <View style={[styles.card, styles.artistCard]}>
                         <Text style={styles.artistTitle}>🎨 Are you an Artist?</Text>
                         <Text style={styles.artistText}>Showcase your talent and reach a global audience.</Text>
-                        <TouchableOpacity style={styles.maroonBtn}>
+                        <TouchableOpacity style={styles.maroonBtn} onPress={() => Linking.openURL('https://kalasetu.art/artist/register')}>
                             <Text style={styles.maroonBtnText}>Join as Artist</Text>
                         </TouchableOpacity>
                     </View>
@@ -274,5 +303,10 @@ const styles = StyleSheet.create({
     maroonBtnText: { color: 'white', fontSize: 14, fontWeight: 'bold' },
 
     logoutBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 16, marginTop: 10 },
-    logoutText: { color: '#dc2626', fontSize: 16, fontWeight: 'bold', marginLeft: 8 }
+    logoutText: { color: '#dc2626', fontSize: 16, fontWeight: 'bold', marginLeft: 8 },
+
+    wishlistItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#f3f4f6' },
+    wishlistItemName: { fontSize: 14, fontWeight: '500', color: '#111' },
+    wishlistItemPrice: { fontSize: 13, color: '#666', marginTop: 2 },
+    emptyText: { fontSize: 14, color: '#888', fontStyle: 'italic', marginTop: 5 }
 });

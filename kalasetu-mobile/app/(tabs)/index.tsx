@@ -5,12 +5,14 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useRouter } from 'expo-router';
 import { fetchAPI } from '../../src/lib/api';
 import { useAuth } from '../../src/context/AuthContext';
+import { useWishlist } from '../../src/context/WishlistContext';
 const { width, height } = Dimensions.get('window');
 export default function HomeScreen() {
     const [homeData, setHomeData] = useState(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     const { user } = useAuth() as any;
+    const { isInWishlist, toggleWishlist } = useWishlist() as any;
 
     useEffect(() => {
         const fetchHomeData = async () => {
@@ -44,13 +46,9 @@ export default function HomeScreen() {
             {/* Custom Header */}
             <View style={styles.header}>
                 <View>
-                    <Text style={styles.greetingText}>Welcome back,</Text>
-                    <Text style={styles.userName}>{user ? user.displayName || 'User' : 'Guest'}</Text>
+                    <Image source={require('../../assets/images/logo.png')} style={{ width: 120, height: 40 }} resizeMode="contain" />
                 </View>
                 <View style={styles.headerIcons}>
-                    <TouchableOpacity style={styles.iconBtn}>
-                        <FontAwesome name="search" size={20} color="#2C1A1D" />
-                    </TouchableOpacity>
                     <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/cart')}>
                         <FontAwesome name="shopping-bag" size={20} color="#2C1A1D" />
                     </TouchableOpacity>
@@ -101,26 +99,16 @@ export default function HomeScreen() {
                     </View>
                 )}
 
-                {/* CATEGORIES SECTION */}
-                <View style={styles.section}>
-                    <View style={styles.sectionHeader}>
-                        <Text style={styles.sectionTitle}>Categories</Text>
-                        <TouchableOpacity><Text style={styles.seeAllText}>See all</Text></TouchableOpacity>
-                    </View>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalScroll}>
-                        {categories.map((cat: any, index: number) => (
-                            <TouchableOpacity key={cat.id || index} style={styles.categoryBadge}>
-                                <Text style={styles.categoryText}>{cat.name}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
+                <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
+                    <Text style={styles.greetingText}>Welcome back,</Text>
+                    <Text style={styles.userName}>{user ? user.displayName || 'User' : 'Guest'}</Text>
                 </View>
 
-                {/* DYNAMIC SECTIONS (New Arrivals, 50% Off, Suggested) */}
+                {/* DYNAMIC SECTIONS AND CATEGORIES */}
                 {sections.map((section: any, sectionIndex: number) => {
                     if (!section.items || section.items.length === 0) return null;
 
-                    return (
+                    const renderSection = (
                         <View key={section.id || sectionIndex} style={styles.section}>
                             <View style={styles.sectionHeader}>
                                 <Text style={styles.sectionTitle}>{section.title}</Text>
@@ -157,8 +145,8 @@ export default function HomeScreen() {
                                             )}
 
                                             {/* Wishlist Icon */}
-                                            <TouchableOpacity style={styles.wishlistBtn}>
-                                                <FontAwesome name="heart-o" size={16} color="#666" />
+                                            <TouchableOpacity style={styles.wishlistBtn} onPress={() => toggleWishlist(product)}>
+                                                <FontAwesome name={isInWishlist(product.id) ? "heart" : "heart-o"} size={16} color={isInWishlist(product.id) ? "#f1501c" : "#666"} />
                                             </TouchableOpacity>
                                         </View>
 
@@ -178,6 +166,33 @@ export default function HomeScreen() {
                             </ScrollView>
                         </View>
                     );
+
+                    if (section.id === 'new-arrivals') {
+                        return (
+                            <View key={`group-${section.id}`}>
+                                {renderSection}
+                                {/* CATEGORIES GRID SECTION */}
+                                <View style={styles.section}>
+                                    <View style={styles.sectionHeader}>
+                                        <Text style={styles.sectionTitle}>Categories</Text>
+                                        <TouchableOpacity><Text style={styles.seeAllText}>See all</Text></TouchableOpacity>
+                                    </View>
+                                    <View style={styles.categoriesGrid}>
+                                        {categories.map((cat: any, index: number) => (
+                                            <TouchableOpacity key={cat.id || index} style={styles.categoryGridItem} onPress={() => { }}>
+                                                <View style={styles.categoryIconContainer}>
+                                                    <FontAwesome name="th-large" size={24} color="#f1501c" />
+                                                </View>
+                                                <Text style={styles.categoryGridText} numberOfLines={2}>{cat.name}</Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
+                                </View>
+                            </View>
+                        );
+                    }
+
+                    return renderSection;
                 })}
 
             </ScrollView>
@@ -232,5 +247,40 @@ const styles = StyleSheet.create({
 
     priceRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
     productPrice: { fontSize: 16, fontWeight: 'bold', color: '#2C1A1D' },
-    addBtn: { width: 24, height: 24, borderRadius: 12, backgroundColor: '#2C1A1D', justifyContent: 'center', alignItems: 'center' }
+    addBtn: { width: 24, height: 24, borderRadius: 12, backgroundColor: '#2C1A1D', justifyContent: 'center', alignItems: 'center' },
+
+    categoriesGrid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        paddingHorizontal: 10,
+        justifyContent: 'flex-start'
+    },
+    categoryGridItem: {
+        width: '25%',  // 4 items per row
+        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 5
+    },
+    categoryIconContainer: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: '#fff8f1',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 1,
+        borderWidth: 1,
+        borderColor: '#feebc8'
+    },
+    categoryGridText: {
+        fontSize: 12,
+        fontWeight: '500',
+        color: '#333',
+        textAlign: 'center'
+    }
 });

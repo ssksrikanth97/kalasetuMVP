@@ -35,8 +35,7 @@ export default function EventsScreen() {
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
-            <Text style={styles.pageTitle}>Upcoming Events</Text>
-            <Text style={styles.pageSubtitle}>Join us for live cultural performances</Text>
+            {/* Events Title Hidden */}
 
             {events.map((event) => {
                 const dateObj = event.date ? new Date(event.date) : new Date();
@@ -73,11 +72,7 @@ export default function EventsScreen() {
                                 )}
                             </View>
                         </View>
-                        <View style={styles.bookBtnContainer}>
-                            <View style={styles.bookBtn}>
-                                <Text style={styles.bookBtnText}>Book Tickets</Text>
-                            </View>
-                        </View>
+                        {/* Book Tickets button hidden */}
                     </TouchableOpacity>
                 );
             })}
